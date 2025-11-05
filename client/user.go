@@ -20,11 +20,13 @@ func (c *PortainerClient) ListUsers() ([]*models.PortainereeUser, error) {
 
 // CreateUser creates a new user.
 func (c *PortainerClient) CreateUser(username, password string, role int64) (int64, error) {
-	params := users.NewUserCreateParams().WithBody(&models.UsersUserCreatePayload{
+	payload := &models.UsersUserCreatePayload{
 		Username: &username,
 		Password: &password,
-		Role:     &role,
-	})
+	}
+	payload.Role.PortainerUserRole = models.PortainerUserRole(role)
+
+	params := users.NewUserCreateParams().WithBody(payload)
 	resp, err := c.cli.Users.UserCreate(params, nil)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create user: %w", err)
@@ -46,9 +48,21 @@ func (c *PortainerClient) GetUser(id int) (*models.PortainereeUser, error) {
 
 // UpdateUserRole updates the role of a user.
 func (c *PortainerClient) UpdateUserRole(id int, role int64) error {
-	params := users.NewUserUpdateParams().WithID(int64(id)).WithBody(&models.UsersUserUpdatePayload{
-		Role: &role,
-	})
-	_, err := c.cli.Users.UserUpdate(params, nil)
+	// Get current user details to fill required fields
+	user, err := c.GetUser(id)
+	if err != nil {
+		return fmt.Errorf("failed to get user: %w", err)
+	}
+
+	payload := &models.UsersUserUpdatePayload{
+		Username:    &user.Username,
+		Password:    new(string), // Empty password when not changing it
+		NewPassword: new(string), // Empty password when not changing it
+		UseCache:    &user.UseCache,
+	}
+	payload.Role.PortainerUserRole = models.PortainerUserRole(role)
+
+	params := users.NewUserUpdateParams().WithID(int64(id)).WithBody(payload)
+	_, err = c.cli.Users.UserUpdate(params, nil)
 	return err
 }

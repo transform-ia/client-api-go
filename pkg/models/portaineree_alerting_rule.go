@@ -122,20 +122,20 @@ func init() {
 
 const (
 
-	// PortainereeAlertingRuleConditionOperator captures enum value ">"
-	PortainereeAlertingRuleConditionOperator string = ">"
+	// PortainereeAlertingRuleConditionOperatorGreaterThan captures enum value ">"
+	PortainereeAlertingRuleConditionOperatorGreaterThan string = ">"
 
-	// PortainereeAlertingRuleConditionOperator captures enum value "<"
-	PortainereeAlertingRuleConditionOperator string = "<"
+	// PortainereeAlertingRuleConditionOperatorLessThan captures enum value "<"
+	PortainereeAlertingRuleConditionOperatorLessThan string = "<"
 
 	// PortainereeAlertingRuleConditionOperatorEqualSign captures enum value "="
 	PortainereeAlertingRuleConditionOperatorEqualSign string = "="
 
-	// PortainereeAlertingRuleConditionOperator captures enum value ">="
-	PortainereeAlertingRuleConditionOperator string = ">="
+	// PortainereeAlertingRuleConditionOperatorGreaterThanOrEqual captures enum value ">="
+	PortainereeAlertingRuleConditionOperatorGreaterThanOrEqual string = ">="
 
-	// PortainereeAlertingRuleConditionOperator captures enum value "<="
-	PortainereeAlertingRuleConditionOperator string = "<="
+	// PortainereeAlertingRuleConditionOperatorLessThanOrEqual captures enum value "<="
+	PortainereeAlertingRuleConditionOperatorLessThanOrEqual string = "<="
 )
 
 // prop value enum

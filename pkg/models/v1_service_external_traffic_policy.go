@@ -35,12 +35,6 @@ const (
 
 	// V1ServiceExternalTrafficPolicyLocal captures enum value "Local"
 	V1ServiceExternalTrafficPolicyLocal V1ServiceExternalTrafficPolicy = "Local"
-
-	// V1ServiceExternalTrafficPolicyLocal captures enum value "Local"
-	V1ServiceExternalTrafficPolicyLocal V1ServiceExternalTrafficPolicy = "Local"
-
-	// V1ServiceExternalTrafficPolicyCluster captures enum value "Cluster"
-	V1ServiceExternalTrafficPolicyCluster V1ServiceExternalTrafficPolicy = "Cluster"
 )
 
 // for schema
@@ -48,7 +42,7 @@ var v1ServiceExternalTrafficPolicyEnum []any
 
 func init() {
 	var res []V1ServiceExternalTrafficPolicy
-	if err := json.Unmarshal([]byte(`["Cluster","Local","Local","Cluster"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["Cluster","Local"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

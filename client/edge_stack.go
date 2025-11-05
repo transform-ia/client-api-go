@@ -8,7 +8,7 @@ import (
 )
 
 // ListEdgeStacks lists all edge stacks
-func (c *PortainerClient) ListEdgeStacks() ([]*models.PortainereeEdgeStack, error) {
+func (c *PortainerClient) ListEdgeStacks() ([]*models.GithubComPortainerPortainerEeAPIHTTPHandlerEdgestacksEdgeStackListResponseItem, error) {
 	params := edge_stacks.NewEdgeStackListParams()
 	resp, err := c.cli.EdgeStacks.EdgeStackList(params, nil)
 	if err != nil {
@@ -30,7 +30,7 @@ func (c *PortainerClient) GetEdgeStack(id int64) (*models.PortainereeEdgeStack, 
 }
 
 // GetEdgeStackByName returns the first edge stack that matches the specified name
-func (c *PortainerClient) GetEdgeStackByName(name string) (*models.PortainereeEdgeStack, error) {
+func (c *PortainerClient) GetEdgeStackByName(name string) (*models.GithubComPortainerPortainerEeAPIHTTPHandlerEdgestacksEdgeStackListResponseItem, error) {
 	edgeStacks, err := c.ListEdgeStacks()
 	if err != nil {
 		return nil, fmt.Errorf("failed to list edge stacks: %w", err)
@@ -47,12 +47,14 @@ func (c *PortainerClient) GetEdgeStackByName(name string) (*models.PortainereeEd
 
 // CreateEdgeStack creates a new edge stack
 func (c *PortainerClient) CreateEdgeStack(name string, file string, environmentGroupIds []int64) (int64, error) {
-	params := edge_stacks.NewEdgeStackCreateStringParams().WithBody(&models.EdgestacksEdgeStackFromStringPayload{
+	payload := &models.GithubComPortainerPortainerEeAPIHTTPHandlerEdgestacksEdgeStackFromStringPayload{
 		Name:             &name,
 		StackFileContent: &file,
 		EdgeGroups:       environmentGroupIds,
-		DeploymentType:   0,
-	})
+	}
+	payload.DeploymentType.PortainerEdgeStackDeploymentType = 0
+
+	params := edge_stacks.NewEdgeStackCreateStringParams().WithBody(payload)
 
 	resp, err := c.cli.EdgeStacks.EdgeStackCreateString(params, nil)
 	if err != nil {
@@ -64,7 +66,7 @@ func (c *PortainerClient) CreateEdgeStack(name string, file string, environmentG
 
 // UpdateEdgeStack updates an existing edge stack
 func (c *PortainerClient) UpdateEdgeStack(id int64, file string, environmentGroupIds []int64) error {
-	params := edge_stacks.NewEdgeStackUpdateParams().WithID(id).WithBody(&models.EdgestacksUpdateEdgeStackPayload{
+	params := edge_stacks.NewEdgeStackUpdateParams().WithID(id).WithBody(&models.GithubComPortainerPortainerEeAPIHTTPHandlerEdgestacksUpdateEdgeStackPayload{
 		StackFileContent: file,
 		EdgeGroups:       environmentGroupIds,
 		UpdateVersion:    true,
