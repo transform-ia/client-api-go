@@ -64,6 +64,12 @@ HelmInstallParams contains all the parameters to send to the API endpoint
 */
 type HelmInstallParams struct {
 
+	/* DryRun.
+
+	   Dry run
+	*/
+	DryRun *bool
+
 	/* ID.
 
 	   Environment(Endpoint) identifier
@@ -129,6 +135,17 @@ func (o *HelmInstallParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
+// WithDryRun adds the dryRun to the helm install params
+func (o *HelmInstallParams) WithDryRun(dryRun *bool) *HelmInstallParams {
+	o.SetDryRun(dryRun)
+	return o
+}
+
+// SetDryRun adds the dryRun to the helm install params
+func (o *HelmInstallParams) SetDryRun(dryRun *bool) {
+	o.DryRun = dryRun
+}
+
 // WithID adds the id to the helm install params
 func (o *HelmInstallParams) WithID(id int64) *HelmInstallParams {
 	o.SetID(id)
@@ -158,6 +175,23 @@ func (o *HelmInstallParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.R
 		return err
 	}
 	var res []error
+
+	if o.DryRun != nil {
+
+		// query param dryRun
+		var qrDryRun bool
+
+		if o.DryRun != nil {
+			qrDryRun = *o.DryRun
+		}
+		qDryRun := swag.FormatBool(qrDryRun)
+		if qDryRun != "" {
+
+			if err := r.SetQueryParam("dryRun", qDryRun); err != nil {
+				return err
+			}
+		}
+	}
 
 	// path param id
 	if err := r.SetPathParam("id", swag.FormatInt64(o.ID)); err != nil {

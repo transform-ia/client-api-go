@@ -22,15 +22,23 @@ type V2ContainerResourceMetricSource struct {
 	Container string `json:"container,omitempty"`
 
 	// name is the name of the resource in question.
-	Name string `json:"name,omitempty"`
+	Name struct {
+		V1ResourceName
+	} `json:"name,omitempty"`
 
 	// target specifies the target value for the given metric
-	Target *V2MetricTarget `json:"target,omitempty"`
+	Target struct {
+		V2MetricTarget
+	} `json:"target,omitempty"`
 }
 
 // Validate validates this v2 container resource metric source
 func (m *V2ContainerResourceMetricSource) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateTarget(formats); err != nil {
 		res = append(res, err)
@@ -42,20 +50,17 @@ func (m *V2ContainerResourceMetricSource) Validate(formats strfmt.Registry) erro
 	return nil
 }
 
-func (m *V2ContainerResourceMetricSource) validateTarget(formats strfmt.Registry) error {
-	if swag.IsZero(m.Target) { // not required
+func (m *V2ContainerResourceMetricSource) validateName(formats strfmt.Registry) error {
+	if swag.IsZero(m.Name) { // not required
 		return nil
 	}
 
-	if m.Target != nil {
-		if err := m.Target.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("target")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("target")
-			}
-			return err
-		}
+	return nil
+}
+
+func (m *V2ContainerResourceMetricSource) validateTarget(formats strfmt.Registry) error {
+	if swag.IsZero(m.Target) { // not required
+		return nil
 	}
 
 	return nil
@@ -64,6 +69,10 @@ func (m *V2ContainerResourceMetricSource) validateTarget(formats strfmt.Registry
 // ContextValidate validate this v2 container resource metric source based on the context it is used
 func (m *V2ContainerResourceMetricSource) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.contextValidateName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.contextValidateTarget(ctx, formats); err != nil {
 		res = append(res, err)
@@ -75,23 +84,12 @@ func (m *V2ContainerResourceMetricSource) ContextValidate(ctx context.Context, f
 	return nil
 }
 
+func (m *V2ContainerResourceMetricSource) contextValidateName(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
 func (m *V2ContainerResourceMetricSource) contextValidateTarget(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Target != nil {
-
-		if swag.IsZero(m.Target) { // not required
-			return nil
-		}
-
-		if err := m.Target.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("target")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("target")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

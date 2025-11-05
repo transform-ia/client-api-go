@@ -28,7 +28,7 @@ type ReleaseDependency struct {
 
 	// ImportValues holds the mapping of source values to parent key to be imported. Each item can be a
 	// string or pair of child/parent sublist items.
-	ImportValues []interface{} `json:"import-values"`
+	ImportValues []any `json:"import-values"`
 
 	// Name is the name of the dependency.
 	//

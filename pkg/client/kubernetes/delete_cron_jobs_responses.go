@@ -18,7 +18,7 @@ type DeleteCronJobsReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *DeleteCronJobsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *DeleteCronJobsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 204:
 		result := NewDeleteCronJobsNoContent()

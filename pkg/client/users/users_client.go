@@ -94,8 +94,6 @@ type ClientService interface {
 
 	UserUpdateGitCredential(params *UserUpdateGitCredentialParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserUpdateGitCredentialNoContent, error)
 
-	UserUpdateOpenAIConfig(params *UserUpdateOpenAIConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserUpdateOpenAIConfigNoContent, error)
-
 	UserUpdatePassword(params *UserUpdatePasswordParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserUpdatePasswordNoContent, error)
 
 	SetTransport(transport runtime.ClientTransport)
@@ -109,7 +107,7 @@ type ClientService interface {
 **Access policy**: authenticated
 */
 func (a *Client) CurrentUserEndpointAuthorizationsInspect(params *CurrentUserEndpointAuthorizationsInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CurrentUserEndpointAuthorizationsInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCurrentUserEndpointAuthorizationsInspectParams()
 	}
@@ -129,17 +127,22 @@ func (a *Client) CurrentUserEndpointAuthorizationsInspect(params *CurrentUserEnd
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CurrentUserEndpointAuthorizationsInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for CurrentUserEndpointAuthorizationsInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -153,7 +156,7 @@ User passwords are filtered out, and should never be accessible.
 **Access policy**: authenticated
 */
 func (a *Client) CurrentUserInspect(params *CurrentUserInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CurrentUserInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCurrentUserInspectParams()
 	}
@@ -173,17 +176,22 @@ func (a *Client) CurrentUserInspect(params *CurrentUserInspectParams, authInfo r
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CurrentUserInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for CurrentUserInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -196,7 +204,7 @@ func (a *Client) CurrentUserInspect(params *CurrentUserInspectParams, authInfo r
 **Access policy**: public
 */
 func (a *Client) UserAdminCheck(params *UserAdminCheckParams, opts ...ClientOption) (*UserAdminCheckNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserAdminCheckParams()
 	}
@@ -215,17 +223,22 @@ func (a *Client) UserAdminCheck(params *UserAdminCheckParams, opts ...ClientOpti
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserAdminCheckNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserAdminCheck: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -238,7 +251,7 @@ func (a *Client) UserAdminCheck(params *UserAdminCheckParams, opts ...ClientOpti
 **Access policy**: public
 */
 func (a *Client) UserAdminInit(params *UserAdminInitParams, opts ...ClientOption) (*UserAdminInitOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserAdminInitParams()
 	}
@@ -257,17 +270,22 @@ func (a *Client) UserAdminInit(params *UserAdminInitParams, opts ...ClientOption
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserAdminInitOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserAdminInit: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -281,7 +299,7 @@ Only administrators can create users.
 **Access policy**: restricted
 */
 func (a *Client) UserCreate(params *UserCreateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserCreateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserCreateParams()
 	}
@@ -301,17 +319,22 @@ func (a *Client) UserCreate(params *UserCreateParams, authInfo runtime.ClientAut
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserCreateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserCreate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -325,7 +348,7 @@ Only the calling user can store a git credential for themselves.
 **Access policy**: restricted
 */
 func (a *Client) UserCreateGitCredential(params *UserCreateGitCredentialParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserCreateGitCredentialCreated, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserCreateGitCredentialParams()
 	}
@@ -345,17 +368,22 @@ func (a *Client) UserCreateGitCredential(params *UserCreateGitCredentialParams, 
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserCreateGitCredentialCreated)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserCreateGitCredential: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -368,7 +396,7 @@ func (a *Client) UserCreateGitCredential(params *UserCreateGitCredentialParams, 
 **Access policy**: administrator
 */
 func (a *Client) UserDelete(params *UserDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserDeleteNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserDeleteParams()
 	}
@@ -388,17 +416,22 @@ func (a *Client) UserDelete(params *UserDeleteParams, authInfo runtime.ClientAut
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserDeleteNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserDelete: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -413,7 +446,7 @@ Password is required only for internal authentication.
 **Access policy**: restricted
 */
 func (a *Client) UserGenerateAPIKey(params *UserGenerateAPIKeyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserGenerateAPIKeyOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserGenerateAPIKeyParams()
 	}
@@ -433,17 +466,22 @@ func (a *Client) UserGenerateAPIKey(params *UserGenerateAPIKeyParams, authInfo r
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserGenerateAPIKeyOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserGenerateAPIKey: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -457,7 +495,7 @@ Only the calling user or admin can retrieve api-keys.
 **Access policy**: authenticated
 */
 func (a *Client) UserGetAPIKeys(params *UserGetAPIKeysParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserGetAPIKeysOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserGetAPIKeysParams()
 	}
@@ -477,17 +515,22 @@ func (a *Client) UserGetAPIKeys(params *UserGetAPIKeysParams, authInfo runtime.C
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserGetAPIKeysOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserGetAPIKeys: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -501,7 +544,7 @@ Only the calling user can retrieve git credential
 **Access policy**: authenticated
 */
 func (a *Client) UserGetGitCredential(params *UserGetGitCredentialParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserGetGitCredentialOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserGetGitCredentialParams()
 	}
@@ -521,17 +564,22 @@ func (a *Client) UserGetGitCredential(params *UserGetGitCredentialParams, authIn
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserGetGitCredentialOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserGetGitCredential: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -545,7 +593,7 @@ Only the calling user can retrieve git credentials
 **Access policy**: authenticated
 */
 func (a *Client) UserGetGitCredentials(params *UserGetGitCredentialsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserGetGitCredentialsOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserGetGitCredentialsParams()
 	}
@@ -565,17 +613,22 @@ func (a *Client) UserGetGitCredentials(params *UserGetGitCredentialsParams, auth
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserGetGitCredentialsOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserGetGitCredentials: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -589,7 +642,7 @@ User passwords are filtered out, and should never be accessible.
 **Access policy**: authenticated
 */
 func (a *Client) UserInspect(params *UserInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserInspectParams()
 	}
@@ -609,17 +662,22 @@ func (a *Client) UserInspect(params *UserInspectParams, authInfo runtime.ClientA
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -634,7 +692,7 @@ User passwords are filtered out, and should never be accessible.
 **Access policy**: restricted
 */
 func (a *Client) UserList(params *UserListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserListOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserListParams()
 	}
@@ -654,17 +712,22 @@ func (a *Client) UserList(params *UserListParams, authInfo runtime.ClientAuthInf
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserListOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -677,7 +740,7 @@ func (a *Client) UserList(params *UserListParams, authInfo runtime.ClientAuthInf
 **Access policy**: restricted
 */
 func (a *Client) UserMembershipsInspect(params *UserMembershipsInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserMembershipsInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserMembershipsInspectParams()
 	}
@@ -697,17 +760,22 @@ func (a *Client) UserMembershipsInspect(params *UserMembershipsInspectParams, au
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserMembershipsInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserMembershipsInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -720,7 +788,7 @@ func (a *Client) UserMembershipsInspect(params *UserMembershipsInspectParams, au
 **Access policy**: restricted
 */
 func (a *Client) UserNamespaces(params *UserNamespacesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserNamespacesOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserNamespacesParams()
 	}
@@ -740,17 +808,22 @@ func (a *Client) UserNamespaces(params *UserNamespacesParams, authInfo runtime.C
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserNamespacesOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserNamespaces: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -764,7 +837,7 @@ Only the calling user or admin can remove api-key.
 **Access policy**: authenticated
 */
 func (a *Client) UserRemoveAPIKey(params *UserRemoveAPIKeyParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserRemoveAPIKeyNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserRemoveAPIKeyParams()
 	}
@@ -784,17 +857,22 @@ func (a *Client) UserRemoveAPIKey(params *UserRemoveAPIKeyParams, authInfo runti
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserRemoveAPIKeyNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserRemoveAPIKey: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -808,7 +886,7 @@ Only the calling user can remove git-credential
 **Access policy**: authenticated
 */
 func (a *Client) UserRemoveGitCredential(params *UserRemoveGitCredentialParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserRemoveGitCredentialNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserRemoveGitCredentialParams()
 	}
@@ -828,17 +906,22 @@ func (a *Client) UserRemoveGitCredential(params *UserRemoveGitCredentialParams, 
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserRemoveGitCredentialNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserRemoveGitCredential: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -852,7 +935,7 @@ A regular user account cannot change their username or role.
 **Access policy**: authenticated
 */
 func (a *Client) UserUpdate(params *UserUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserUpdateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserUpdateParams()
 	}
@@ -872,17 +955,22 @@ func (a *Client) UserUpdate(params *UserUpdateParams, authInfo runtime.ClientAut
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserUpdateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -896,7 +984,7 @@ Only the calling user can update git-credential
 **Access policy**: authenticated
 */
 func (a *Client) UserUpdateGitCredential(params *UserUpdateGitCredentialParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserUpdateGitCredentialNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserUpdateGitCredentialParams()
 	}
@@ -916,63 +1004,23 @@ func (a *Client) UserUpdateGitCredential(params *UserUpdateGitCredentialParams, 
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserUpdateGitCredentialNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserUpdateGitCredential: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
-}
-
-/*
-	UserUpdateOpenAIConfig updates the open a i API configuration associated to a user
-
-	Update the OpenAI API key and OpenAI model associated to a user. Requires the OpenAI experimental feature setting to be enabled.
-
-This configuration will be used when interacting with the OpenAI chat.
-Only an administrator user or the user itself can update the OpenAI API key.
-**Access policy**: restricted
-*/
-func (a *Client) UserUpdateOpenAIConfig(params *UserUpdateOpenAIConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserUpdateOpenAIConfigNoContent, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewUserUpdateOpenAIConfigParams()
-	}
-	op := &runtime.ClientOperation{
-		ID:                 "UserUpdateOpenAIConfig",
-		Method:             "PUT",
-		PathPattern:        "/users/{id}/openai",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http", "https"},
-		Params:             params,
-		Reader:             &UserUpdateOpenAIConfigReader{formats: a.formats},
-		AuthInfo:           authInfo,
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*UserUpdateOpenAIConfigNoContent)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for UserUpdateOpenAIConfig: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -984,7 +1032,7 @@ func (a *Client) UserUpdateOpenAIConfig(params *UserUpdateOpenAIConfigParams, au
 **Access policy**: authenticated
 */
 func (a *Client) UserUpdatePassword(params *UserUpdatePasswordParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UserUpdatePasswordNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUserUpdatePasswordParams()
 	}
@@ -1004,17 +1052,22 @@ func (a *Client) UserUpdatePassword(params *UserUpdatePasswordParams, authInfo r
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UserUpdatePasswordNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UserUpdatePassword: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

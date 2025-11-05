@@ -7,14 +7,16 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
 
 // GithubComPortainerPortainerEeAPIHTTPHandlerSystemSystemInfoResponse github com portainer portainer ee api http handler system system info response
 //
-// swagger:model github.com_portainer_portainer-ee_api_http_handler_system.systemInfoResponse
+// swagger:model github_com_portainer_portainer-ee_api_http_handler_system.systemInfoResponse
 type GithubComPortainerPortainerEeAPIHTTPHandlerSystemSystemInfoResponse struct {
 
 	// agents
@@ -27,16 +29,77 @@ type GithubComPortainerPortainerEeAPIHTTPHandlerSystemSystemInfoResponse struct 
 	EdgeDevices int64 `json:"edgeDevices,omitempty"`
 
 	// platform
-	Platform string `json:"platform,omitempty"`
+	Platform PlatformContainerPlatform `json:"platform,omitempty"`
 }
 
 // Validate validates this github com portainer portainer ee api http handler system system info response
 func (m *GithubComPortainerPortainerEeAPIHTTPHandlerSystemSystemInfoResponse) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validatePlatform(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this github com portainer portainer ee api http handler system system info response based on context it is used
+func (m *GithubComPortainerPortainerEeAPIHTTPHandlerSystemSystemInfoResponse) validatePlatform(formats strfmt.Registry) error {
+	if swag.IsZero(m.Platform) { // not required
+		return nil
+	}
+
+	if err := m.Platform.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("platform")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("platform")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this github com portainer portainer ee api http handler system system info response based on the context it is used
 func (m *GithubComPortainerPortainerEeAPIHTTPHandlerSystemSystemInfoResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidatePlatform(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *GithubComPortainerPortainerEeAPIHTTPHandlerSystemSystemInfoResponse) contextValidatePlatform(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Platform) { // not required
+		return nil
+	}
+
+	if err := m.Platform.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("platform")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("platform")
+		}
+
+		return err
+	}
+
 	return nil
 }
 

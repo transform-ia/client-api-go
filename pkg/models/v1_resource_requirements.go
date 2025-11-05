@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -22,7 +23,7 @@ type V1ResourceRequirements struct {
 	// Claims lists the names of resources, defined in spec.resourceClaims,
 	// that are used by this container.
 	//
-	// This is an alpha field and requires enabling the
+	// This field depends on the
 	// DynamicResourceAllocation feature gate.
 	//
 	// This field is immutable. It can only be set for containers.
@@ -31,19 +32,23 @@ type V1ResourceRequirements struct {
 	// +listMapKey=name
 	// +featureGate=DynamicResourceAllocation
 	// +optional
-	Claims []*V1ResourceClaim `json:"claims"`
+	Claims []*K8sIoAPICoreV1ResourceClaim `json:"claims"`
 
 	// Limits describes the maximum amount of compute resources allowed.
 	// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 	// +optional
-	Limits V1ResourceList `json:"limits,omitempty"`
+	Limits struct {
+		V1ResourceList
+	} `json:"limits,omitempty"`
 
 	// Requests describes the minimum amount of compute resources required.
 	// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
 	// otherwise to an implementation-defined value. Requests cannot exceed Limits.
 	// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 	// +optional
-	Requests V1ResourceList `json:"requests,omitempty"`
+	Requests struct {
+		V1ResourceList
+	} `json:"requests,omitempty"`
 }
 
 // Validate validates this v1 resource requirements
@@ -80,11 +85,15 @@ func (m *V1ResourceRequirements) validateClaims(formats strfmt.Registry) error {
 
 		if m.Claims[i] != nil {
 			if err := m.Claims[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("claims" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("claims" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -99,34 +108,12 @@ func (m *V1ResourceRequirements) validateLimits(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.Limits != nil {
-		if err := m.Limits.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("limits")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("limits")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V1ResourceRequirements) validateRequests(formats strfmt.Registry) error {
 	if swag.IsZero(m.Requests) { // not required
 		return nil
-	}
-
-	if m.Requests != nil {
-		if err := m.Requests.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("requests")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("requests")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -165,11 +152,15 @@ func (m *V1ResourceRequirements) contextValidateClaims(ctx context.Context, form
 			}
 
 			if err := m.Claims[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("claims" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("claims" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -181,36 +172,10 @@ func (m *V1ResourceRequirements) contextValidateClaims(ctx context.Context, form
 
 func (m *V1ResourceRequirements) contextValidateLimits(ctx context.Context, formats strfmt.Registry) error {
 
-	if swag.IsZero(m.Limits) { // not required
-		return nil
-	}
-
-	if err := m.Limits.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("limits")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce.ValidateName("limits")
-		}
-		return err
-	}
-
 	return nil
 }
 
 func (m *V1ResourceRequirements) contextValidateRequests(ctx context.Context, formats strfmt.Registry) error {
-
-	if swag.IsZero(m.Requests) { // not required
-		return nil
-	}
-
-	if err := m.Requests.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("requests")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce.ValidateName("requests")
-		}
-		return err
-	}
 
 	return nil
 }

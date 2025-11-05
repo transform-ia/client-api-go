@@ -25,7 +25,9 @@ type V2MetricIdentifier struct {
 	// When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping.
 	// When unset, just the metricName will be used to gather metrics.
 	// +optional
-	Selector *V1LabelSelector `json:"selector,omitempty"`
+	Selector struct {
+		V1LabelSelector
+	} `json:"selector,omitempty"`
 }
 
 // Validate validates this v2 metric identifier
@@ -47,17 +49,6 @@ func (m *V2MetricIdentifier) validateSelector(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.Selector != nil {
-		if err := m.Selector.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("selector")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("selector")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -76,22 +67,6 @@ func (m *V2MetricIdentifier) ContextValidate(ctx context.Context, formats strfmt
 }
 
 func (m *V2MetricIdentifier) contextValidateSelector(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Selector != nil {
-
-		if swag.IsZero(m.Selector) { // not required
-			return nil
-		}
-
-		if err := m.Selector.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("selector")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("selector")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

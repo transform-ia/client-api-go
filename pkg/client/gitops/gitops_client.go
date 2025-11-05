@@ -60,6 +60,8 @@ type ClientService interface {
 
 	GitOperationRepoFilesSearch(params *GitOperationRepoFilesSearchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GitOperationRepoFilesSearchOK, error)
 
+	GitOperationRepoHelmValues(params *GitOperationRepoHelmValuesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GitOperationRepoHelmValuesOK, error)
+
 	GitOperationRepoRefs(params *GitOperationRepoRefsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GitOperationRepoRefsOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
@@ -73,7 +75,7 @@ type ClientService interface {
 **Access policy**: authenticated
 */
 func (a *Client) GitOperationRepoFilePreview(params *GitOperationRepoFilePreviewParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GitOperationRepoFilePreviewOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGitOperationRepoFilePreviewParams()
 	}
@@ -93,17 +95,22 @@ func (a *Client) GitOperationRepoFilePreview(params *GitOperationRepoFilePreview
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GitOperationRepoFilePreviewOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for GitOperationRepoFilePreview: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -116,7 +123,7 @@ func (a *Client) GitOperationRepoFilePreview(params *GitOperationRepoFilePreview
 **Access policy**: authenticated
 */
 func (a *Client) GitOperationRepoFilesSearch(params *GitOperationRepoFilesSearchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GitOperationRepoFilesSearchOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGitOperationRepoFilesSearchParams()
 	}
@@ -136,18 +143,71 @@ func (a *Client) GitOperationRepoFilesSearch(params *GitOperationRepoFilesSearch
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GitOperationRepoFilesSearchOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for GitOperationRepoFilesSearch: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+	GitOperationRepoHelmValues previews merged helm values files from git repository
+
+	Load and merge multiple Helm values files from a Git repository, mimicking Helm CLI behavior
+
+**Access policy**: authenticated
+*/
+func (a *Client) GitOperationRepoHelmValues(params *GitOperationRepoHelmValuesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GitOperationRepoHelmValuesOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewGitOperationRepoHelmValuesParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "GitOperationRepoHelmValues",
+		Method:             "POST",
+		PathPattern:        "/gitops/repo/helm/values",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &GitOperationRepoHelmValuesReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*GitOperationRepoHelmValuesOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for GitOperationRepoHelmValues: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -160,7 +220,7 @@ Will return all refs of a git repository
 **Access policy**: authenticated
 */
 func (a *Client) GitOperationRepoRefs(params *GitOperationRepoRefsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GitOperationRepoRefsOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGitOperationRepoRefsParams()
 	}
@@ -180,17 +240,22 @@ func (a *Client) GitOperationRepoRefs(params *GitOperationRepoRefsParams, authIn
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GitOperationRepoRefsOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for GitOperationRepoRefs: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

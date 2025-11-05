@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -33,6 +34,9 @@ type StacksStackGitRedployPayload struct {
 	// repository authentication
 	RepositoryAuthentication bool `json:"repositoryAuthentication,omitempty"`
 
+	// repository authorization type
+	RepositoryAuthorizationType GittypesGitCredentialAuthType `json:"repositoryAuthorizationType,omitempty"`
+
 	// repository git credential ID
 	RepositoryGitCredentialID int64 `json:"repositoryGitCredentialID,omitempty"`
 
@@ -57,6 +61,10 @@ func (m *StacksStackGitRedployPayload) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateRepositoryAuthorizationType(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -75,15 +83,40 @@ func (m *StacksStackGitRedployPayload) validateEnv(formats strfmt.Registry) erro
 
 		if m.Env[i] != nil {
 			if err := m.Env[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("env" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("env" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *StacksStackGitRedployPayload) validateRepositoryAuthorizationType(formats strfmt.Registry) error {
+	if swag.IsZero(m.RepositoryAuthorizationType) { // not required
+		return nil
+	}
+
+	if err := m.RepositoryAuthorizationType.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("repositoryAuthorizationType")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("repositoryAuthorizationType")
+		}
+
+		return err
 	}
 
 	return nil
@@ -94,6 +127,10 @@ func (m *StacksStackGitRedployPayload) ContextValidate(ctx context.Context, form
 	var res []error
 
 	if err := m.contextValidateEnv(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateRepositoryAuthorizationType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -114,15 +151,41 @@ func (m *StacksStackGitRedployPayload) contextValidateEnv(ctx context.Context, f
 			}
 
 			if err := m.Env[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("env" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("env" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *StacksStackGitRedployPayload) contextValidateRepositoryAuthorizationType(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.RepositoryAuthorizationType) { // not required
+		return nil
+	}
+
+	if err := m.RepositoryAuthorizationType.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("repositoryAuthorizationType")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("repositoryAuthorizationType")
+		}
+
+		return err
 	}
 
 	return nil

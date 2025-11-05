@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -20,7 +21,9 @@ import (
 type PortainerEdgeStackStatus struct {
 
 	// Deprecated
-	Details *PortainerEdgeStackStatusDetails `json:"Details,omitempty"`
+	Details struct {
+		PortainerEdgeStackStatusDetails
+	} `json:"Details,omitempty"`
 
 	// Deprecated
 	Error string `json:"Error,omitempty"`
@@ -29,10 +32,14 @@ type PortainerEdgeStackStatus struct {
 	ReadyRePullImage bool `json:"ReadyRePullImage,omitempty"`
 
 	// Deprecated
-	Type int64 `json:"Type,omitempty"`
+	Type struct {
+		PortainerEdgeStackStatusType
+	} `json:"Type,omitempty"`
 
 	// EE only feature
-	DeploymentInfo *PortainerStackDeploymentInfo `json:"deploymentInfo,omitempty"`
+	DeploymentInfo struct {
+		PortainerStackDeploymentInfo
+	} `json:"deploymentInfo,omitempty"`
 
 	// endpoint ID
 	EndpointID int64 `json:"endpointID,omitempty"`
@@ -46,6 +53,10 @@ func (m *PortainerEdgeStackStatus) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateDetails(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -68,15 +79,12 @@ func (m *PortainerEdgeStackStatus) validateDetails(formats strfmt.Registry) erro
 		return nil
 	}
 
-	if m.Details != nil {
-		if err := m.Details.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("Details")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("Details")
-			}
-			return err
-		}
+	return nil
+}
+
+func (m *PortainerEdgeStackStatus) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
 	}
 
 	return nil
@@ -85,17 +93,6 @@ func (m *PortainerEdgeStackStatus) validateDetails(formats strfmt.Registry) erro
 func (m *PortainerEdgeStackStatus) validateDeploymentInfo(formats strfmt.Registry) error {
 	if swag.IsZero(m.DeploymentInfo) { // not required
 		return nil
-	}
-
-	if m.DeploymentInfo != nil {
-		if err := m.DeploymentInfo.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("deploymentInfo")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("deploymentInfo")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -113,11 +110,15 @@ func (m *PortainerEdgeStackStatus) validateStatus(formats strfmt.Registry) error
 
 		if m.Status[i] != nil {
 			if err := m.Status[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("status" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("status" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -132,6 +133,10 @@ func (m *PortainerEdgeStackStatus) ContextValidate(ctx context.Context, formats 
 	var res []error
 
 	if err := m.contextValidateDetails(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -151,42 +156,15 @@ func (m *PortainerEdgeStackStatus) ContextValidate(ctx context.Context, formats 
 
 func (m *PortainerEdgeStackStatus) contextValidateDetails(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.Details != nil {
+	return nil
+}
 
-		if swag.IsZero(m.Details) { // not required
-			return nil
-		}
-
-		if err := m.Details.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("Details")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("Details")
-			}
-			return err
-		}
-	}
+func (m *PortainerEdgeStackStatus) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }
 
 func (m *PortainerEdgeStackStatus) contextValidateDeploymentInfo(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.DeploymentInfo != nil {
-
-		if swag.IsZero(m.DeploymentInfo) { // not required
-			return nil
-		}
-
-		if err := m.DeploymentInfo.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("deploymentInfo")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("deploymentInfo")
-			}
-			return err
-		}
-	}
 
 	return nil
 }
@@ -202,11 +180,15 @@ func (m *PortainerEdgeStackStatus) contextValidateStatus(ctx context.Context, fo
 			}
 
 			if err := m.Status[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("status" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("status" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

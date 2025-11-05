@@ -7,7 +7,9 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -27,16 +29,77 @@ type FilesystemDirEntry struct {
 	Name string `json:"name,omitempty"`
 
 	// permissions
-	Permissions int64 `json:"permissions,omitempty"`
+	Permissions OsFileMode `json:"permissions,omitempty"`
 }
 
 // Validate validates this filesystem dir entry
 func (m *FilesystemDirEntry) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validatePermissions(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this filesystem dir entry based on context it is used
+func (m *FilesystemDirEntry) validatePermissions(formats strfmt.Registry) error {
+	if swag.IsZero(m.Permissions) { // not required
+		return nil
+	}
+
+	if err := m.Permissions.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("permissions")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("permissions")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this filesystem dir entry based on the context it is used
 func (m *FilesystemDirEntry) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidatePermissions(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *FilesystemDirEntry) contextValidatePermissions(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Permissions) { // not required
+		return nil
+	}
+
+	if err := m.Permissions.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("permissions")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("permissions")
+		}
+
+		return err
+	}
+
 	return nil
 }
 

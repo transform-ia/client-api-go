@@ -18,7 +18,7 @@ type HelmUserRepositoryDeleteReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *HelmUserRepositoryDeleteReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *HelmUserRepositoryDeleteReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 204:
 		result := NewHelmUserRepositoryDeleteNoContent()

@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -36,16 +37,49 @@ type V1PortStatus struct {
 
 	// Protocol is the protocol of the service port of which status is recorded here
 	// The supported values are: "TCP", "UDP", "SCTP"
-	Protocol string `json:"protocol,omitempty"`
+	Protocol struct {
+		V1Protocol
+	} `json:"protocol,omitempty"`
 }
 
 // Validate validates this v1 port status
 func (m *V1PortStatus) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateProtocol(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this v1 port status based on context it is used
+func (m *V1PortStatus) validateProtocol(formats strfmt.Registry) error {
+	if swag.IsZero(m.Protocol) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 port status based on the context it is used
 func (m *V1PortStatus) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateProtocol(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1PortStatus) contextValidateProtocol(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

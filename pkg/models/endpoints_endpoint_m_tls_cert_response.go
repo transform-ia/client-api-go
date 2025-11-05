@@ -19,7 +19,9 @@ import (
 type EndpointsEndpointMTLSCertResponse struct {
 
 	// MTLSCertificate is the X.509 Certificate of the MTLS Certificate
-	MTLSCertificate *SslCertificate `json:"MTLSCertificate,omitempty"`
+	MTLSCertificate struct {
+		SslCertificate
+	} `json:"MTLSCertificate,omitempty"`
 }
 
 // Validate validates this endpoints endpoint m TLS cert response
@@ -41,17 +43,6 @@ func (m *EndpointsEndpointMTLSCertResponse) validateMTLSCertificate(formats strf
 		return nil
 	}
 
-	if m.MTLSCertificate != nil {
-		if err := m.MTLSCertificate.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("MTLSCertificate")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("MTLSCertificate")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -70,22 +61,6 @@ func (m *EndpointsEndpointMTLSCertResponse) ContextValidate(ctx context.Context,
 }
 
 func (m *EndpointsEndpointMTLSCertResponse) contextValidateMTLSCertificate(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.MTLSCertificate != nil {
-
-		if swag.IsZero(m.MTLSCertificate) { // not required
-			return nil
-		}
-
-		if err := m.MTLSCertificate.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("MTLSCertificate")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("MTLSCertificate")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

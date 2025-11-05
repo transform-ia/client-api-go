@@ -19,6 +19,12 @@ import (
 // swagger:model gitops.repositoryReferenceListPayload
 type GitopsRepositoryReferenceListPayload struct {
 
+	// authorization type
+	// Example: 0
+	AuthorizationType struct {
+		GittypesGitCredentialAuthType
+	} `json:"authorizationType,omitempty"`
+
 	// created from custom template ID
 	CreatedFromCustomTemplateID int64 `json:"createdFromCustomTemplateID,omitempty"`
 
@@ -47,6 +53,10 @@ type GitopsRepositoryReferenceListPayload struct {
 func (m *GitopsRepositoryReferenceListPayload) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateAuthorizationType(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateRepository(formats); err != nil {
 		res = append(res, err)
 	}
@@ -54,6 +64,14 @@ func (m *GitopsRepositoryReferenceListPayload) Validate(formats strfmt.Registry)
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *GitopsRepositoryReferenceListPayload) validateAuthorizationType(formats strfmt.Registry) error {
+	if swag.IsZero(m.AuthorizationType) { // not required
+		return nil
+	}
+
 	return nil
 }
 
@@ -66,8 +84,22 @@ func (m *GitopsRepositoryReferenceListPayload) validateRepository(formats strfmt
 	return nil
 }
 
-// ContextValidate validates this gitops repository reference list payload based on context it is used
+// ContextValidate validate this gitops repository reference list payload based on the context it is used
 func (m *GitopsRepositoryReferenceListPayload) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateAuthorizationType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *GitopsRepositoryReferenceListPayload) contextValidateAuthorizationType(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

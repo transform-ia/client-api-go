@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -32,19 +33,75 @@ type V2HorizontalPodAutoscalerCondition struct {
 	Reason string `json:"reason,omitempty"`
 
 	// status is the status of the condition (True, False, Unknown)
-	Status string `json:"status,omitempty"`
+	Status struct {
+		K8sIoAPICoreV1ConditionStatus
+	} `json:"status,omitempty"`
 
 	// type describes the current condition
-	Type string `json:"type,omitempty"`
+	Type struct {
+		V2HorizontalPodAutoscalerConditionType
+	} `json:"type,omitempty"`
 }
 
 // Validate validates this v2 horizontal pod autoscaler condition
 func (m *V2HorizontalPodAutoscalerCondition) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateStatus(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this v2 horizontal pod autoscaler condition based on context it is used
+func (m *V2HorizontalPodAutoscalerCondition) validateStatus(formats strfmt.Registry) error {
+	if swag.IsZero(m.Status) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+func (m *V2HorizontalPodAutoscalerCondition) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v2 horizontal pod autoscaler condition based on the context it is used
 func (m *V2HorizontalPodAutoscalerCondition) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateStatus(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V2HorizontalPodAutoscalerCondition) contextValidateStatus(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
+func (m *V2HorizontalPodAutoscalerCondition) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

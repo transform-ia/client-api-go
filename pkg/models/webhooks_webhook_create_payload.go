@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -17,28 +18,59 @@ import (
 // swagger:model webhooks.webhookCreatePayload
 type WebhooksWebhookCreatePayload struct {
 
-	// Environment(Endpoint) identifier. Reference the environment(endpoint) that will be used for deployment
-	// Example: 1
+	// endpoint ID
 	EndpointID int64 `json:"endpointID,omitempty"`
 
-	// Registry Identifier
-	// Example: 1
+	// registry ID
 	RegistryID int64 `json:"registryID,omitempty"`
 
 	// resource ID
 	ResourceID string `json:"resourceID,omitempty"`
 
 	// Type of webhook (1 - service, 2 - container)
-	WebhookType int64 `json:"webhookType,omitempty"`
+	WebhookType struct {
+		PortainerWebhookType
+	} `json:"webhookType,omitempty"`
 }
 
 // Validate validates this webhooks webhook create payload
 func (m *WebhooksWebhookCreatePayload) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateWebhookType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this webhooks webhook create payload based on context it is used
+func (m *WebhooksWebhookCreatePayload) validateWebhookType(formats strfmt.Registry) error {
+	if swag.IsZero(m.WebhookType) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+// ContextValidate validate this webhooks webhook create payload based on the context it is used
 func (m *WebhooksWebhookCreatePayload) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateWebhookType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *WebhooksWebhookCreatePayload) contextValidateWebhookType(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

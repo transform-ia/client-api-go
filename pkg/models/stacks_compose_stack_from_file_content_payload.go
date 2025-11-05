@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -31,6 +32,9 @@ type StacksComposeStackFromFileContentPayload struct {
 	// Example: myStack
 	// Required: true
 	Name *string `json:"name"`
+
+	// List of Registries to use for this stack
+	Registries []int64 `json:"registries"`
 
 	// Content of the Stack file
 	// Example: version: 3\n services:\n web:\n image:nginx
@@ -76,11 +80,15 @@ func (m *StacksComposeStackFromFileContentPayload) validateEnv(formats strfmt.Re
 
 		if m.Env[i] != nil {
 			if err := m.Env[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("env" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("env" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -133,11 +141,15 @@ func (m *StacksComposeStackFromFileContentPayload) contextValidateEnv(ctx contex
 			}
 
 			if err := m.Env[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("env" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("env" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

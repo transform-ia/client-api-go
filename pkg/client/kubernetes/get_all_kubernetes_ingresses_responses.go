@@ -7,6 +7,7 @@ package kubernetes
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type GetAllKubernetesIngressesReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *GetAllKubernetesIngressesReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *GetAllKubernetesIngressesReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewGetAllKubernetesIngressesOK()
@@ -76,7 +77,7 @@ GetAllKubernetesIngressesOK describes a response with status code 200, with defa
 Success
 */
 type GetAllKubernetesIngressesOK struct {
-	Payload []*models.KubernetesK8sIngressInfo
+	Payload []*models.ModelsK8sIngressInfo
 }
 
 // IsSuccess returns true when this get all kubernetes ingresses o k response has a 2xx status code
@@ -119,14 +120,14 @@ func (o *GetAllKubernetesIngressesOK) String() string {
 	return fmt.Sprintf("[GET /kubernetes/{id}/namespaces/{namespace}/ingresses][%d] getAllKubernetesIngressesOK %s", 200, payload)
 }
 
-func (o *GetAllKubernetesIngressesOK) GetPayload() []*models.KubernetesK8sIngressInfo {
+func (o *GetAllKubernetesIngressesOK) GetPayload() []*models.ModelsK8sIngressInfo {
 	return o.Payload
 }
 
 func (o *GetAllKubernetesIngressesOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

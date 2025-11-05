@@ -14,6 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 )
 
 // NewEdgeStackListParams creates a new EdgeStackListParams object,
@@ -60,6 +61,13 @@ EdgeStackListParams contains all the parameters to send to the API endpoint
 	Typically these are written to a http.Request.
 */
 type EdgeStackListParams struct {
+
+	/* SummarizeStatuses.
+
+	   when true summarize the edge stack statuses in the StatusSummary field and void the Status field.
+	*/
+	SummarizeStatuses *bool
+
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
@@ -113,6 +121,17 @@ func (o *EdgeStackListParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
+// WithSummarizeStatuses adds the summarizeStatuses to the edge stack list params
+func (o *EdgeStackListParams) WithSummarizeStatuses(summarizeStatuses *bool) *EdgeStackListParams {
+	o.SetSummarizeStatuses(summarizeStatuses)
+	return o
+}
+
+// SetSummarizeStatuses adds the summarizeStatuses to the edge stack list params
+func (o *EdgeStackListParams) SetSummarizeStatuses(summarizeStatuses *bool) {
+	o.SummarizeStatuses = summarizeStatuses
+}
+
 // WriteToRequest writes these params to a swagger request
 func (o *EdgeStackListParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
@@ -120,6 +139,23 @@ func (o *EdgeStackListParams) WriteToRequest(r runtime.ClientRequest, reg strfmt
 		return err
 	}
 	var res []error
+
+	if o.SummarizeStatuses != nil {
+
+		// query param summarizeStatuses
+		var qrSummarizeStatuses bool
+
+		if o.SummarizeStatuses != nil {
+			qrSummarizeStatuses = *o.SummarizeStatuses
+		}
+		qSummarizeStatuses := swag.FormatBool(qrSummarizeStatuses)
+		if qSummarizeStatuses != "" {
+
+			if err := r.SetQueryParam("summarizeStatuses", qSummarizeStatuses); err != nil {
+				return err
+			}
+		}
+	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)

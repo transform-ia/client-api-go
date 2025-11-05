@@ -19,13 +19,19 @@ import (
 type V2ObjectMetricSource struct {
 
 	// describedObject specifies the descriptions of a object,such as kind,name apiVersion
-	DescribedObject *V2CrossVersionObjectReference `json:"describedObject,omitempty"`
+	DescribedObject struct {
+		V2CrossVersionObjectReference
+	} `json:"describedObject,omitempty"`
 
 	// metric identifies the target metric by name and selector
-	Metric *V2MetricIdentifier `json:"metric,omitempty"`
+	Metric struct {
+		V2MetricIdentifier
+	} `json:"metric,omitempty"`
 
 	// target specifies the target value for the given metric
-	Target *V2MetricTarget `json:"target,omitempty"`
+	Target struct {
+		V2MetricTarget
+	} `json:"target,omitempty"`
 }
 
 // Validate validates this v2 object metric source
@@ -55,17 +61,6 @@ func (m *V2ObjectMetricSource) validateDescribedObject(formats strfmt.Registry) 
 		return nil
 	}
 
-	if m.DescribedObject != nil {
-		if err := m.DescribedObject.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("describedObject")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("describedObject")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -74,34 +69,12 @@ func (m *V2ObjectMetricSource) validateMetric(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.Metric != nil {
-		if err := m.Metric.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("metric")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("metric")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V2ObjectMetricSource) validateTarget(formats strfmt.Registry) error {
 	if swag.IsZero(m.Target) { // not required
 		return nil
-	}
-
-	if m.Target != nil {
-		if err := m.Target.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("target")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("target")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -131,63 +104,15 @@ func (m *V2ObjectMetricSource) ContextValidate(ctx context.Context, formats strf
 
 func (m *V2ObjectMetricSource) contextValidateDescribedObject(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.DescribedObject != nil {
-
-		if swag.IsZero(m.DescribedObject) { // not required
-			return nil
-		}
-
-		if err := m.DescribedObject.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("describedObject")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("describedObject")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V2ObjectMetricSource) contextValidateMetric(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.Metric != nil {
-
-		if swag.IsZero(m.Metric) { // not required
-			return nil
-		}
-
-		if err := m.Metric.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("metric")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("metric")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V2ObjectMetricSource) contextValidateTarget(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Target != nil {
-
-		if swag.IsZero(m.Target) { // not required
-			return nil
-		}
-
-		if err := m.Target.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("target")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("target")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

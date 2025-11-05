@@ -18,7 +18,7 @@ type PostEndpointsIDDockerV2BrowsePutReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *PostEndpointsIDDockerV2BrowsePutReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *PostEndpointsIDDockerV2BrowsePutReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 204:
 		result := NewPostEndpointsIDDockerV2BrowsePutNoContent()

@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -52,7 +53,9 @@ type PortainereeCustomTemplate struct {
 	// Valid values are: 1 - 'linux', 2 - 'windows'
 	// Example: 1
 	// Enum: [1,2]
-	Platform int64 `json:"Platform,omitempty"`
+	Platform struct {
+		PortainerCustomTemplatePlatform
+	} `json:"Platform,omitempty"`
 
 	// Path on disk to the repository hosting the Stack file
 	// Example: /data/custom_template/3
@@ -71,7 +74,9 @@ type PortainereeCustomTemplate struct {
 	// * 3 - kubernetes
 	// Example: 1
 	// Enum: [1,2,3]
-	Type int64 `json:"Type,omitempty"`
+	Type struct {
+		PortainerStackType
+	} `json:"Type,omitempty"`
 
 	// edge settings
 	EdgeSettings *PortainereeCustomTemplateEdgeSettings `json:"edgeSettings,omitempty"`
@@ -129,11 +134,15 @@ func (m *PortainereeCustomTemplate) validateGitConfig(formats strfmt.Registry) e
 
 	if m.GitConfig != nil {
 		if err := m.GitConfig.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("GitConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("GitConfig")
 			}
+
 			return err
 		}
 	}
@@ -141,10 +150,12 @@ func (m *PortainereeCustomTemplate) validateGitConfig(formats strfmt.Registry) e
 	return nil
 }
 
-var portainereeCustomTemplateTypePlatformPropEnum []interface{}
+var portainereeCustomTemplateTypePlatformPropEnum []any
 
 func init() {
-	var res []int64
+	var res []struct {
+		PortainerCustomTemplatePlatform
+	}
 	if err := json.Unmarshal([]byte(`[1,2]`), &res); err != nil {
 		panic(err)
 	}
@@ -154,7 +165,9 @@ func init() {
 }
 
 // prop value enum
-func (m *PortainereeCustomTemplate) validatePlatformEnum(path, location string, value int64) error {
+func (m *PortainereeCustomTemplate) validatePlatformEnum(path, location string, value *struct {
+	PortainerCustomTemplatePlatform
+}) error {
 	if err := validate.EnumCase(path, location, value, portainereeCustomTemplateTypePlatformPropEnum, true); err != nil {
 		return err
 	}
@@ -164,11 +177,6 @@ func (m *PortainereeCustomTemplate) validatePlatformEnum(path, location string, 
 func (m *PortainereeCustomTemplate) validatePlatform(formats strfmt.Registry) error {
 	if swag.IsZero(m.Platform) { // not required
 		return nil
-	}
-
-	// value enum
-	if err := m.validatePlatformEnum("Platform", "body", m.Platform); err != nil {
-		return err
 	}
 
 	return nil
@@ -181,11 +189,15 @@ func (m *PortainereeCustomTemplate) validateResourceControl(formats strfmt.Regis
 
 	if m.ResourceControl != nil {
 		if err := m.ResourceControl.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("ResourceControl")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("ResourceControl")
 			}
+
 			return err
 		}
 	}
@@ -193,10 +205,12 @@ func (m *PortainereeCustomTemplate) validateResourceControl(formats strfmt.Regis
 	return nil
 }
 
-var portainereeCustomTemplateTypeTypePropEnum []interface{}
+var portainereeCustomTemplateTypeTypePropEnum []any
 
 func init() {
-	var res []int64
+	var res []struct {
+		PortainerStackType
+	}
 	if err := json.Unmarshal([]byte(`[1,2,3]`), &res); err != nil {
 		panic(err)
 	}
@@ -206,7 +220,9 @@ func init() {
 }
 
 // prop value enum
-func (m *PortainereeCustomTemplate) validateTypeEnum(path, location string, value int64) error {
+func (m *PortainereeCustomTemplate) validateTypeEnum(path, location string, value *struct {
+	PortainerStackType
+}) error {
 	if err := validate.EnumCase(path, location, value, portainereeCustomTemplateTypeTypePropEnum, true); err != nil {
 		return err
 	}
@@ -216,11 +232,6 @@ func (m *PortainereeCustomTemplate) validateTypeEnum(path, location string, valu
 func (m *PortainereeCustomTemplate) validateType(formats strfmt.Registry) error {
 	if swag.IsZero(m.Type) { // not required
 		return nil
-	}
-
-	// value enum
-	if err := m.validateTypeEnum("Type", "body", m.Type); err != nil {
-		return err
 	}
 
 	return nil
@@ -233,11 +244,15 @@ func (m *PortainereeCustomTemplate) validateEdgeSettings(formats strfmt.Registry
 
 	if m.EdgeSettings != nil {
 		if err := m.EdgeSettings.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("edgeSettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("edgeSettings")
 			}
+
 			return err
 		}
 	}
@@ -257,11 +272,15 @@ func (m *PortainereeCustomTemplate) validateVariables(formats strfmt.Registry) e
 
 		if m.Variables[i] != nil {
 			if err := m.Variables[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("variables" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("variables" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -279,7 +298,15 @@ func (m *PortainereeCustomTemplate) ContextValidate(ctx context.Context, formats
 		res = append(res, err)
 	}
 
+	if err := m.contextValidatePlatform(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateResourceControl(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -306,14 +333,23 @@ func (m *PortainereeCustomTemplate) contextValidateGitConfig(ctx context.Context
 		}
 
 		if err := m.GitConfig.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("GitConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("GitConfig")
 			}
+
 			return err
 		}
 	}
+
+	return nil
+}
+
+func (m *PortainereeCustomTemplate) contextValidatePlatform(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }
@@ -327,14 +363,23 @@ func (m *PortainereeCustomTemplate) contextValidateResourceControl(ctx context.C
 		}
 
 		if err := m.ResourceControl.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("ResourceControl")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("ResourceControl")
 			}
+
 			return err
 		}
 	}
+
+	return nil
+}
+
+func (m *PortainereeCustomTemplate) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }
@@ -348,11 +393,15 @@ func (m *PortainereeCustomTemplate) contextValidateEdgeSettings(ctx context.Cont
 		}
 
 		if err := m.EdgeSettings.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("edgeSettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("edgeSettings")
 			}
+
 			return err
 		}
 	}
@@ -371,11 +420,15 @@ func (m *PortainereeCustomTemplate) contextValidateVariables(ctx context.Context
 			}
 
 			if err := m.Variables[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("variables" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("variables" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -18,6 +19,11 @@ import (
 //
 // swagger:model edge.StackPayload
 type EdgeStackPayload struct {
+
+	// AlwaysCloneGitRepoForRelativePath is a flag indicating if the agent must always clone the git repository for relative path.
+	// This field is only valid when SupportRelativePath is true.
+	// Used only for EE
+	AlwaysCloneGitRepoForRelativePath bool `json:"alwaysCloneGitRepoForRelativePath,omitempty"`
 
 	// deployer options payload
 	DeployerOptionsPayload *EdgeDeployerOptionsPayload `json:"deployerOptionsPayload,omitempty"`
@@ -118,11 +124,15 @@ func (m *EdgeStackPayload) validateDeployerOptionsPayload(formats strfmt.Registr
 
 	if m.DeployerOptionsPayload != nil {
 		if err := m.DeployerOptionsPayload.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("deployerOptionsPayload")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("deployerOptionsPayload")
 			}
+
 			return err
 		}
 	}
@@ -142,11 +152,15 @@ func (m *EdgeStackPayload) validateDirEntries(formats strfmt.Registry) error {
 
 		if m.DirEntries[i] != nil {
 			if err := m.DirEntries[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("dirEntries" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("dirEntries" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -168,11 +182,15 @@ func (m *EdgeStackPayload) validateEnvVars(formats strfmt.Registry) error {
 
 		if m.EnvVars[i] != nil {
 			if err := m.EnvVars[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("envVars" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("envVars" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -194,11 +212,15 @@ func (m *EdgeStackPayload) validateRegistryCredentials(formats strfmt.Registry) 
 
 		if m.RegistryCredentials[i] != nil {
 			if err := m.RegistryCredentials[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("registryCredentials" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("registryCredentials" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -243,11 +265,15 @@ func (m *EdgeStackPayload) contextValidateDeployerOptionsPayload(ctx context.Con
 		}
 
 		if err := m.DeployerOptionsPayload.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("deployerOptionsPayload")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("deployerOptionsPayload")
 			}
+
 			return err
 		}
 	}
@@ -266,11 +292,15 @@ func (m *EdgeStackPayload) contextValidateDirEntries(ctx context.Context, format
 			}
 
 			if err := m.DirEntries[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("dirEntries" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("dirEntries" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -291,11 +321,15 @@ func (m *EdgeStackPayload) contextValidateEnvVars(ctx context.Context, formats s
 			}
 
 			if err := m.EnvVars[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("envVars" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("envVars" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -316,11 +350,15 @@ func (m *EdgeStackPayload) contextValidateRegistryCredentials(ctx context.Contex
 			}
 
 			if err := m.RegistryCredentials[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("registryCredentials" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("registryCredentials" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

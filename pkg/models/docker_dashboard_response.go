@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -19,7 +20,7 @@ import (
 type DockerDashboardResponse struct {
 
 	// containers
-	Containers *DockerContainerStats `json:"containers,omitempty"`
+	Containers *StatsContainerStats `json:"containers,omitempty"`
 
 	// images
 	Images *DockerImagesCounters `json:"images,omitempty"`
@@ -62,11 +63,15 @@ func (m *DockerDashboardResponse) validateContainers(formats strfmt.Registry) er
 
 	if m.Containers != nil {
 		if err := m.Containers.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("containers")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("containers")
 			}
+
 			return err
 		}
 	}
@@ -81,11 +86,15 @@ func (m *DockerDashboardResponse) validateImages(formats strfmt.Registry) error 
 
 	if m.Images != nil {
 		if err := m.Images.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("images")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("images")
 			}
+
 			return err
 		}
 	}
@@ -120,11 +129,15 @@ func (m *DockerDashboardResponse) contextValidateContainers(ctx context.Context,
 		}
 
 		if err := m.Containers.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("containers")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("containers")
 			}
+
 			return err
 		}
 	}
@@ -141,11 +154,15 @@ func (m *DockerDashboardResponse) contextValidateImages(ctx context.Context, for
 		}
 
 		if err := m.Images.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("images")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("images")
 			}
+
 			return err
 		}
 	}

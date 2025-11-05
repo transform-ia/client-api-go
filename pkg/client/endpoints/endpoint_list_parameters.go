@@ -170,6 +170,12 @@ type EndpointListParams struct {
 	*/
 	Search *string
 
+	/* Sort.
+
+	   Sort results by this value
+	*/
+	Sort *string
+
 	/* Start.
 
 	   Start searching from
@@ -455,6 +461,17 @@ func (o *EndpointListParams) WithSearch(search *string) *EndpointListParams {
 // SetSearch adds the search to the endpoint list params
 func (o *EndpointListParams) SetSearch(search *string) {
 	o.Search = search
+}
+
+// WithSort adds the sort to the endpoint list params
+func (o *EndpointListParams) WithSort(sort *string) *EndpointListParams {
+	o.SetSort(sort)
+	return o
+}
+
+// SetSort adds the sort to the endpoint list params
+func (o *EndpointListParams) SetSort(sort *string) {
+	o.Sort = sort
 }
 
 // WithStart adds the start to the endpoint list params
@@ -801,6 +818,23 @@ func (o *EndpointListParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.
 		}
 	}
 
+	if o.Sort != nil {
+
+		// query param sort
+		var qrSort string
+
+		if o.Sort != nil {
+			qrSort = *o.Sort
+		}
+		qSort := qrSort
+		if qSort != "" {
+
+			if err := r.SetQueryParam("sort", qSort); err != nil {
+				return err
+			}
+		}
+	}
+
 	if o.Start != nil {
 
 		// query param start
@@ -902,8 +936,8 @@ func (o *EndpointListParams) bindParamAgentVersions(formats strfmt.Registry) []s
 		agentVersionsIC = append(agentVersionsIC, agentVersionsIIV)
 	}
 
-	// items.CollectionFormat: ""
-	agentVersionsIS := swag.JoinByFormat(agentVersionsIC, "")
+	// items.CollectionFormat: "csv"
+	agentVersionsIS := swag.JoinByFormat(agentVersionsIC, "csv")
 
 	return agentVersionsIS
 }
@@ -919,8 +953,8 @@ func (o *EndpointListParams) bindParamEdgeGroupIds(formats strfmt.Registry) []st
 		edgeGroupIdsIC = append(edgeGroupIdsIC, edgeGroupIdsIIV)
 	}
 
-	// items.CollectionFormat: ""
-	edgeGroupIdsIS := swag.JoinByFormat(edgeGroupIdsIC, "")
+	// items.CollectionFormat: "csv"
+	edgeGroupIdsIS := swag.JoinByFormat(edgeGroupIdsIC, "csv")
 
 	return edgeGroupIdsIS
 }
@@ -936,8 +970,8 @@ func (o *EndpointListParams) bindParamEndpointIds(formats strfmt.Registry) []str
 		endpointIdsIC = append(endpointIdsIC, endpointIdsIIV)
 	}
 
-	// items.CollectionFormat: ""
-	endpointIdsIS := swag.JoinByFormat(endpointIdsIC, "")
+	// items.CollectionFormat: "csv"
+	endpointIdsIS := swag.JoinByFormat(endpointIdsIC, "csv")
 
 	return endpointIdsIS
 }
@@ -953,8 +987,8 @@ func (o *EndpointListParams) bindParamExcludeEdgeGroupIds(formats strfmt.Registr
 		excludeEdgeGroupIdsIC = append(excludeEdgeGroupIdsIC, excludeEdgeGroupIdsIIV)
 	}
 
-	// items.CollectionFormat: ""
-	excludeEdgeGroupIdsIS := swag.JoinByFormat(excludeEdgeGroupIdsIC, "")
+	// items.CollectionFormat: "csv"
+	excludeEdgeGroupIdsIS := swag.JoinByFormat(excludeEdgeGroupIdsIC, "csv")
 
 	return excludeEdgeGroupIdsIS
 }
@@ -970,8 +1004,8 @@ func (o *EndpointListParams) bindParamExcludeIds(formats strfmt.Registry) []stri
 		excludeIdsIC = append(excludeIdsIC, excludeIdsIIV)
 	}
 
-	// items.CollectionFormat: ""
-	excludeIdsIS := swag.JoinByFormat(excludeIdsIC, "")
+	// items.CollectionFormat: "csv"
+	excludeIdsIS := swag.JoinByFormat(excludeIdsIC, "csv")
 
 	return excludeIdsIS
 }
@@ -987,8 +1021,8 @@ func (o *EndpointListParams) bindParamGroupIds(formats strfmt.Registry) []string
 		groupIdsIC = append(groupIdsIC, groupIdsIIV)
 	}
 
-	// items.CollectionFormat: ""
-	groupIdsIS := swag.JoinByFormat(groupIdsIC, "")
+	// items.CollectionFormat: "csv"
+	groupIdsIS := swag.JoinByFormat(groupIdsIC, "csv")
 
 	return groupIdsIS
 }
@@ -1004,8 +1038,8 @@ func (o *EndpointListParams) bindParamStatus(formats strfmt.Registry) []string {
 		statusIC = append(statusIC, statusIIV)
 	}
 
-	// items.CollectionFormat: ""
-	statusIS := swag.JoinByFormat(statusIC, "")
+	// items.CollectionFormat: "csv"
+	statusIS := swag.JoinByFormat(statusIC, "csv")
 
 	return statusIS
 }
@@ -1021,8 +1055,8 @@ func (o *EndpointListParams) bindParamTagIds(formats strfmt.Registry) []string {
 		tagIdsIC = append(tagIdsIC, tagIdsIIV)
 	}
 
-	// items.CollectionFormat: ""
-	tagIdsIS := swag.JoinByFormat(tagIdsIC, "")
+	// items.CollectionFormat: "csv"
+	tagIdsIS := swag.JoinByFormat(tagIdsIC, "csv")
 
 	return tagIdsIS
 }
@@ -1038,8 +1072,8 @@ func (o *EndpointListParams) bindParamTypes(formats strfmt.Registry) []string {
 		typesIC = append(typesIC, typesIIV)
 	}
 
-	// items.CollectionFormat: ""
-	typesIS := swag.JoinByFormat(typesIC, "")
+	// items.CollectionFormat: "csv"
+	typesIS := swag.JoinByFormat(typesIC, "csv")
 
 	return typesIS
 }

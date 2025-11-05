@@ -7,7 +7,9 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -21,7 +23,7 @@ type PortainerOAuthSettings struct {
 	AccessTokenURI string `json:"AccessTokenURI,omitempty"`
 
 	// auth style
-	AuthStyle int64 `json:"AuthStyle,omitempty"`
+	AuthStyle Oauth2AuthStyle `json:"AuthStyle,omitempty"`
 
 	// authorization URI
 	AuthorizationURI string `json:"AuthorizationURI,omitempty"`
@@ -62,11 +64,72 @@ type PortainerOAuthSettings struct {
 
 // Validate validates this portainer o auth settings
 func (m *PortainerOAuthSettings) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateAuthStyle(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this portainer o auth settings based on context it is used
+func (m *PortainerOAuthSettings) validateAuthStyle(formats strfmt.Registry) error {
+	if swag.IsZero(m.AuthStyle) { // not required
+		return nil
+	}
+
+	if err := m.AuthStyle.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("AuthStyle")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("AuthStyle")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this portainer o auth settings based on the context it is used
 func (m *PortainerOAuthSettings) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateAuthStyle(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *PortainerOAuthSettings) contextValidateAuthStyle(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.AuthStyle) { // not required
+		return nil
+	}
+
+	if err := m.AuthStyle.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("AuthStyle")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("AuthStyle")
+		}
+
+		return err
+	}
+
 	return nil
 }
 

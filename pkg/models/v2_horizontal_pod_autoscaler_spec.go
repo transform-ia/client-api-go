@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -23,7 +24,9 @@ type V2HorizontalPodAutoscalerSpec struct {
 	// in both Up and Down directions (scaleUp and scaleDown fields respectively).
 	// If not set, the default HPAScalingRules for scale up and scale down are used.
 	// +optional
-	Behavior *V2HorizontalPodAutoscalerBehavior `json:"behavior,omitempty"`
+	Behavior struct {
+		V2HorizontalPodAutoscalerBehavior
+	} `json:"behavior,omitempty"`
 
 	// maxReplicas is the upper limit for the number of replicas to which the autoscaler can scale up.
 	// It cannot be less that minReplicas.
@@ -51,7 +54,9 @@ type V2HorizontalPodAutoscalerSpec struct {
 
 	// scaleTargetRef points to the target resource to scale, and is used to the pods for which metrics
 	// should be collected, as well as to actually change the replica count.
-	ScaleTargetRef *V2CrossVersionObjectReference `json:"scaleTargetRef,omitempty"`
+	ScaleTargetRef struct {
+		V2CrossVersionObjectReference
+	} `json:"scaleTargetRef,omitempty"`
 }
 
 // Validate validates this v2 horizontal pod autoscaler spec
@@ -81,17 +86,6 @@ func (m *V2HorizontalPodAutoscalerSpec) validateBehavior(formats strfmt.Registry
 		return nil
 	}
 
-	if m.Behavior != nil {
-		if err := m.Behavior.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("behavior")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("behavior")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -107,11 +101,15 @@ func (m *V2HorizontalPodAutoscalerSpec) validateMetrics(formats strfmt.Registry)
 
 		if m.Metrics[i] != nil {
 			if err := m.Metrics[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("metrics" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("metrics" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -124,17 +122,6 @@ func (m *V2HorizontalPodAutoscalerSpec) validateMetrics(formats strfmt.Registry)
 func (m *V2HorizontalPodAutoscalerSpec) validateScaleTargetRef(formats strfmt.Registry) error {
 	if swag.IsZero(m.ScaleTargetRef) { // not required
 		return nil
-	}
-
-	if m.ScaleTargetRef != nil {
-		if err := m.ScaleTargetRef.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("scaleTargetRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("scaleTargetRef")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -164,22 +151,6 @@ func (m *V2HorizontalPodAutoscalerSpec) ContextValidate(ctx context.Context, for
 
 func (m *V2HorizontalPodAutoscalerSpec) contextValidateBehavior(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.Behavior != nil {
-
-		if swag.IsZero(m.Behavior) { // not required
-			return nil
-		}
-
-		if err := m.Behavior.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("behavior")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("behavior")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -194,11 +165,15 @@ func (m *V2HorizontalPodAutoscalerSpec) contextValidateMetrics(ctx context.Conte
 			}
 
 			if err := m.Metrics[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("metrics" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("metrics" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -209,22 +184,6 @@ func (m *V2HorizontalPodAutoscalerSpec) contextValidateMetrics(ctx context.Conte
 }
 
 func (m *V2HorizontalPodAutoscalerSpec) contextValidateScaleTargetRef(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.ScaleTargetRef != nil {
-
-		if swag.IsZero(m.ScaleTargetRef) { // not required
-			return nil
-		}
-
-		if err := m.ScaleTargetRef.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("scaleTargetRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("scaleTargetRef")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

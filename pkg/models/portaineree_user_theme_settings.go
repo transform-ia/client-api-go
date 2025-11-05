@@ -43,7 +43,7 @@ func (m *PortainereeUserThemeSettings) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-var portainereeUserThemeSettingsTypeColorPropEnum []interface{}
+var portainereeUserThemeSettingsTypeColorPropEnum []any
 
 func init() {
 	var res []string

@@ -67,7 +67,7 @@ type SettingsExperimentalUpdateParams struct {
 
 	   New settings
 	*/
-	Body *models.SettingsSettingsExperimentalUpdatePayload
+	Body models.SettingsSettingsExperimentalUpdatePayload
 
 	timeout    time.Duration
 	Context    context.Context
@@ -123,13 +123,13 @@ func (o *SettingsExperimentalUpdateParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the settings experimental update params
-func (o *SettingsExperimentalUpdateParams) WithBody(body *models.SettingsSettingsExperimentalUpdatePayload) *SettingsExperimentalUpdateParams {
+func (o *SettingsExperimentalUpdateParams) WithBody(body models.SettingsSettingsExperimentalUpdatePayload) *SettingsExperimentalUpdateParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the settings experimental update params
-func (o *SettingsExperimentalUpdateParams) SetBody(body *models.SettingsSettingsExperimentalUpdatePayload) {
+func (o *SettingsExperimentalUpdateParams) SetBody(body models.SettingsSettingsExperimentalUpdatePayload) {
 	o.Body = body
 }
 

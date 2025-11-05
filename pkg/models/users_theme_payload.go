@@ -44,7 +44,7 @@ func (m *UsersThemePayload) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-var usersThemePayloadTypeColorPropEnum []interface{}
+var usersThemePayloadTypeColorPropEnum []any
 
 func init() {
 	var res []string

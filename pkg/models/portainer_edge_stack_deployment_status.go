@@ -7,7 +7,9 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -30,16 +32,77 @@ type PortainerEdgeStackDeploymentStatus struct {
 	Time int64 `json:"time,omitempty"`
 
 	// type
-	Type int64 `json:"type,omitempty"`
+	Type PortainerEdgeStackStatusType `json:"type,omitempty"`
 }
 
 // Validate validates this portainer edge stack deployment status
 func (m *PortainerEdgeStackDeploymentStatus) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this portainer edge stack deployment status based on context it is used
+func (m *PortainerEdgeStackDeploymentStatus) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	if err := m.Type.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("type")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("type")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this portainer edge stack deployment status based on the context it is used
 func (m *PortainerEdgeStackDeploymentStatus) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *PortainerEdgeStackDeploymentStatus) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	if err := m.Type.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("type")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("type")
+		}
+
+		return err
+	}
+
 	return nil
 }
 

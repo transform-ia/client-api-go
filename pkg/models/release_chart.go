@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -24,10 +25,14 @@ type ReleaseChart struct {
 	Files []*ReleaseFile `json:"files"`
 
 	// Lock is the contents of Chart.lock.
-	Lock *ReleaseLock `json:"lock,omitempty"`
+	Lock struct {
+		ReleaseLock
+	} `json:"lock,omitempty"`
 
 	// Metadata is the contents of the Chartfile.
-	Metadata *ReleaseMetadata `json:"metadata,omitempty"`
+	Metadata struct {
+		ReleaseMetadata
+	} `json:"metadata,omitempty"`
 
 	// Schema is an optional JSON schema for imposing structure on Values
 	Schema []int64 `json:"schema"`
@@ -36,7 +41,7 @@ type ReleaseChart struct {
 	Templates []*ReleaseFile `json:"templates"`
 
 	// Values are default config for this chart.
-	Values map[string]interface{} `json:"values,omitempty"`
+	Values map[string]any `json:"values,omitempty"`
 }
 
 // Validate validates this release chart
@@ -77,11 +82,15 @@ func (m *ReleaseChart) validateFiles(formats strfmt.Registry) error {
 
 		if m.Files[i] != nil {
 			if err := m.Files[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("files" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("files" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -96,34 +105,12 @@ func (m *ReleaseChart) validateLock(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.Lock != nil {
-		if err := m.Lock.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("lock")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("lock")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *ReleaseChart) validateMetadata(formats strfmt.Registry) error {
 	if swag.IsZero(m.Metadata) { // not required
 		return nil
-	}
-
-	if m.Metadata != nil {
-		if err := m.Metadata.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("metadata")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("metadata")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -141,11 +128,15 @@ func (m *ReleaseChart) validateTemplates(formats strfmt.Registry) error {
 
 		if m.Templates[i] != nil {
 			if err := m.Templates[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("templates" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("templates" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -192,11 +183,15 @@ func (m *ReleaseChart) contextValidateFiles(ctx context.Context, formats strfmt.
 			}
 
 			if err := m.Files[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("files" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("files" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -208,42 +203,10 @@ func (m *ReleaseChart) contextValidateFiles(ctx context.Context, formats strfmt.
 
 func (m *ReleaseChart) contextValidateLock(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.Lock != nil {
-
-		if swag.IsZero(m.Lock) { // not required
-			return nil
-		}
-
-		if err := m.Lock.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("lock")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("lock")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *ReleaseChart) contextValidateMetadata(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Metadata != nil {
-
-		if swag.IsZero(m.Metadata) { // not required
-			return nil
-		}
-
-		if err := m.Metadata.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("metadata")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("metadata")
-			}
-			return err
-		}
-	}
 
 	return nil
 }
@@ -259,11 +222,15 @@ func (m *ReleaseChart) contextValidateTemplates(ctx context.Context, formats str
 			}
 
 			if err := m.Templates[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("templates" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("templates" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

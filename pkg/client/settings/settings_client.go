@@ -58,6 +58,10 @@ type ClientOption func(*runtime.ClientOperation)
 type ClientService interface {
 	DefaultRegistryUpdate(params *DefaultRegistryUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DefaultRegistryUpdateOK, error)
 
+	SettingsAdditionalFunctionalityInspect(params *SettingsAdditionalFunctionalityInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SettingsAdditionalFunctionalityInspectOK, error)
+
+	SettingsAdditionalFunctionalityUpdate(params *SettingsAdditionalFunctionalityUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SettingsAdditionalFunctionalityUpdateNoContent, error)
+
 	SettingsEdgeMTLSCACertificates(params *SettingsEdgeMTLSCACertificatesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SettingsEdgeMTLSCACertificatesOK, error)
 
 	SettingsEdgeMTLSCertificates(params *SettingsEdgeMTLSCertificatesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SettingsEdgeMTLSCertificatesOK, error)
@@ -83,7 +87,7 @@ type ClientService interface {
 **Access policy**: administrator
 */
 func (a *Client) DefaultRegistryUpdate(params *DefaultRegistryUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DefaultRegistryUpdateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewDefaultRegistryUpdateParams()
 	}
@@ -103,18 +107,119 @@ func (a *Client) DefaultRegistryUpdate(params *DefaultRegistryUpdateParams, auth
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*DefaultRegistryUpdateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for DefaultRegistryUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+	SettingsAdditionalFunctionalityInspect retrieves portainer additional functionality settings
+
+	Retrieve Portainer additional functionality settings.
+
+**Access policy**: authenticated
+*/
+func (a *Client) SettingsAdditionalFunctionalityInspect(params *SettingsAdditionalFunctionalityInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SettingsAdditionalFunctionalityInspectOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewSettingsAdditionalFunctionalityInspectParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "SettingsAdditionalFunctionalityInspect",
+		Method:             "GET",
+		PathPattern:        "/settings/additional_functionality",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &SettingsAdditionalFunctionalityInspectReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*SettingsAdditionalFunctionalityInspectOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for SettingsAdditionalFunctionalityInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+	SettingsAdditionalFunctionalityUpdate updates portainer additional functionality settings
+
+	Update Portainer additional functionality settings.
+
+**Access policy**: administrator
+*/
+func (a *Client) SettingsAdditionalFunctionalityUpdate(params *SettingsAdditionalFunctionalityUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SettingsAdditionalFunctionalityUpdateNoContent, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewSettingsAdditionalFunctionalityUpdateParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "SettingsAdditionalFunctionalityUpdate",
+		Method:             "PUT",
+		PathPattern:        "/settings/additional_functionality",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &SettingsAdditionalFunctionalityUpdateReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*SettingsAdditionalFunctionalityUpdateNoContent)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for SettingsAdditionalFunctionalityUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -126,7 +231,7 @@ func (a *Client) DefaultRegistryUpdate(params *DefaultRegistryUpdateParams, auth
 **Access policy**: administrator
 */
 func (a *Client) SettingsEdgeMTLSCACertificates(params *SettingsEdgeMTLSCACertificatesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SettingsEdgeMTLSCACertificatesOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSettingsEdgeMTLSCACertificatesParams()
 	}
@@ -146,17 +251,22 @@ func (a *Client) SettingsEdgeMTLSCACertificates(params *SettingsEdgeMTLSCACertif
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SettingsEdgeMTLSCACertificatesOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for SettingsEdgeMTLSCACertificates: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -169,7 +279,7 @@ func (a *Client) SettingsEdgeMTLSCACertificates(params *SettingsEdgeMTLSCACertif
 **Access policy**: administrator
 */
 func (a *Client) SettingsEdgeMTLSCertificates(params *SettingsEdgeMTLSCertificatesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SettingsEdgeMTLSCertificatesOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSettingsEdgeMTLSCertificatesParams()
 	}
@@ -189,17 +299,22 @@ func (a *Client) SettingsEdgeMTLSCertificates(params *SettingsEdgeMTLSCertificat
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SettingsEdgeMTLSCertificatesOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for SettingsEdgeMTLSCertificates: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -212,7 +327,7 @@ func (a *Client) SettingsEdgeMTLSCertificates(params *SettingsEdgeMTLSCertificat
 **Access policy**: authenticated
 */
 func (a *Client) SettingsExperimentalInspect(params *SettingsExperimentalInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SettingsExperimentalInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSettingsExperimentalInspectParams()
 	}
@@ -232,17 +347,22 @@ func (a *Client) SettingsExperimentalInspect(params *SettingsExperimentalInspect
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SettingsExperimentalInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for SettingsExperimentalInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -255,7 +375,7 @@ func (a *Client) SettingsExperimentalInspect(params *SettingsExperimentalInspect
 **Access policy**: administrator
 */
 func (a *Client) SettingsExperimentalUpdate(params *SettingsExperimentalUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SettingsExperimentalUpdateNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSettingsExperimentalUpdateParams()
 	}
@@ -275,17 +395,22 @@ func (a *Client) SettingsExperimentalUpdate(params *SettingsExperimentalUpdatePa
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SettingsExperimentalUpdateNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for SettingsExperimentalUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -298,7 +423,7 @@ func (a *Client) SettingsExperimentalUpdate(params *SettingsExperimentalUpdatePa
 **Access policy**: administrator
 */
 func (a *Client) SettingsInspect(params *SettingsInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SettingsInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSettingsInspectParams()
 	}
@@ -318,17 +443,22 @@ func (a *Client) SettingsInspect(params *SettingsInspectParams, authInfo runtime
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SettingsInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for SettingsInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -341,7 +471,7 @@ func (a *Client) SettingsInspect(params *SettingsInspectParams, authInfo runtime
 **Access policy**: public
 */
 func (a *Client) SettingsPublic(params *SettingsPublicParams, opts ...ClientOption) (*SettingsPublicOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSettingsPublicParams()
 	}
@@ -360,17 +490,22 @@ func (a *Client) SettingsPublic(params *SettingsPublicParams, opts ...ClientOpti
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SettingsPublicOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for SettingsPublic: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -383,7 +518,7 @@ func (a *Client) SettingsPublic(params *SettingsPublicParams, opts ...ClientOpti
 **Access policy**: administrator
 */
 func (a *Client) SettingsUpdate(params *SettingsUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SettingsUpdateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSettingsUpdateParams()
 	}
@@ -403,17 +538,22 @@ func (a *Client) SettingsUpdate(params *SettingsUpdateParams, authInfo runtime.C
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SettingsUpdateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for SettingsUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

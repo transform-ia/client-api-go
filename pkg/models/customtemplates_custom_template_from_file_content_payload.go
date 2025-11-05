@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -50,7 +51,9 @@ type CustomtemplatesCustomTemplateFromFileContentPayload struct {
 	// Required for Docker stacks
 	// Example: 1
 	// Enum: [1,2]
-	Platform int64 `json:"platform,omitempty"`
+	Platform struct {
+		PortainerCustomTemplatePlatform
+	} `json:"platform,omitempty"`
 
 	// Title of the template
 	// Example: Nginx
@@ -64,7 +67,9 @@ type CustomtemplatesCustomTemplateFromFileContentPayload struct {
 	// Example: 1
 	// Required: true
 	// Enum: [1,2,3]
-	Type *int64 `json:"type"`
+	Type struct {
+		PortainerStackType
+	} `json:"type"`
 
 	// Definitions of variables in the stack file
 	Variables []*PortainerCustomTemplateVariableDefinition `json:"variables"`
@@ -124,11 +129,15 @@ func (m *CustomtemplatesCustomTemplateFromFileContentPayload) validateEdgeSettin
 
 	if m.EdgeSettings != nil {
 		if err := m.EdgeSettings.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("edgeSettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("edgeSettings")
 			}
+
 			return err
 		}
 	}
@@ -145,10 +154,12 @@ func (m *CustomtemplatesCustomTemplateFromFileContentPayload) validateFileConten
 	return nil
 }
 
-var customtemplatesCustomTemplateFromFileContentPayloadTypePlatformPropEnum []interface{}
+var customtemplatesCustomTemplateFromFileContentPayloadTypePlatformPropEnum []any
 
 func init() {
-	var res []int64
+	var res []struct {
+		PortainerCustomTemplatePlatform
+	}
 	if err := json.Unmarshal([]byte(`[1,2]`), &res); err != nil {
 		panic(err)
 	}
@@ -158,7 +169,9 @@ func init() {
 }
 
 // prop value enum
-func (m *CustomtemplatesCustomTemplateFromFileContentPayload) validatePlatformEnum(path, location string, value int64) error {
+func (m *CustomtemplatesCustomTemplateFromFileContentPayload) validatePlatformEnum(path, location string, value *struct {
+	PortainerCustomTemplatePlatform
+}) error {
 	if err := validate.EnumCase(path, location, value, customtemplatesCustomTemplateFromFileContentPayloadTypePlatformPropEnum, true); err != nil {
 		return err
 	}
@@ -168,11 +181,6 @@ func (m *CustomtemplatesCustomTemplateFromFileContentPayload) validatePlatformEn
 func (m *CustomtemplatesCustomTemplateFromFileContentPayload) validatePlatform(formats strfmt.Registry) error {
 	if swag.IsZero(m.Platform) { // not required
 		return nil
-	}
-
-	// value enum
-	if err := m.validatePlatformEnum("platform", "body", m.Platform); err != nil {
-		return err
 	}
 
 	return nil
@@ -187,10 +195,12 @@ func (m *CustomtemplatesCustomTemplateFromFileContentPayload) validateTitle(form
 	return nil
 }
 
-var customtemplatesCustomTemplateFromFileContentPayloadTypeTypePropEnum []interface{}
+var customtemplatesCustomTemplateFromFileContentPayloadTypeTypePropEnum []any
 
 func init() {
-	var res []int64
+	var res []struct {
+		PortainerStackType
+	}
 	if err := json.Unmarshal([]byte(`[1,2,3]`), &res); err != nil {
 		panic(err)
 	}
@@ -200,7 +210,9 @@ func init() {
 }
 
 // prop value enum
-func (m *CustomtemplatesCustomTemplateFromFileContentPayload) validateTypeEnum(path, location string, value int64) error {
+func (m *CustomtemplatesCustomTemplateFromFileContentPayload) validateTypeEnum(path, location string, value *struct {
+	PortainerStackType
+}) error {
 	if err := validate.EnumCase(path, location, value, customtemplatesCustomTemplateFromFileContentPayloadTypeTypePropEnum, true); err != nil {
 		return err
 	}
@@ -208,15 +220,6 @@ func (m *CustomtemplatesCustomTemplateFromFileContentPayload) validateTypeEnum(p
 }
 
 func (m *CustomtemplatesCustomTemplateFromFileContentPayload) validateType(formats strfmt.Registry) error {
-
-	if err := validate.Required("type", "body", m.Type); err != nil {
-		return err
-	}
-
-	// value enum
-	if err := m.validateTypeEnum("type", "body", *m.Type); err != nil {
-		return err
-	}
 
 	return nil
 }
@@ -233,11 +236,15 @@ func (m *CustomtemplatesCustomTemplateFromFileContentPayload) validateVariables(
 
 		if m.Variables[i] != nil {
 			if err := m.Variables[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("variables" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("variables" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -252,6 +259,14 @@ func (m *CustomtemplatesCustomTemplateFromFileContentPayload) ContextValidate(ct
 	var res []error
 
 	if err := m.contextValidateEdgeSettings(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidatePlatform(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -274,14 +289,28 @@ func (m *CustomtemplatesCustomTemplateFromFileContentPayload) contextValidateEdg
 		}
 
 		if err := m.EdgeSettings.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("edgeSettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("edgeSettings")
 			}
+
 			return err
 		}
 	}
+
+	return nil
+}
+
+func (m *CustomtemplatesCustomTemplateFromFileContentPayload) contextValidatePlatform(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
+func (m *CustomtemplatesCustomTemplateFromFileContentPayload) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }
@@ -297,11 +326,15 @@ func (m *CustomtemplatesCustomTemplateFromFileContentPayload) contextValidateVar
 			}
 
 			if err := m.Variables[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("variables" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("variables" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

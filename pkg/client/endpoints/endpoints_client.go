@@ -145,7 +145,7 @@ type ClientService interface {
 **Access policy**: administrator
 */
 func (a *Client) EndpointAssociationDelete(params *EndpointAssociationDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointAssociationDeleteOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointAssociationDeleteParams()
 	}
@@ -165,17 +165,22 @@ func (a *Client) EndpointAssociationDelete(params *EndpointAssociationDeletePara
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointAssociationDeleteOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointAssociationDelete: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -188,7 +193,7 @@ func (a *Client) EndpointAssociationDelete(params *EndpointAssociationDeletePara
 **Access policy**: administrator
 */
 func (a *Client) EndpointCreate(params *EndpointCreateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointCreateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointCreateParams()
 	}
@@ -208,17 +213,22 @@ func (a *Client) EndpointCreate(params *EndpointCreateParams, authInfo runtime.C
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointCreateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointCreate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -227,7 +237,7 @@ func (a *Client) EndpointCreate(params *EndpointCreateParams, authInfo runtime.C
 EndpointCreateGlobalKey creates or retrieve the endpoint for an edge ID
 */
 func (a *Client) EndpointCreateGlobalKey(params *EndpointCreateGlobalKeyParams, opts ...ClientOption) (*EndpointCreateGlobalKeyOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointCreateGlobalKeyParams()
 	}
@@ -246,17 +256,22 @@ func (a *Client) EndpointCreateGlobalKey(params *EndpointCreateGlobalKeyParams, 
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointCreateGlobalKeyOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointCreateGlobalKey: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -269,7 +284,7 @@ func (a *Client) EndpointCreateGlobalKey(params *EndpointCreateGlobalKeyParams, 
 **Access policy**: Administrator only.
 */
 func (a *Client) EndpointDelete(params *EndpointDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointDeleteNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointDeleteParams()
 	}
@@ -289,17 +304,22 @@ func (a *Client) EndpointDelete(params *EndpointDeleteParams, authInfo runtime.C
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointDeleteNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointDelete: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -312,7 +332,7 @@ func (a *Client) EndpointDelete(params *EndpointDeleteParams, authInfo runtime.C
 **Access policy**: Administrator only.
 */
 func (a *Client) EndpointDeleteBatch(params *EndpointDeleteBatchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointDeleteBatchNoContent, *EndpointDeleteBatchMultiStatus, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointDeleteBatchParams()
 	}
@@ -332,18 +352,22 @@ func (a *Client) EndpointDeleteBatch(params *EndpointDeleteBatchParams, authInfo
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, nil, err
 	}
+
+	// several success responses have to be checked
 	switch value := result.(type) {
 	case *EndpointDeleteBatchNoContent:
 		return value, nil, nil
 	case *EndpointDeleteBatchMultiStatus:
 		return nil, value, nil
 	}
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for endpoints: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -357,7 +381,7 @@ Remove multiple environments and optionally clean-up associated resources.
 **Access policy**: Administrator only.
 */
 func (a *Client) EndpointDeleteBatchDeprecated(params *EndpointDeleteBatchDeprecatedParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointDeleteBatchDeprecatedNoContent, *EndpointDeleteBatchDeprecatedMultiStatus, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointDeleteBatchDeprecatedParams()
 	}
@@ -377,18 +401,22 @@ func (a *Client) EndpointDeleteBatchDeprecated(params *EndpointDeleteBatchDeprec
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, nil, err
 	}
+
+	// several success responses have to be checked
 	switch value := result.(type) {
 	case *EndpointDeleteBatchDeprecatedNoContent:
 		return value, nil, nil
 	case *EndpointDeleteBatchDeprecatedMultiStatus:
 		return nil, value, nil
 	}
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for endpoints: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -401,7 +429,7 @@ func (a *Client) EndpointDeleteBatchDeprecated(params *EndpointDeleteBatchDeprec
 **Access policy**: restricted only to Edge environments(endpoints)
 */
 func (a *Client) EndpointEdgeStatusInspect(params *EndpointEdgeStatusInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointEdgeStatusInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointEdgeStatusInspectParams()
 	}
@@ -421,17 +449,22 @@ func (a *Client) EndpointEdgeStatusInspect(params *EndpointEdgeStatusInspectPara
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointEdgeStatusInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointEdgeStatusInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -444,7 +477,7 @@ func (a *Client) EndpointEdgeStatusInspect(params *EndpointEdgeStatusInspectPara
 **Access policy**: restricted
 */
 func (a *Client) EndpointInspect(params *EndpointInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointInspectParams()
 	}
@@ -464,17 +497,22 @@ func (a *Client) EndpointInspect(params *EndpointInspectParams, authInfo runtime
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -489,7 +527,7 @@ only return authorized environments(endpoints).
 **Access policy**: restricted
 */
 func (a *Client) EndpointList(params *EndpointListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointListOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointListParams()
 	}
@@ -509,17 +547,22 @@ func (a *Client) EndpointList(params *EndpointListParams, authInfo runtime.Clien
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointListOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -532,7 +575,7 @@ func (a *Client) EndpointList(params *EndpointListParams, authInfo runtime.Clien
 **Access policy**: administrator
 */
 func (a *Client) EndpointMTLSAgentCertificateError(params *EndpointMTLSAgentCertificateErrorParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointMTLSAgentCertificateErrorOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointMTLSAgentCertificateErrorParams()
 	}
@@ -552,17 +595,22 @@ func (a *Client) EndpointMTLSAgentCertificateError(params *EndpointMTLSAgentCert
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointMTLSAgentCertificateErrorOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointMTLSAgentCertificateError: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -575,7 +623,7 @@ func (a *Client) EndpointMTLSAgentCertificateError(params *EndpointMTLSAgentCert
 **Access policy**: administrator
 */
 func (a *Client) EndpointMTLSCertificate(params *EndpointMTLSCertificateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointMTLSCertificateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointMTLSCertificateParams()
 	}
@@ -595,17 +643,22 @@ func (a *Client) EndpointMTLSCertificate(params *EndpointMTLSCertificateParams, 
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointMTLSCertificateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointMTLSCertificate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -618,7 +671,7 @@ func (a *Client) EndpointMTLSCertificate(params *EndpointMTLSCertificateParams, 
 **Access policy**: authenticated
 */
 func (a *Client) EndpointSettingsUpdate(params *EndpointSettingsUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointSettingsUpdateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointSettingsUpdateParams()
 	}
@@ -638,17 +691,22 @@ func (a *Client) EndpointSettingsUpdate(params *EndpointSettingsUpdateParams, au
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointSettingsUpdateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointSettingsUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -661,7 +719,7 @@ func (a *Client) EndpointSettingsUpdate(params *EndpointSettingsUpdateParams, au
 **Access policy**: authenticated
 */
 func (a *Client) EndpointSnapshot(params *EndpointSnapshotParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointSnapshotNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointSnapshotParams()
 	}
@@ -681,17 +739,22 @@ func (a *Client) EndpointSnapshot(params *EndpointSnapshotParams, authInfo runti
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointSnapshotNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointSnapshot: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -704,7 +767,7 @@ func (a *Client) EndpointSnapshot(params *EndpointSnapshotParams, authInfo runti
 **Access policy**: administrator
 */
 func (a *Client) EndpointSnapshots(params *EndpointSnapshotsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointSnapshotsNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointSnapshotsParams()
 	}
@@ -724,17 +787,22 @@ func (a *Client) EndpointSnapshots(params *EndpointSnapshotsParams, authInfo run
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointSnapshotsNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointSnapshots: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -747,7 +815,7 @@ func (a *Client) EndpointSnapshots(params *EndpointSnapshotsParams, authInfo run
 **Access policy**: authenticated
 */
 func (a *Client) EndpointUpdate(params *EndpointUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointUpdateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointUpdateParams()
 	}
@@ -767,17 +835,22 @@ func (a *Client) EndpointUpdate(params *EndpointUpdateParams, authInfo runtime.C
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointUpdateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -792,7 +865,7 @@ Edge groups, tags and environment group can be updated.
 **Access policy**: administrator
 */
 func (a *Client) EndpointUpdateRelations(params *EndpointUpdateRelationsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointUpdateRelationsNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointUpdateRelationsParams()
 	}
@@ -812,17 +885,22 @@ func (a *Client) EndpointUpdateRelations(params *EndpointUpdateRelationsParams, 
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointUpdateRelationsNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointUpdateRelations: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -835,7 +913,7 @@ func (a *Client) EndpointUpdateRelations(params *EndpointUpdateRelationsParams, 
 **Access policy**: administrator
 */
 func (a *Client) PostEndpointsIDDockerV2BrowsePut(params *PostEndpointsIDDockerV2BrowsePutParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*PostEndpointsIDDockerV2BrowsePutNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewPostEndpointsIDDockerV2BrowsePutParams()
 	}
@@ -855,17 +933,22 @@ func (a *Client) PostEndpointsIDDockerV2BrowsePut(params *PostEndpointsIDDockerV
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*PostEndpointsIDDockerV2BrowsePutNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for PostEndpointsIDDockerV2BrowsePut: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -878,7 +961,7 @@ func (a *Client) PostEndpointsIDDockerV2BrowsePut(params *PostEndpointsIDDockerV
 **Access policy**: Administrator only.
 */
 func (a *Client) TrustEdgeEndpoints(params *TrustEdgeEndpointsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*TrustEdgeEndpointsNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewTrustEdgeEndpointsParams()
 	}
@@ -898,17 +981,22 @@ func (a *Client) TrustEdgeEndpoints(params *TrustEdgeEndpointsParams, authInfo r
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*TrustEdgeEndpointsNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for TrustEdgeEndpoints: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -921,7 +1009,7 @@ func (a *Client) TrustEdgeEndpoints(params *TrustEdgeEndpointsParams, authInfo r
 **Access policy**:
 */
 func (a *Client) EndpointDockerhubStatus(params *EndpointDockerhubStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointDockerhubStatusOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointDockerhubStatusParams()
 	}
@@ -941,17 +1029,22 @@ func (a *Client) EndpointDockerhubStatus(params *EndpointDockerhubStatusParams, 
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointDockerhubStatusOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for endpointDockerhubStatus: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -964,7 +1057,7 @@ func (a *Client) EndpointDockerhubStatus(params *EndpointDockerhubStatusParams, 
 **Access policy**: restricted only to Edge environments(endpoints)
 */
 func (a *Client) EndpointEdgeAsync(params *EndpointEdgeAsyncParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointEdgeAsyncOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointEdgeAsyncParams()
 	}
@@ -984,17 +1077,22 @@ func (a *Client) EndpointEdgeAsync(params *EndpointEdgeAsyncParams, authInfo run
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointEdgeAsyncOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for endpointEdgeAsync: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -1007,7 +1105,7 @@ func (a *Client) EndpointEdgeAsync(params *EndpointEdgeAsyncParams, authInfo run
 **Access policy**: authenticated
 */
 func (a *Client) EndpointForceUpdateService(params *EndpointForceUpdateServiceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointForceUpdateServiceOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointForceUpdateServiceParams()
 	}
@@ -1027,17 +1125,22 @@ func (a *Client) EndpointForceUpdateService(params *EndpointForceUpdateServicePa
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointForceUpdateServiceOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for endpointForceUpdateService: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -1050,7 +1153,7 @@ func (a *Client) EndpointForceUpdateService(params *EndpointForceUpdateServicePa
 **Access policy**: authenticated
 */
 func (a *Client) EndpointRegistriesList(params *EndpointRegistriesListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointRegistriesListOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointRegistriesListParams()
 	}
@@ -1070,17 +1173,22 @@ func (a *Client) EndpointRegistriesList(params *EndpointRegistriesListParams, au
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointRegistriesListOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for endpointRegistriesList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -1091,7 +1199,7 @@ EndpointRegistryAccess updates registry access for environment
 **Access policy**: authenticated
 */
 func (a *Client) EndpointRegistryAccess(params *EndpointRegistryAccessParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointRegistryAccessNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointRegistryAccessParams()
 	}
@@ -1111,17 +1219,22 @@ func (a *Client) EndpointRegistryAccess(params *EndpointRegistryAccessParams, au
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointRegistryAccessNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for endpointRegistryAccess: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -1134,7 +1247,7 @@ func (a *Client) EndpointRegistryAccess(params *EndpointRegistryAccessParams, au
 **Access policy**: Restricted. User must be an administrator or have appropriate permissions to modify namespace access.
 */
 func (a *Client) NamespacesAccessUpdate(params *NamespacesAccessUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*NamespacesAccessUpdateNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewNamespacesAccessUpdateParams()
 	}
@@ -1154,17 +1267,22 @@ func (a *Client) NamespacesAccessUpdate(params *NamespacesAccessUpdateParams, au
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*NamespacesAccessUpdateNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for namespacesAccessUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -1175,7 +1293,7 @@ SnapshotContainerInspect fetches container from a snapshot
 **Access policy**:
 */
 func (a *Client) SnapshotContainerInspect(params *SnapshotContainerInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SnapshotContainerInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSnapshotContainerInspectParams()
 	}
@@ -1195,17 +1313,22 @@ func (a *Client) SnapshotContainerInspect(params *SnapshotContainerInspectParams
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SnapshotContainerInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for snapshotContainerInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -1216,7 +1339,7 @@ SnapshotContainersList fetches containers list from a snapshot
 **Access policy**:
 */
 func (a *Client) SnapshotContainersList(params *SnapshotContainersListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SnapshotContainersListOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSnapshotContainersListParams()
 	}
@@ -1236,17 +1359,22 @@ func (a *Client) SnapshotContainersList(params *SnapshotContainersListParams, au
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SnapshotContainersListOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for snapshotContainersList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -1257,7 +1385,7 @@ SnapshotInspect fetches latest snapshot of environment
 **Access policy**:
 */
 func (a *Client) SnapshotInspect(params *SnapshotInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SnapshotInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSnapshotInspectParams()
 	}
@@ -1277,17 +1405,22 @@ func (a *Client) SnapshotInspect(params *SnapshotInspectParams, authInfo runtime
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SnapshotInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for snapshotInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

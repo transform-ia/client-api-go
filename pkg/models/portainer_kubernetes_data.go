@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -58,11 +59,15 @@ func (m *PortainerKubernetesData) validateConfiguration(formats strfmt.Registry)
 
 	if m.Configuration != nil {
 		if err := m.Configuration.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Configuration")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Configuration")
 			}
+
 			return err
 		}
 	}
@@ -77,11 +82,15 @@ func (m *PortainerKubernetesData) validateFlags(formats strfmt.Registry) error {
 
 	if m.Flags != nil {
 		if err := m.Flags.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Flags")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Flags")
 			}
+
 			return err
 		}
 	}
@@ -101,11 +110,15 @@ func (m *PortainerKubernetesData) validateSnapshots(formats strfmt.Registry) err
 
 		if m.Snapshots[i] != nil {
 			if err := m.Snapshots[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Snapshots" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Snapshots" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -146,11 +159,15 @@ func (m *PortainerKubernetesData) contextValidateConfiguration(ctx context.Conte
 		}
 
 		if err := m.Configuration.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Configuration")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Configuration")
 			}
+
 			return err
 		}
 	}
@@ -167,11 +184,15 @@ func (m *PortainerKubernetesData) contextValidateFlags(ctx context.Context, form
 		}
 
 		if err := m.Flags.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Flags")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Flags")
 			}
+
 			return err
 		}
 	}
@@ -190,11 +211,15 @@ func (m *PortainerKubernetesData) contextValidateSnapshots(ctx context.Context, 
 			}
 
 			if err := m.Snapshots[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Snapshots" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Snapshots" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

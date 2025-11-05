@@ -18,7 +18,7 @@ type EdgeGroupDeleteReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *EdgeGroupDeleteReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *EdgeGroupDeleteReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 204:
 		result := NewEdgeGroupDeleteNoContent()

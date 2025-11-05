@@ -7,6 +7,7 @@ package kubernetes
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type GetAllKubernetesApplicationsReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *GetAllKubernetesApplicationsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *GetAllKubernetesApplicationsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewGetAllKubernetesApplicationsOK()
@@ -76,7 +77,7 @@ GetAllKubernetesApplicationsOK describes a response with status code 200, with d
 Success
 */
 type GetAllKubernetesApplicationsOK struct {
-	Payload []*models.KubernetesK8sApplication
+	Payload []*models.ModelsK8sApplication
 }
 
 // IsSuccess returns true when this get all kubernetes applications o k response has a 2xx status code
@@ -119,14 +120,14 @@ func (o *GetAllKubernetesApplicationsOK) String() string {
 	return fmt.Sprintf("[GET /kubernetes/{id}/applications][%d] getAllKubernetesApplicationsOK %s", 200, payload)
 }
 
-func (o *GetAllKubernetesApplicationsOK) GetPayload() []*models.KubernetesK8sApplication {
+func (o *GetAllKubernetesApplicationsOK) GetPayload() []*models.ModelsK8sApplication {
 	return o.Payload
 }
 
 func (o *GetAllKubernetesApplicationsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

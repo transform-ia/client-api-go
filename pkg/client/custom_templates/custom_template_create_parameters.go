@@ -65,7 +65,7 @@ type CustomTemplateCreateParams struct {
 
 	   for body documentation see the relevant /custom_templates/{method} endpoint
 	*/
-	Body interface{}
+	Body any
 
 	/* Method.
 
@@ -127,13 +127,13 @@ func (o *CustomTemplateCreateParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the custom template create params
-func (o *CustomTemplateCreateParams) WithBody(body interface{}) *CustomTemplateCreateParams {
+func (o *CustomTemplateCreateParams) WithBody(body any) *CustomTemplateCreateParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the custom template create params
-func (o *CustomTemplateCreateParams) SetBody(body interface{}) {
+func (o *CustomTemplateCreateParams) SetBody(body any) {
 	o.Body = body
 }
 

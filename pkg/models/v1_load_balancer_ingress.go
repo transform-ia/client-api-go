@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -36,7 +37,9 @@ type V1LoadBalancerIngress struct {
 	// the destination set to the node's IP and node port or the pod's IP and port.
 	// Service implementations may use this information to adjust traffic routing.
 	// +optional
-	IPMode string `json:"ipMode,omitempty"`
+	IPMode struct {
+		V1LoadBalancerIPMode
+	} `json:"ipMode,omitempty"`
 
 	// Ports is a list of records of service ports
 	// If used, every port defined in the service should have an entry in it
@@ -49,6 +52,10 @@ type V1LoadBalancerIngress struct {
 func (m *V1LoadBalancerIngress) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateIPMode(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validatePorts(formats); err != nil {
 		res = append(res, err)
 	}
@@ -56,6 +63,14 @@ func (m *V1LoadBalancerIngress) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *V1LoadBalancerIngress) validateIPMode(formats strfmt.Registry) error {
+	if swag.IsZero(m.IPMode) { // not required
+		return nil
+	}
+
 	return nil
 }
 
@@ -71,11 +86,15 @@ func (m *V1LoadBalancerIngress) validatePorts(formats strfmt.Registry) error {
 
 		if m.Ports[i] != nil {
 			if err := m.Ports[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("ports" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("ports" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -89,6 +108,10 @@ func (m *V1LoadBalancerIngress) validatePorts(formats strfmt.Registry) error {
 func (m *V1LoadBalancerIngress) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateIPMode(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidatePorts(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -96,6 +119,11 @@ func (m *V1LoadBalancerIngress) ContextValidate(ctx context.Context, formats str
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *V1LoadBalancerIngress) contextValidateIPMode(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 
@@ -110,11 +138,15 @@ func (m *V1LoadBalancerIngress) contextValidatePorts(ctx context.Context, format
 			}
 
 			if err := m.Ports[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("ports" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("ports" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

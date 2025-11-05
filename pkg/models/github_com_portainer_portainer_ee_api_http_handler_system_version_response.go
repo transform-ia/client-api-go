@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -15,7 +16,7 @@ import (
 
 // GithubComPortainerPortainerEeAPIHTTPHandlerSystemVersionResponse github com portainer portainer ee api http handler system version response
 //
-// swagger:model github.com_portainer_portainer-ee_api_http_handler_system.versionResponse
+// swagger:model github_com_portainer_portainer-ee_api_http_handler_system.versionResponse
 type GithubComPortainerPortainerEeAPIHTTPHandlerSystemVersionResponse struct {
 
 	// The latest version available
@@ -79,11 +80,15 @@ func (m *GithubComPortainerPortainerEeAPIHTTPHandlerSystemVersionResponse) valid
 
 	if m.Build != nil {
 		if err := m.Build.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("build")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("build")
 			}
+
 			return err
 		}
 	}
@@ -98,11 +103,15 @@ func (m *GithubComPortainerPortainerEeAPIHTTPHandlerSystemVersionResponse) valid
 
 	if m.Dependencies != nil {
 		if err := m.Dependencies.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("dependencies")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("dependencies")
 			}
+
 			return err
 		}
 	}
@@ -117,11 +126,15 @@ func (m *GithubComPortainerPortainerEeAPIHTTPHandlerSystemVersionResponse) valid
 
 	if m.Runtime != nil {
 		if err := m.Runtime.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("runtime")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("runtime")
 			}
+
 			return err
 		}
 	}
@@ -160,11 +173,15 @@ func (m *GithubComPortainerPortainerEeAPIHTTPHandlerSystemVersionResponse) conte
 		}
 
 		if err := m.Build.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("build")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("build")
 			}
+
 			return err
 		}
 	}
@@ -181,11 +198,15 @@ func (m *GithubComPortainerPortainerEeAPIHTTPHandlerSystemVersionResponse) conte
 		}
 
 		if err := m.Dependencies.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("dependencies")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("dependencies")
 			}
+
 			return err
 		}
 	}
@@ -202,11 +223,15 @@ func (m *GithubComPortainerPortainerEeAPIHTTPHandlerSystemVersionResponse) conte
 		}
 
 		if err := m.Runtime.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("runtime")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("runtime")
 			}
+
 			return err
 		}
 	}

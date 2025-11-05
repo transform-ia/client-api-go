@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -30,19 +31,75 @@ type V1NamespaceCondition struct {
 	Reason string `json:"reason,omitempty"`
 
 	// Status of the condition, one of True, False, Unknown.
-	Status string `json:"status,omitempty"`
+	Status struct {
+		K8sIoAPICoreV1ConditionStatus
+	} `json:"status,omitempty"`
 
 	// Type of namespace controller condition.
-	Type string `json:"type,omitempty"`
+	Type struct {
+		V1NamespaceConditionType
+	} `json:"type,omitempty"`
 }
 
 // Validate validates this v1 namespace condition
 func (m *V1NamespaceCondition) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateStatus(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this v1 namespace condition based on context it is used
+func (m *V1NamespaceCondition) validateStatus(formats strfmt.Registry) error {
+	if swag.IsZero(m.Status) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+func (m *V1NamespaceCondition) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 namespace condition based on the context it is used
 func (m *V1NamespaceCondition) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateStatus(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1NamespaceCondition) contextValidateStatus(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
+func (m *V1NamespaceCondition) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

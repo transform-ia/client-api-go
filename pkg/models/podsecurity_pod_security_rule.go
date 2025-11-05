@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -150,11 +151,15 @@ func (m *PodsecurityPodSecurityRule) validateAllowFlexVolumes(formats strfmt.Reg
 
 	if m.AllowFlexVolumes != nil {
 		if err := m.AllowFlexVolumes.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("allowFlexVolumes")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("allowFlexVolumes")
 			}
+
 			return err
 		}
 	}
@@ -169,11 +174,15 @@ func (m *PodsecurityPodSecurityRule) validateAllowPrivilegeEscalation(formats st
 
 	if m.AllowPrivilegeEscalation != nil {
 		if err := m.AllowPrivilegeEscalation.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("allowPrivilegeEscalation")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("allowPrivilegeEscalation")
 			}
+
 			return err
 		}
 	}
@@ -188,11 +197,15 @@ func (m *PodsecurityPodSecurityRule) validateAllowProcMount(formats strfmt.Regis
 
 	if m.AllowProcMount != nil {
 		if err := m.AllowProcMount.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("allowProcMount")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("allowProcMount")
 			}
+
 			return err
 		}
 	}
@@ -207,11 +220,15 @@ func (m *PodsecurityPodSecurityRule) validateAppArmor(formats strfmt.Registry) e
 
 	if m.AppArmor != nil {
 		if err := m.AppArmor.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("appArmor")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("appArmor")
 			}
+
 			return err
 		}
 	}
@@ -226,11 +243,15 @@ func (m *PodsecurityPodSecurityRule) validateCapabilities(formats strfmt.Registr
 
 	if m.Capabilities != nil {
 		if err := m.Capabilities.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("capabilities")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("capabilities")
 			}
+
 			return err
 		}
 	}
@@ -245,11 +266,15 @@ func (m *PodsecurityPodSecurityRule) validateForbiddenSysctlsList(formats strfmt
 
 	if m.ForbiddenSysctlsList != nil {
 		if err := m.ForbiddenSysctlsList.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("forbiddenSysctlsList")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("forbiddenSysctlsList")
 			}
+
 			return err
 		}
 	}
@@ -264,11 +289,15 @@ func (m *PodsecurityPodSecurityRule) validateHostFilesystem(formats strfmt.Regis
 
 	if m.HostFilesystem != nil {
 		if err := m.HostFilesystem.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("hostFilesystem")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("hostFilesystem")
 			}
+
 			return err
 		}
 	}
@@ -283,11 +312,15 @@ func (m *PodsecurityPodSecurityRule) validateHostNamespaces(formats strfmt.Regis
 
 	if m.HostNamespaces != nil {
 		if err := m.HostNamespaces.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("hostNamespaces")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("hostNamespaces")
 			}
+
 			return err
 		}
 	}
@@ -302,11 +335,15 @@ func (m *PodsecurityPodSecurityRule) validateHostPorts(formats strfmt.Registry) 
 
 	if m.HostPorts != nil {
 		if err := m.HostPorts.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("hostPorts")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("hostPorts")
 			}
+
 			return err
 		}
 	}
@@ -321,11 +358,15 @@ func (m *PodsecurityPodSecurityRule) validatePrivilegedContainers(formats strfmt
 
 	if m.PrivilegedContainers != nil {
 		if err := m.PrivilegedContainers.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("privilegedContainers")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("privilegedContainers")
 			}
+
 			return err
 		}
 	}
@@ -340,11 +381,15 @@ func (m *PodsecurityPodSecurityRule) validateReadOnlyRootFileSystem(formats strf
 
 	if m.ReadOnlyRootFileSystem != nil {
 		if err := m.ReadOnlyRootFileSystem.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("readOnlyRootFileSystem")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("readOnlyRootFileSystem")
 			}
+
 			return err
 		}
 	}
@@ -359,11 +404,15 @@ func (m *PodsecurityPodSecurityRule) validateSecComp(formats strfmt.Registry) er
 
 	if m.SecComp != nil {
 		if err := m.SecComp.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("secComp")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("secComp")
 			}
+
 			return err
 		}
 	}
@@ -378,11 +427,15 @@ func (m *PodsecurityPodSecurityRule) validateSelinux(formats strfmt.Registry) er
 
 	if m.Selinux != nil {
 		if err := m.Selinux.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("selinux")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("selinux")
 			}
+
 			return err
 		}
 	}
@@ -397,11 +450,15 @@ func (m *PodsecurityPodSecurityRule) validateUsers(formats strfmt.Registry) erro
 
 	if m.Users != nil {
 		if err := m.Users.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("users")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("users")
 			}
+
 			return err
 		}
 	}
@@ -416,11 +473,15 @@ func (m *PodsecurityPodSecurityRule) validateVolumeTypes(formats strfmt.Registry
 
 	if m.VolumeTypes != nil {
 		if err := m.VolumeTypes.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("volumeTypes")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("volumeTypes")
 			}
+
 			return err
 		}
 	}
@@ -507,11 +568,15 @@ func (m *PodsecurityPodSecurityRule) contextValidateAllowFlexVolumes(ctx context
 		}
 
 		if err := m.AllowFlexVolumes.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("allowFlexVolumes")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("allowFlexVolumes")
 			}
+
 			return err
 		}
 	}
@@ -528,11 +593,15 @@ func (m *PodsecurityPodSecurityRule) contextValidateAllowPrivilegeEscalation(ctx
 		}
 
 		if err := m.AllowPrivilegeEscalation.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("allowPrivilegeEscalation")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("allowPrivilegeEscalation")
 			}
+
 			return err
 		}
 	}
@@ -549,11 +618,15 @@ func (m *PodsecurityPodSecurityRule) contextValidateAllowProcMount(ctx context.C
 		}
 
 		if err := m.AllowProcMount.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("allowProcMount")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("allowProcMount")
 			}
+
 			return err
 		}
 	}
@@ -570,11 +643,15 @@ func (m *PodsecurityPodSecurityRule) contextValidateAppArmor(ctx context.Context
 		}
 
 		if err := m.AppArmor.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("appArmor")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("appArmor")
 			}
+
 			return err
 		}
 	}
@@ -591,11 +668,15 @@ func (m *PodsecurityPodSecurityRule) contextValidateCapabilities(ctx context.Con
 		}
 
 		if err := m.Capabilities.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("capabilities")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("capabilities")
 			}
+
 			return err
 		}
 	}
@@ -612,11 +693,15 @@ func (m *PodsecurityPodSecurityRule) contextValidateForbiddenSysctlsList(ctx con
 		}
 
 		if err := m.ForbiddenSysctlsList.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("forbiddenSysctlsList")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("forbiddenSysctlsList")
 			}
+
 			return err
 		}
 	}
@@ -633,11 +718,15 @@ func (m *PodsecurityPodSecurityRule) contextValidateHostFilesystem(ctx context.C
 		}
 
 		if err := m.HostFilesystem.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("hostFilesystem")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("hostFilesystem")
 			}
+
 			return err
 		}
 	}
@@ -654,11 +743,15 @@ func (m *PodsecurityPodSecurityRule) contextValidateHostNamespaces(ctx context.C
 		}
 
 		if err := m.HostNamespaces.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("hostNamespaces")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("hostNamespaces")
 			}
+
 			return err
 		}
 	}
@@ -675,11 +768,15 @@ func (m *PodsecurityPodSecurityRule) contextValidateHostPorts(ctx context.Contex
 		}
 
 		if err := m.HostPorts.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("hostPorts")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("hostPorts")
 			}
+
 			return err
 		}
 	}
@@ -696,11 +793,15 @@ func (m *PodsecurityPodSecurityRule) contextValidatePrivilegedContainers(ctx con
 		}
 
 		if err := m.PrivilegedContainers.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("privilegedContainers")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("privilegedContainers")
 			}
+
 			return err
 		}
 	}
@@ -717,11 +818,15 @@ func (m *PodsecurityPodSecurityRule) contextValidateReadOnlyRootFileSystem(ctx c
 		}
 
 		if err := m.ReadOnlyRootFileSystem.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("readOnlyRootFileSystem")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("readOnlyRootFileSystem")
 			}
+
 			return err
 		}
 	}
@@ -738,11 +843,15 @@ func (m *PodsecurityPodSecurityRule) contextValidateSecComp(ctx context.Context,
 		}
 
 		if err := m.SecComp.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("secComp")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("secComp")
 			}
+
 			return err
 		}
 	}
@@ -759,11 +868,15 @@ func (m *PodsecurityPodSecurityRule) contextValidateSelinux(ctx context.Context,
 		}
 
 		if err := m.Selinux.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("selinux")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("selinux")
 			}
+
 			return err
 		}
 	}
@@ -780,11 +893,15 @@ func (m *PodsecurityPodSecurityRule) contextValidateUsers(ctx context.Context, f
 		}
 
 		if err := m.Users.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("users")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("users")
 			}
+
 			return err
 		}
 	}
@@ -801,11 +918,15 @@ func (m *PodsecurityPodSecurityRule) contextValidateVolumeTypes(ctx context.Cont
 		}
 
 		if err := m.VolumeTypes.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("volumeTypes")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("volumeTypes")
 			}
+
 			return err
 		}
 	}

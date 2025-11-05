@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -26,7 +27,9 @@ type PortainereeEndpointStatusMessage struct {
 	Operation string `json:"operation,omitempty"`
 
 	// ,processing,error
-	OperationStatus string `json:"operationStatus,omitempty"`
+	OperationStatus struct {
+		PortainereeEndpointOperationStatus
+	} `json:"operationStatus,omitempty"`
 
 	// summary
 	Summary string `json:"summary,omitempty"`
@@ -37,11 +40,42 @@ type PortainereeEndpointStatusMessage struct {
 
 // Validate validates this portaineree endpoint status message
 func (m *PortainereeEndpointStatusMessage) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateOperationStatus(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this portaineree endpoint status message based on context it is used
+func (m *PortainereeEndpointStatusMessage) validateOperationStatus(formats strfmt.Registry) error {
+	if swag.IsZero(m.OperationStatus) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+// ContextValidate validate this portaineree endpoint status message based on the context it is used
 func (m *PortainereeEndpointStatusMessage) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateOperationStatus(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *PortainereeEndpointStatusMessage) contextValidateOperationStatus(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

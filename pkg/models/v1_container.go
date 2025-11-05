@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -53,8 +54,8 @@ type V1Container struct {
 	Env []*V1EnvVar `json:"env"`
 
 	// List of sources to populate environment variables in the container.
-	// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
-	// will be reported as an event when the container is starting. When a key exists in multiple
+	// The keys defined within a source may consist of any printable ASCII characters except '='.
+	// When a key exists in multiple
 	// sources, the value associated with the last source will take precedence.
 	// Values defined by an Env with a duplicate key will take precedence.
 	// Cannot be updated.
@@ -75,19 +76,25 @@ type V1Container struct {
 	// Cannot be updated.
 	// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
 	// +optional
-	ImagePullPolicy string `json:"imagePullPolicy,omitempty"`
+	ImagePullPolicy struct {
+		V1PullPolicy
+	} `json:"imagePullPolicy,omitempty"`
 
 	// Actions that the management system should take in response to container lifecycle events.
 	// Cannot be updated.
 	// +optional
-	Lifecycle *V1Lifecycle `json:"lifecycle,omitempty"`
+	Lifecycle struct {
+		V1Lifecycle
+	} `json:"lifecycle,omitempty"`
 
 	// Periodic probe of container liveness.
 	// Container will be restarted if the probe fails.
 	// Cannot be updated.
 	// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 	// +optional
-	LivenessProbe *V1Probe `json:"livenessProbe,omitempty"`
+	LivenessProbe struct {
+		V1Probe
+	} `json:"livenessProbe,omitempty"`
 
 	// Name of the container specified as a DNS_LABEL.
 	// Each container in a pod must have a unique name (DNS_LABEL).
@@ -114,7 +121,9 @@ type V1Container struct {
 	// Cannot be updated.
 	// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 	// +optional
-	ReadinessProbe *V1Probe `json:"readinessProbe,omitempty"`
+	ReadinessProbe struct {
+		V1Probe
+	} `json:"readinessProbe,omitempty"`
 
 	// Resources resize policy for the container.
 	// +featureGate=InPlacePodVerticalScaling
@@ -126,13 +135,15 @@ type V1Container struct {
 	// Cannot be updated.
 	// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 	// +optional
-	Resources *V1ResourceRequirements `json:"resources,omitempty"`
+	Resources struct {
+		V1ResourceRequirements
+	} `json:"resources,omitempty"`
 
 	// RestartPolicy defines the restart behavior of individual containers in a pod.
-	// This field may only be set for init containers, and the only allowed value is "Always".
-	// For non-init containers or when this field is not specified,
+	// This overrides the pod-level restart policy. When this field is not specified,
 	// the restart behavior is defined by the Pod's restart policy and the container type.
-	// Setting the RestartPolicy as "Always" for the init container will have the following effect:
+	// Additionally, setting the RestartPolicy as "Always" for the init container will
+	// have the following effect:
 	// this init container will be continually restarted on
 	// exit until all regular containers have terminated. Once all regular
 	// containers have completed, all init containers with restartPolicy "Always"
@@ -145,13 +156,33 @@ type V1Container struct {
 	// completed.
 	// +featureGate=SidecarContainers
 	// +optional
-	RestartPolicy string `json:"restartPolicy,omitempty"`
+	RestartPolicy struct {
+		V1ContainerRestartPolicy
+	} `json:"restartPolicy,omitempty"`
+
+	// Represents a list of rules to be checked to determine if the
+	// container should be restarted on exit. The rules are evaluated in
+	// order. Once a rule matches a container exit condition, the remaining
+	// rules are ignored. If no rule matches the container exit condition,
+	// the Container-level restart policy determines the whether the container
+	// is restarted or not. Constraints on the rules:
+	// - At most 20 rules are allowed.
+	// - Rules can have the same action.
+	// - Identical rules are not forbidden in validations.
+	// When rules are specified, container MUST set RestartPolicy explicitly
+	// even it if matches the Pod's RestartPolicy.
+	// +featureGate=ContainerRestartRules
+	// +optional
+	// +listType=atomic
+	RestartPolicyRules []*V1ContainerRestartRule `json:"restartPolicyRules"`
 
 	// SecurityContext defines the security options the container should be run with.
 	// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
 	// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 	// +optional
-	SecurityContext *V1SecurityContext `json:"securityContext,omitempty"`
+	SecurityContext struct {
+		V1SecurityContext
+	} `json:"securityContext,omitempty"`
 
 	// StartupProbe indicates that the Pod has successfully initialized.
 	// If specified, no other probes are executed until this completes successfully.
@@ -161,7 +192,9 @@ type V1Container struct {
 	// This cannot be updated.
 	// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 	// +optional
-	StartupProbe *V1Probe `json:"startupProbe,omitempty"`
+	StartupProbe struct {
+		V1Probe
+	} `json:"startupProbe,omitempty"`
 
 	// Whether this container should allocate a buffer for stdin in the container runtime. If this
 	// is not set, reads from stdin in the container will always result in EOF.
@@ -197,7 +230,9 @@ type V1Container struct {
 	// Defaults to File.
 	// Cannot be updated.
 	// +optional
-	TerminationMessagePolicy string `json:"terminationMessagePolicy,omitempty"`
+	TerminationMessagePolicy struct {
+		V1TerminationMessagePolicy
+	} `json:"terminationMessagePolicy,omitempty"`
 
 	// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
 	// Default is false.
@@ -241,6 +276,10 @@ func (m *V1Container) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateImagePullPolicy(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateLifecycle(formats); err != nil {
 		res = append(res, err)
 	}
@@ -265,11 +304,23 @@ func (m *V1Container) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateRestartPolicy(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRestartPolicyRules(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateSecurityContext(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if err := m.validateStartupProbe(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateTerminationMessagePolicy(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -299,11 +350,15 @@ func (m *V1Container) validateEnv(formats strfmt.Registry) error {
 
 		if m.Env[i] != nil {
 			if err := m.Env[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("env" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("env" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -325,15 +380,27 @@ func (m *V1Container) validateEnvFrom(formats strfmt.Registry) error {
 
 		if m.EnvFrom[i] != nil {
 			if err := m.EnvFrom[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("envFrom" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("envFrom" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *V1Container) validateImagePullPolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.ImagePullPolicy) { // not required
+		return nil
 	}
 
 	return nil
@@ -344,34 +411,12 @@ func (m *V1Container) validateLifecycle(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.Lifecycle != nil {
-		if err := m.Lifecycle.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("lifecycle")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("lifecycle")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V1Container) validateLivenessProbe(formats strfmt.Registry) error {
 	if swag.IsZero(m.LivenessProbe) { // not required
 		return nil
-	}
-
-	if m.LivenessProbe != nil {
-		if err := m.LivenessProbe.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("livenessProbe")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("livenessProbe")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -389,11 +434,15 @@ func (m *V1Container) validatePorts(formats strfmt.Registry) error {
 
 		if m.Ports[i] != nil {
 			if err := m.Ports[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("ports" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("ports" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -406,17 +455,6 @@ func (m *V1Container) validatePorts(formats strfmt.Registry) error {
 func (m *V1Container) validateReadinessProbe(formats strfmt.Registry) error {
 	if swag.IsZero(m.ReadinessProbe) { // not required
 		return nil
-	}
-
-	if m.ReadinessProbe != nil {
-		if err := m.ReadinessProbe.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("readinessProbe")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("readinessProbe")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -434,11 +472,15 @@ func (m *V1Container) validateResizePolicy(formats strfmt.Registry) error {
 
 		if m.ResizePolicy[i] != nil {
 			if err := m.ResizePolicy[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("resizePolicy" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("resizePolicy" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -453,15 +495,42 @@ func (m *V1Container) validateResources(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.Resources != nil {
-		if err := m.Resources.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("resources")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("resources")
-			}
-			return err
+	return nil
+}
+
+func (m *V1Container) validateRestartPolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.RestartPolicy) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+func (m *V1Container) validateRestartPolicyRules(formats strfmt.Registry) error {
+	if swag.IsZero(m.RestartPolicyRules) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.RestartPolicyRules); i++ {
+		if swag.IsZero(m.RestartPolicyRules[i]) { // not required
+			continue
 		}
+
+		if m.RestartPolicyRules[i] != nil {
+			if err := m.RestartPolicyRules[i].Validate(formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("restartPolicyRules" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("restartPolicyRules" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
+		}
+
 	}
 
 	return nil
@@ -472,17 +541,6 @@ func (m *V1Container) validateSecurityContext(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.SecurityContext != nil {
-		if err := m.SecurityContext.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("securityContext")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("securityContext")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -491,15 +549,12 @@ func (m *V1Container) validateStartupProbe(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.StartupProbe != nil {
-		if err := m.StartupProbe.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("startupProbe")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("startupProbe")
-			}
-			return err
-		}
+	return nil
+}
+
+func (m *V1Container) validateTerminationMessagePolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.TerminationMessagePolicy) { // not required
+		return nil
 	}
 
 	return nil
@@ -517,11 +572,15 @@ func (m *V1Container) validateVolumeDevices(formats strfmt.Registry) error {
 
 		if m.VolumeDevices[i] != nil {
 			if err := m.VolumeDevices[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("volumeDevices" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("volumeDevices" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -543,11 +602,15 @@ func (m *V1Container) validateVolumeMounts(formats strfmt.Registry) error {
 
 		if m.VolumeMounts[i] != nil {
 			if err := m.VolumeMounts[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("volumeMounts" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("volumeMounts" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -566,6 +629,10 @@ func (m *V1Container) ContextValidate(ctx context.Context, formats strfmt.Regist
 	}
 
 	if err := m.contextValidateEnvFrom(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateImagePullPolicy(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -593,11 +660,23 @@ func (m *V1Container) ContextValidate(ctx context.Context, formats strfmt.Regist
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateRestartPolicy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateRestartPolicyRules(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateSecurityContext(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
 	if err := m.contextValidateStartupProbe(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateTerminationMessagePolicy(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -626,11 +705,15 @@ func (m *V1Container) contextValidateEnv(ctx context.Context, formats strfmt.Reg
 			}
 
 			if err := m.Env[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("env" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("env" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -651,11 +734,15 @@ func (m *V1Container) contextValidateEnvFrom(ctx context.Context, formats strfmt
 			}
 
 			if err := m.EnvFrom[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("envFrom" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("envFrom" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -665,44 +752,17 @@ func (m *V1Container) contextValidateEnvFrom(ctx context.Context, formats strfmt
 	return nil
 }
 
+func (m *V1Container) contextValidateImagePullPolicy(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
 func (m *V1Container) contextValidateLifecycle(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Lifecycle != nil {
-
-		if swag.IsZero(m.Lifecycle) { // not required
-			return nil
-		}
-
-		if err := m.Lifecycle.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("lifecycle")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("lifecycle")
-			}
-			return err
-		}
-	}
 
 	return nil
 }
 
 func (m *V1Container) contextValidateLivenessProbe(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.LivenessProbe != nil {
-
-		if swag.IsZero(m.LivenessProbe) { // not required
-			return nil
-		}
-
-		if err := m.LivenessProbe.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("livenessProbe")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("livenessProbe")
-			}
-			return err
-		}
-	}
 
 	return nil
 }
@@ -718,11 +778,15 @@ func (m *V1Container) contextValidatePorts(ctx context.Context, formats strfmt.R
 			}
 
 			if err := m.Ports[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("ports" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("ports" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -733,22 +797,6 @@ func (m *V1Container) contextValidatePorts(ctx context.Context, formats strfmt.R
 }
 
 func (m *V1Container) contextValidateReadinessProbe(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.ReadinessProbe != nil {
-
-		if swag.IsZero(m.ReadinessProbe) { // not required
-			return nil
-		}
-
-		if err := m.ReadinessProbe.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("readinessProbe")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("readinessProbe")
-			}
-			return err
-		}
-	}
 
 	return nil
 }
@@ -764,11 +812,15 @@ func (m *V1Container) contextValidateResizePolicy(ctx context.Context, formats s
 			}
 
 			if err := m.ResizePolicy[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("resizePolicy" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("resizePolicy" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -780,20 +832,38 @@ func (m *V1Container) contextValidateResizePolicy(ctx context.Context, formats s
 
 func (m *V1Container) contextValidateResources(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.Resources != nil {
+	return nil
+}
 
-		if swag.IsZero(m.Resources) { // not required
-			return nil
-		}
+func (m *V1Container) contextValidateRestartPolicy(ctx context.Context, formats strfmt.Registry) error {
 
-		if err := m.Resources.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("resources")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("resources")
+	return nil
+}
+
+func (m *V1Container) contextValidateRestartPolicyRules(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.RestartPolicyRules); i++ {
+
+		if m.RestartPolicyRules[i] != nil {
+
+			if swag.IsZero(m.RestartPolicyRules[i]) { // not required
+				return nil
 			}
-			return err
+
+			if err := m.RestartPolicyRules[i].ContextValidate(ctx, formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("restartPolicyRules" + "." + strconv.Itoa(i))
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("restartPolicyRules" + "." + strconv.Itoa(i))
+				}
+
+				return err
+			}
 		}
+
 	}
 
 	return nil
@@ -801,42 +871,15 @@ func (m *V1Container) contextValidateResources(ctx context.Context, formats strf
 
 func (m *V1Container) contextValidateSecurityContext(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.SecurityContext != nil {
-
-		if swag.IsZero(m.SecurityContext) { // not required
-			return nil
-		}
-
-		if err := m.SecurityContext.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("securityContext")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("securityContext")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V1Container) contextValidateStartupProbe(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.StartupProbe != nil {
+	return nil
+}
 
-		if swag.IsZero(m.StartupProbe) { // not required
-			return nil
-		}
-
-		if err := m.StartupProbe.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("startupProbe")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("startupProbe")
-			}
-			return err
-		}
-	}
+func (m *V1Container) contextValidateTerminationMessagePolicy(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }
@@ -852,11 +895,15 @@ func (m *V1Container) contextValidateVolumeDevices(ctx context.Context, formats 
 			}
 
 			if err := m.VolumeDevices[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("volumeDevices" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("volumeDevices" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -877,11 +924,15 @@ func (m *V1Container) contextValidateVolumeMounts(ctx context.Context, formats s
 			}
 
 			if err := m.VolumeMounts[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("volumeMounts" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("volumeMounts" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -27,7 +28,7 @@ type EndpointedgeEndpointEdgeStatusInspectResponse struct {
 	Credentials string `json:"credentials,omitempty"`
 
 	// edge configurations
-	EdgeConfigurations map[string]int64 `json:"edge_configurations,omitempty"`
+	EdgeConfigurations map[string]PortainereeEdgeConfigStateType `json:"edge_configurations,omitempty"`
 
 	// The tunnel port
 	// Example: 8732
@@ -48,6 +49,10 @@ type EndpointedgeEndpointEdgeStatusInspectResponse struct {
 func (m *EndpointedgeEndpointEdgeStatusInspectResponse) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateEdgeConfigurations(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateSchedules(formats); err != nil {
 		res = append(res, err)
 	}
@@ -59,6 +64,33 @@ func (m *EndpointedgeEndpointEdgeStatusInspectResponse) Validate(formats strfmt.
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *EndpointedgeEndpointEdgeStatusInspectResponse) validateEdgeConfigurations(formats strfmt.Registry) error {
+	if swag.IsZero(m.EdgeConfigurations) { // not required
+		return nil
+	}
+
+	for k := range m.EdgeConfigurations {
+
+		if val, ok := m.EdgeConfigurations[k]; ok {
+			if err := val.Validate(formats); err != nil {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
+					return ve.ValidateName("edge_configurations" + "." + k)
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
+					return ce.ValidateName("edge_configurations" + "." + k)
+				}
+
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 
@@ -74,11 +106,15 @@ func (m *EndpointedgeEndpointEdgeStatusInspectResponse) validateSchedules(format
 
 		if m.Schedules[i] != nil {
 			if err := m.Schedules[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("schedules" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("schedules" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -100,11 +136,15 @@ func (m *EndpointedgeEndpointEdgeStatusInspectResponse) validateStacks(formats s
 
 		if m.Stacks[i] != nil {
 			if err := m.Stacks[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("stacks" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("stacks" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -117,6 +157,10 @@ func (m *EndpointedgeEndpointEdgeStatusInspectResponse) validateStacks(formats s
 // ContextValidate validate this endpointedge endpoint edge status inspect response based on the context it is used
 func (m *EndpointedgeEndpointEdgeStatusInspectResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.contextValidateEdgeConfigurations(ctx, formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.contextValidateSchedules(ctx, formats); err != nil {
 		res = append(res, err)
@@ -132,6 +176,21 @@ func (m *EndpointedgeEndpointEdgeStatusInspectResponse) ContextValidate(ctx cont
 	return nil
 }
 
+func (m *EndpointedgeEndpointEdgeStatusInspectResponse) contextValidateEdgeConfigurations(ctx context.Context, formats strfmt.Registry) error {
+
+	for k := range m.EdgeConfigurations {
+
+		if val, ok := m.EdgeConfigurations[k]; ok {
+			if err := val.ContextValidate(ctx, formats); err != nil {
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 func (m *EndpointedgeEndpointEdgeStatusInspectResponse) contextValidateSchedules(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.Schedules); i++ {
@@ -143,11 +202,15 @@ func (m *EndpointedgeEndpointEdgeStatusInspectResponse) contextValidateSchedules
 			}
 
 			if err := m.Schedules[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("schedules" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("schedules" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -168,11 +231,15 @@ func (m *EndpointedgeEndpointEdgeStatusInspectResponse) contextValidateStacks(ct
 			}
 
 			if err := m.Stacks[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("stacks" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("stacks" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

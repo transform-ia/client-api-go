@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -20,10 +21,14 @@ import (
 type EndpointsEndpointSettingsUpdatePayload struct {
 
 	// Whether GitOps update time restrictions are enabled
-	ChangeWindow *PortainereeEndpointChangeWindow `json:"changeWindow,omitempty"`
+	ChangeWindow struct {
+		PortainereeEndpointChangeWindow
+	} `json:"changeWindow,omitempty"`
 
 	// Hide manual deployment forms for an environment
-	DeploymentOptions *PortainereeDeploymentOptions `json:"deploymentOptions,omitempty"`
+	DeploymentOptions struct {
+		PortainereeDeploymentOptions
+	} `json:"deploymentOptions,omitempty"`
 
 	// enable g p u management
 	// Example: false
@@ -71,34 +76,12 @@ func (m *EndpointsEndpointSettingsUpdatePayload) validateChangeWindow(formats st
 		return nil
 	}
 
-	if m.ChangeWindow != nil {
-		if err := m.ChangeWindow.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("changeWindow")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("changeWindow")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *EndpointsEndpointSettingsUpdatePayload) validateDeploymentOptions(formats strfmt.Registry) error {
 	if swag.IsZero(m.DeploymentOptions) { // not required
 		return nil
-	}
-
-	if m.DeploymentOptions != nil {
-		if err := m.DeploymentOptions.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("deploymentOptions")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("deploymentOptions")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -116,11 +99,15 @@ func (m *EndpointsEndpointSettingsUpdatePayload) validateGpus(formats strfmt.Reg
 
 		if m.Gpus[i] != nil {
 			if err := m.Gpus[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("gpus" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("gpus" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -137,11 +124,15 @@ func (m *EndpointsEndpointSettingsUpdatePayload) validateSecuritySettings(format
 
 	if m.SecuritySettings != nil {
 		if err := m.SecuritySettings.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("securitySettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("securitySettings")
 			}
+
 			return err
 		}
 	}
@@ -177,42 +168,10 @@ func (m *EndpointsEndpointSettingsUpdatePayload) ContextValidate(ctx context.Con
 
 func (m *EndpointsEndpointSettingsUpdatePayload) contextValidateChangeWindow(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.ChangeWindow != nil {
-
-		if swag.IsZero(m.ChangeWindow) { // not required
-			return nil
-		}
-
-		if err := m.ChangeWindow.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("changeWindow")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("changeWindow")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *EndpointsEndpointSettingsUpdatePayload) contextValidateDeploymentOptions(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.DeploymentOptions != nil {
-
-		if swag.IsZero(m.DeploymentOptions) { // not required
-			return nil
-		}
-
-		if err := m.DeploymentOptions.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("deploymentOptions")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("deploymentOptions")
-			}
-			return err
-		}
-	}
 
 	return nil
 }
@@ -228,11 +187,15 @@ func (m *EndpointsEndpointSettingsUpdatePayload) contextValidateGpus(ctx context
 			}
 
 			if err := m.Gpus[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("gpus" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("gpus" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -251,11 +214,15 @@ func (m *EndpointsEndpointSettingsUpdatePayload) contextValidateSecuritySettings
 		}
 
 		if err := m.SecuritySettings.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("securitySettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("securitySettings")
 			}
+
 			return err
 		}
 	}

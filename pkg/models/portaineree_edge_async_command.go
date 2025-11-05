@@ -7,7 +7,9 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -27,7 +29,7 @@ type PortainereeEdgeAsyncCommand struct {
 	ID int64 `json:"id,omitempty"`
 
 	// op
-	Op string `json:"op,omitempty"`
+	Op PortainereeEdgeAsyncCommandOperation `json:"op,omitempty"`
 
 	// path
 	Path string `json:"path,omitempty"`
@@ -39,19 +41,131 @@ type PortainereeEdgeAsyncCommand struct {
 	Timestamp string `json:"timestamp,omitempty"`
 
 	// type
-	Type string `json:"type,omitempty"`
+	Type PortainereeEdgeAsyncCommandType `json:"type,omitempty"`
 
 	// value
-	Value interface{} `json:"value,omitempty"`
+	Value any `json:"value,omitempty"`
 }
 
 // Validate validates this portaineree edge async command
 func (m *PortainereeEdgeAsyncCommand) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateOp(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this portaineree edge async command based on context it is used
+func (m *PortainereeEdgeAsyncCommand) validateOp(formats strfmt.Registry) error {
+	if swag.IsZero(m.Op) { // not required
+		return nil
+	}
+
+	if err := m.Op.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("op")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("op")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+func (m *PortainereeEdgeAsyncCommand) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	if err := m.Type.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("type")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("type")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this portaineree edge async command based on the context it is used
 func (m *PortainereeEdgeAsyncCommand) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateOp(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *PortainereeEdgeAsyncCommand) contextValidateOp(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Op) { // not required
+		return nil
+	}
+
+	if err := m.Op.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("op")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("op")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+func (m *PortainereeEdgeAsyncCommand) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	if err := m.Type.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("type")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("type")
+		}
+
+		return err
+	}
+
 	return nil
 }
 

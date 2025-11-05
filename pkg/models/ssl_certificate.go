@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -47,9 +48,6 @@ type SslCertificate struct {
 
 	// public key
 	PublicKey *SslPublicKey `json:"PublicKey,omitempty"`
-
-	// s h a1 fingerprint
-	SHA1Fingerprint string `json:"SHA1Fingerprint,omitempty"`
 
 	// s h a256 fingerprint
 	SHA256Fingerprint string `json:"SHA256Fingerprint,omitempty"`
@@ -117,11 +115,15 @@ func (m *SslCertificate) validateIssuer(formats strfmt.Registry) error {
 
 	if m.Issuer != nil {
 		if err := m.Issuer.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Issuer")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Issuer")
 			}
+
 			return err
 		}
 	}
@@ -136,11 +138,15 @@ func (m *SslCertificate) validatePublicKey(formats strfmt.Registry) error {
 
 	if m.PublicKey != nil {
 		if err := m.PublicKey.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("PublicKey")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("PublicKey")
 			}
+
 			return err
 		}
 	}
@@ -155,11 +161,15 @@ func (m *SslCertificate) validateSubject(formats strfmt.Registry) error {
 
 	if m.Subject != nil {
 		if err := m.Subject.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Subject")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Subject")
 			}
+
 			return err
 		}
 	}
@@ -198,11 +208,15 @@ func (m *SslCertificate) contextValidateIssuer(ctx context.Context, formats strf
 		}
 
 		if err := m.Issuer.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Issuer")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Issuer")
 			}
+
 			return err
 		}
 	}
@@ -219,11 +233,15 @@ func (m *SslCertificate) contextValidatePublicKey(ctx context.Context, formats s
 		}
 
 		if err := m.PublicKey.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("PublicKey")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("PublicKey")
 			}
+
 			return err
 		}
 	}
@@ -240,11 +258,15 @@ func (m *SslCertificate) contextValidateSubject(ctx context.Context, formats str
 		}
 
 		if err := m.Subject.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Subject")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Subject")
 			}
+
 			return err
 		}
 	}

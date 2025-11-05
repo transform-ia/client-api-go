@@ -74,7 +74,7 @@ type DeleteRoleBindingsParams struct {
 
 	   A map where the key is the namespace and the value is an array of role bindings to delete
 	*/
-	Payload models.KubernetesK8sRoleBindingDeleteRequests
+	Payload models.ModelsK8sRoleBindingDeleteRequests
 
 	timeout    time.Duration
 	Context    context.Context
@@ -141,13 +141,13 @@ func (o *DeleteRoleBindingsParams) SetID(id int64) {
 }
 
 // WithPayload adds the payload to the delete role bindings params
-func (o *DeleteRoleBindingsParams) WithPayload(payload models.KubernetesK8sRoleBindingDeleteRequests) *DeleteRoleBindingsParams {
+func (o *DeleteRoleBindingsParams) WithPayload(payload models.ModelsK8sRoleBindingDeleteRequests) *DeleteRoleBindingsParams {
 	o.SetPayload(payload)
 	return o
 }
 
 // SetPayload adds the payload to the delete role bindings params
-func (o *DeleteRoleBindingsParams) SetPayload(payload models.KubernetesK8sRoleBindingDeleteRequests) {
+func (o *DeleteRoleBindingsParams) SetPayload(payload models.ModelsK8sRoleBindingDeleteRequests) {
 	o.Payload = payload
 }
 

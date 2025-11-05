@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -22,7 +23,9 @@ type V2HPAScalingPolicy struct {
 	PeriodSeconds int64 `json:"periodSeconds,omitempty"`
 
 	// type is used to specify the scaling policy.
-	Type string `json:"type,omitempty"`
+	Type struct {
+		V2HPAScalingPolicyType
+	} `json:"type,omitempty"`
 
 	// value contains the amount of change which is permitted by the policy.
 	// It must be greater than zero
@@ -31,11 +34,42 @@ type V2HPAScalingPolicy struct {
 
 // Validate validates this v2 h p a scaling policy
 func (m *V2HPAScalingPolicy) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this v2 h p a scaling policy based on context it is used
+func (m *V2HPAScalingPolicy) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v2 h p a scaling policy based on the context it is used
 func (m *V2HPAScalingPolicy) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V2HPAScalingPolicy) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

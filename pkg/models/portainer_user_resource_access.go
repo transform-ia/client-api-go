@@ -7,7 +7,9 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -18,19 +20,80 @@ import (
 type PortainerUserResourceAccess struct {
 
 	// access level
-	AccessLevel int64 `json:"AccessLevel,omitempty"`
+	AccessLevel PortainerResourceAccessLevel `json:"AccessLevel,omitempty"`
 
-	// User identifier who created this template
+	// user Id
 	UserID int64 `json:"UserId,omitempty"`
 }
 
 // Validate validates this portainer user resource access
 func (m *PortainerUserResourceAccess) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateAccessLevel(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this portainer user resource access based on context it is used
+func (m *PortainerUserResourceAccess) validateAccessLevel(formats strfmt.Registry) error {
+	if swag.IsZero(m.AccessLevel) { // not required
+		return nil
+	}
+
+	if err := m.AccessLevel.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("AccessLevel")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("AccessLevel")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this portainer user resource access based on the context it is used
 func (m *PortainerUserResourceAccess) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateAccessLevel(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *PortainerUserResourceAccess) contextValidateAccessLevel(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.AccessLevel) { // not required
+		return nil
+	}
+
+	if err := m.AccessLevel.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("AccessLevel")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("AccessLevel")
+		}
+
+		return err
+	}
+
 	return nil
 }
 

@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -49,11 +50,15 @@ func (m *ProvidersMicrok8sUpdateAddonsPayload) validateAddons(formats strfmt.Reg
 
 		if m.Addons[i] != nil {
 			if err := m.Addons[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("addons" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("addons" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -88,11 +93,15 @@ func (m *ProvidersMicrok8sUpdateAddonsPayload) contextValidateAddons(ctx context
 			}
 
 			if err := m.Addons[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("addons" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("addons" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

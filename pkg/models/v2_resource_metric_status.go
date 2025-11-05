@@ -19,10 +19,14 @@ import (
 type V2ResourceMetricStatus struct {
 
 	// current contains the current value for the given metric
-	Current *V2MetricValueStatus `json:"current,omitempty"`
+	Current struct {
+		V2MetricValueStatus
+	} `json:"current,omitempty"`
 
 	// name is the name of the resource in question.
-	Name string `json:"name,omitempty"`
+	Name struct {
+		V1ResourceName
+	} `json:"name,omitempty"`
 }
 
 // Validate validates this v2 resource metric status
@@ -30,6 +34,10 @@ func (m *V2ResourceMetricStatus) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateCurrent(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateName(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -44,15 +52,12 @@ func (m *V2ResourceMetricStatus) validateCurrent(formats strfmt.Registry) error 
 		return nil
 	}
 
-	if m.Current != nil {
-		if err := m.Current.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("current")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("current")
-			}
-			return err
-		}
+	return nil
+}
+
+func (m *V2ResourceMetricStatus) validateName(formats strfmt.Registry) error {
+	if swag.IsZero(m.Name) { // not required
+		return nil
 	}
 
 	return nil
@@ -66,6 +71,10 @@ func (m *V2ResourceMetricStatus) ContextValidate(ctx context.Context, formats st
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -74,21 +83,10 @@ func (m *V2ResourceMetricStatus) ContextValidate(ctx context.Context, formats st
 
 func (m *V2ResourceMetricStatus) contextValidateCurrent(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.Current != nil {
+	return nil
+}
 
-		if swag.IsZero(m.Current) { // not required
-			return nil
-		}
-
-		if err := m.Current.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("current")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("current")
-			}
-			return err
-		}
-	}
+func (m *V2ResourceMetricStatus) contextValidateName(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }

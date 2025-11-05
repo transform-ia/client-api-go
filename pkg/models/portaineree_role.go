@@ -21,7 +21,9 @@ type PortainereeRole struct {
 
 	// Authorizations associated to a role
 	// Required: true
-	Authorizations PortainerAuthorizations `json:"Authorizations"`
+	Authorizations struct {
+		PortainerAuthorizations
+	} `json:"Authorizations"`
 
 	// Role description
 	// Example: Read-only access of all resources in an environment(endpoint)
@@ -82,21 +84,6 @@ func (m *PortainereeRole) Validate(formats strfmt.Registry) error {
 }
 
 func (m *PortainereeRole) validateAuthorizations(formats strfmt.Registry) error {
-
-	if err := validate.Required("Authorizations", "body", m.Authorizations); err != nil {
-		return err
-	}
-
-	if m.Authorizations != nil {
-		if err := m.Authorizations.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("Authorizations")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("Authorizations")
-			}
-			return err
-		}
-	}
 
 	return nil
 }
@@ -161,15 +148,6 @@ func (m *PortainereeRole) ContextValidate(ctx context.Context, formats strfmt.Re
 }
 
 func (m *PortainereeRole) contextValidateAuthorizations(ctx context.Context, formats strfmt.Registry) error {
-
-	if err := m.Authorizations.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("Authorizations")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce.ValidateName("Authorizations")
-		}
-		return err
-	}
 
 	return nil
 }

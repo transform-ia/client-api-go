@@ -84,6 +84,16 @@ type ClientService interface {
 
 	Generate(params *GenerateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GenerateOK, error)
 
+	SharedGitCreate(params *SharedGitCreateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SharedGitCreateCreated, error)
+
+	SharedGitDelete(params *SharedGitDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SharedGitDeleteCreated, error)
+
+	SharedGitGet(params *SharedGitGetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SharedGitGetCreated, error)
+
+	SharedGitGetAll(params *SharedGitGetAllParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SharedGitGetAllCreated, error)
+
+	SharedGitUpdate(params *SharedGitUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SharedGitUpdateCreated, error)
+
 	CloudCredsDelete(params *CloudCredsDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CloudCredsDeleteOK, error)
 
 	CloudCredsGetByID(params *CloudCredsGetByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CloudCredsGetByIDOK, error)
@@ -103,7 +113,7 @@ type ClientService interface {
 **Access policy**: authenticated
 */
 func (a *Client) Create(params *CreateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCreateParams()
 	}
@@ -123,17 +133,22 @@ func (a *Client) Create(params *CreateParams, authInfo runtime.ClientAuthInfoWri
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CreateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for Create: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -146,7 +161,7 @@ func (a *Client) Create(params *CreateParams, authInfo runtime.ClientAuthInfoWri
 **Access policy**: authenticated
 */
 func (a *Client) Generate(params *GenerateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GenerateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGenerateParams()
 	}
@@ -166,18 +181,263 @@ func (a *Client) Generate(params *GenerateParams, authInfo runtime.ClientAuthInf
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GenerateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for Generate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+	SharedGitCreate creates shared git credential
+
+	Create a shared git credential
+
+**Access policy**: Administrator only.
+*/
+func (a *Client) SharedGitCreate(params *SharedGitCreateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SharedGitCreateCreated, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewSharedGitCreateParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "SharedGitCreate",
+		Method:             "POST",
+		PathPattern:        "/cloud/gitcredentials",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &SharedGitCreateReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*SharedGitCreateCreated)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for SharedGitCreate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+	SharedGitDelete deletes shared git credential
+
+	Delete a shared git credential
+
+**Access policy**: Administrator only.
+*/
+func (a *Client) SharedGitDelete(params *SharedGitDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SharedGitDeleteCreated, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewSharedGitDeleteParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "SharedGitDelete",
+		Method:             "DELETE",
+		PathPattern:        "/cloud/gitcredentials/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &SharedGitDeleteReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*SharedGitDeleteCreated)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for SharedGitDelete: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+	SharedGitGet gets shared git credential
+
+	Get a shared git credential
+
+**Access policy**: Administrator only.
+*/
+func (a *Client) SharedGitGet(params *SharedGitGetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SharedGitGetCreated, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewSharedGitGetParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "SharedGitGet",
+		Method:             "GET",
+		PathPattern:        "/cloud/gitcredentials/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &SharedGitGetReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*SharedGitGetCreated)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for SharedGitGet: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+	SharedGitGetAll gets shared git credentials
+
+	Get shared git credentials
+
+**Access policy**: Administrator only.
+*/
+func (a *Client) SharedGitGetAll(params *SharedGitGetAllParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SharedGitGetAllCreated, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewSharedGitGetAllParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "SharedGitGetAll",
+		Method:             "GET",
+		PathPattern:        "/cloud/gitcredentials",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &SharedGitGetAllReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*SharedGitGetAllCreated)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for SharedGitGetAll: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+	SharedGitUpdate updates a shared git credential
+
+	Update a shared git credential
+
+**Access policy**: Administrator only.
+*/
+func (a *Client) SharedGitUpdate(params *SharedGitUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SharedGitUpdateCreated, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewSharedGitUpdateParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "SharedGitUpdate",
+		Method:             "PUT",
+		PathPattern:        "/cloud/gitcredentials/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &SharedGitUpdateReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*SharedGitUpdateCreated)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for SharedGitUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -189,7 +449,7 @@ func (a *Client) Generate(params *GenerateParams, authInfo runtime.ClientAuthInf
 **Access policy**: authenticated
 */
 func (a *Client) CloudCredsDelete(params *CloudCredsDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CloudCredsDeleteOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCloudCredsDeleteParams()
 	}
@@ -209,17 +469,22 @@ func (a *Client) CloudCredsDelete(params *CloudCredsDeleteParams, authInfo runti
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CloudCredsDeleteOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for cloudCredsDelete: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -232,7 +497,7 @@ func (a *Client) CloudCredsDelete(params *CloudCredsDeleteParams, authInfo runti
 **Access policy**: authenticated
 */
 func (a *Client) CloudCredsGetByID(params *CloudCredsGetByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CloudCredsGetByIDOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCloudCredsGetByIDParams()
 	}
@@ -252,17 +517,22 @@ func (a *Client) CloudCredsGetByID(params *CloudCredsGetByIDParams, authInfo run
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CloudCredsGetByIDOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for cloudCredsGetByID: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -275,7 +545,7 @@ func (a *Client) CloudCredsGetByID(params *CloudCredsGetByIDParams, authInfo run
 **Access policy**: authenticated
 */
 func (a *Client) CloudCredsUpdate(params *CloudCredsUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CloudCredsUpdateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCloudCredsUpdateParams()
 	}
@@ -295,17 +565,22 @@ func (a *Client) CloudCredsUpdate(params *CloudCredsUpdateParams, authInfo runti
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CloudCredsUpdateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for cloudCredsUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -318,7 +593,7 @@ func (a *Client) CloudCredsUpdate(params *CloudCredsUpdateParams, authInfo runti
 **Access policy**: authenticated
 */
 func (a *Client) GetAll(params *GetAllParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetAllOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetAllParams()
 	}
@@ -338,17 +613,22 @@ func (a *Client) GetAll(params *GetAllParams, authInfo runtime.ClientAuthInfoWri
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetAllOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for getAll: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

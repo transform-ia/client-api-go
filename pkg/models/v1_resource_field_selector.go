@@ -24,7 +24,9 @@ type V1ResourceFieldSelector struct {
 
 	// Specifies the output format of the exposed resources, defaults to "1"
 	// +optional
-	Divisor *ResourceQuantity `json:"divisor,omitempty"`
+	Divisor struct {
+		ResourceQuantity
+	} `json:"divisor,omitempty"`
 
 	// Required: resource to select
 	Resource string `json:"resource,omitempty"`
@@ -49,17 +51,6 @@ func (m *V1ResourceFieldSelector) validateDivisor(formats strfmt.Registry) error
 		return nil
 	}
 
-	if m.Divisor != nil {
-		if err := m.Divisor.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("divisor")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("divisor")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -78,22 +69,6 @@ func (m *V1ResourceFieldSelector) ContextValidate(ctx context.Context, formats s
 }
 
 func (m *V1ResourceFieldSelector) contextValidateDivisor(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Divisor != nil {
-
-		if swag.IsZero(m.Divisor) { // not required
-			return nil
-		}
-
-		if err := m.Divisor.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("divisor")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("divisor")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

@@ -111,7 +111,7 @@ type ClientService interface {
 **Access policy**: authenticated
 */
 func (a *Client) CustomTemplateCreate(params *CustomTemplateCreateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CustomTemplateCreateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCustomTemplateCreateParams()
 	}
@@ -131,17 +131,22 @@ func (a *Client) CustomTemplateCreate(params *CustomTemplateCreateParams, authIn
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CustomTemplateCreateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for CustomTemplateCreate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -154,7 +159,7 @@ func (a *Client) CustomTemplateCreate(params *CustomTemplateCreateParams, authIn
 **Access policy**: authenticated
 */
 func (a *Client) CustomTemplateCreateFile(params *CustomTemplateCreateFileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CustomTemplateCreateFileOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCustomTemplateCreateFileParams()
 	}
@@ -174,17 +179,22 @@ func (a *Client) CustomTemplateCreateFile(params *CustomTemplateCreateFileParams
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CustomTemplateCreateFileOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for CustomTemplateCreateFile: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -197,7 +207,7 @@ func (a *Client) CustomTemplateCreateFile(params *CustomTemplateCreateFileParams
 **Access policy**: authenticated
 */
 func (a *Client) CustomTemplateCreateRepository(params *CustomTemplateCreateRepositoryParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CustomTemplateCreateRepositoryOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCustomTemplateCreateRepositoryParams()
 	}
@@ -217,17 +227,22 @@ func (a *Client) CustomTemplateCreateRepository(params *CustomTemplateCreateRepo
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CustomTemplateCreateRepositoryOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for CustomTemplateCreateRepository: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -240,7 +255,7 @@ func (a *Client) CustomTemplateCreateRepository(params *CustomTemplateCreateRepo
 **Access policy**: authenticated
 */
 func (a *Client) CustomTemplateCreateString(params *CustomTemplateCreateStringParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CustomTemplateCreateStringOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCustomTemplateCreateStringParams()
 	}
@@ -260,17 +275,22 @@ func (a *Client) CustomTemplateCreateString(params *CustomTemplateCreateStringPa
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CustomTemplateCreateStringOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for CustomTemplateCreateString: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -283,7 +303,7 @@ func (a *Client) CustomTemplateCreateString(params *CustomTemplateCreateStringPa
 **Access policy**: authenticated
 */
 func (a *Client) CustomTemplateDelete(params *CustomTemplateDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CustomTemplateDeleteNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCustomTemplateDeleteParams()
 	}
@@ -303,17 +323,22 @@ func (a *Client) CustomTemplateDelete(params *CustomTemplateDeleteParams, authIn
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CustomTemplateDeleteNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for CustomTemplateDelete: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -326,7 +351,7 @@ func (a *Client) CustomTemplateDelete(params *CustomTemplateDeleteParams, authIn
 **Access policy**: authenticated
 */
 func (a *Client) CustomTemplateFile(params *CustomTemplateFileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CustomTemplateFileOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCustomTemplateFileParams()
 	}
@@ -346,17 +371,22 @@ func (a *Client) CustomTemplateFile(params *CustomTemplateFileParams, authInfo r
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CustomTemplateFileOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for CustomTemplateFile: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -369,7 +399,7 @@ func (a *Client) CustomTemplateFile(params *CustomTemplateFileParams, authInfo r
 **Access policy**: authenticated
 */
 func (a *Client) CustomTemplateGitFetch(params *CustomTemplateGitFetchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CustomTemplateGitFetchOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCustomTemplateGitFetchParams()
 	}
@@ -389,17 +419,22 @@ func (a *Client) CustomTemplateGitFetch(params *CustomTemplateGitFetchParams, au
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CustomTemplateGitFetchOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for CustomTemplateGitFetch: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -412,7 +447,7 @@ func (a *Client) CustomTemplateGitFetch(params *CustomTemplateGitFetchParams, au
 **Access policy**: authenticated
 */
 func (a *Client) CustomTemplateInspect(params *CustomTemplateInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CustomTemplateInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCustomTemplateInspectParams()
 	}
@@ -432,17 +467,22 @@ func (a *Client) CustomTemplateInspect(params *CustomTemplateInspectParams, auth
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CustomTemplateInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for CustomTemplateInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -455,7 +495,7 @@ func (a *Client) CustomTemplateInspect(params *CustomTemplateInspectParams, auth
 **Access policy**: authenticated
 */
 func (a *Client) CustomTemplateList(params *CustomTemplateListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CustomTemplateListOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCustomTemplateListParams()
 	}
@@ -475,17 +515,22 @@ func (a *Client) CustomTemplateList(params *CustomTemplateListParams, authInfo r
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CustomTemplateListOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for CustomTemplateList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -498,7 +543,7 @@ func (a *Client) CustomTemplateList(params *CustomTemplateListParams, authInfo r
 **Access policy**: authenticated
 */
 func (a *Client) CustomTemplateUpdate(params *CustomTemplateUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CustomTemplateUpdateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewCustomTemplateUpdateParams()
 	}
@@ -518,17 +563,22 @@ func (a *Client) CustomTemplateUpdate(params *CustomTemplateUpdateParams, authIn
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*CustomTemplateUpdateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for CustomTemplateUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

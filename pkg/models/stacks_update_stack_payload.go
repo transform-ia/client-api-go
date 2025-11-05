@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -29,6 +30,9 @@ type StacksUpdateStackPayload struct {
 	// Force a pulling to current image with the original tag though the image is already the latest
 	// Example: false
 	PullImage bool `json:"pullImage,omitempty"`
+
+	// List of Registries to use for this stack
+	Registries []int64 `json:"registries"`
 
 	// RollbackTo specifies the stack file version to rollback to (only support to rollback to the last version currently)
 	RollbackTo int64 `json:"rollbackTo,omitempty"`
@@ -68,11 +72,15 @@ func (m *StacksUpdateStackPayload) validateEnv(formats strfmt.Registry) error {
 
 		if m.Env[i] != nil {
 			if err := m.Env[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("env" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("env" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -107,11 +115,15 @@ func (m *StacksUpdateStackPayload) contextValidateEnv(ctx context.Context, forma
 			}
 
 			if err := m.Env[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("env" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("env" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

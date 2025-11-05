@@ -74,6 +74,12 @@ type GetKubernetesNamespacesParams struct {
 	*/
 	WithResourceQuota bool
 
+	/* WithUnhealthyEvents.
+
+	   When set to true, include the unhealthy events information as part of the Namespace information. Default is false
+	*/
+	WithUnhealthyEvents bool
+
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
@@ -149,6 +155,17 @@ func (o *GetKubernetesNamespacesParams) SetWithResourceQuota(withResourceQuota b
 	o.WithResourceQuota = withResourceQuota
 }
 
+// WithWithUnhealthyEvents adds the withUnhealthyEvents to the get kubernetes namespaces params
+func (o *GetKubernetesNamespacesParams) WithWithUnhealthyEvents(withUnhealthyEvents bool) *GetKubernetesNamespacesParams {
+	o.SetWithUnhealthyEvents(withUnhealthyEvents)
+	return o
+}
+
+// SetWithUnhealthyEvents adds the withUnhealthyEvents to the get kubernetes namespaces params
+func (o *GetKubernetesNamespacesParams) SetWithUnhealthyEvents(withUnhealthyEvents bool) {
+	o.WithUnhealthyEvents = withUnhealthyEvents
+}
+
 // WriteToRequest writes these params to a swagger request
 func (o *GetKubernetesNamespacesParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
@@ -168,6 +185,16 @@ func (o *GetKubernetesNamespacesParams) WriteToRequest(r runtime.ClientRequest, 
 	if qWithResourceQuota != "" {
 
 		if err := r.SetQueryParam("withResourceQuota", qWithResourceQuota); err != nil {
+			return err
+		}
+	}
+
+	// query param withUnhealthyEvents
+	qrWithUnhealthyEvents := o.WithUnhealthyEvents
+	qWithUnhealthyEvents := swag.FormatBool(qrWithUnhealthyEvents)
+	if qWithUnhealthyEvents != "" {
+
+		if err := r.SetQueryParam("withUnhealthyEvents", qWithUnhealthyEvents); err != nil {
 			return err
 		}
 	}

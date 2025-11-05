@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -53,11 +54,15 @@ func (m *PortainerRegistryAccessPolicies) validateTeamAccessPolicies(formats str
 
 	if m.TeamAccessPolicies != nil {
 		if err := m.TeamAccessPolicies.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("TeamAccessPolicies")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("TeamAccessPolicies")
 			}
+
 			return err
 		}
 	}
@@ -72,11 +77,15 @@ func (m *PortainerRegistryAccessPolicies) validateUserAccessPolicies(formats str
 
 	if m.UserAccessPolicies != nil {
 		if err := m.UserAccessPolicies.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("UserAccessPolicies")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("UserAccessPolicies")
 			}
+
 			return err
 		}
 	}
@@ -109,11 +118,15 @@ func (m *PortainerRegistryAccessPolicies) contextValidateTeamAccessPolicies(ctx 
 	}
 
 	if err := m.TeamAccessPolicies.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("TeamAccessPolicies")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("TeamAccessPolicies")
 		}
+
 		return err
 	}
 
@@ -127,11 +140,15 @@ func (m *PortainerRegistryAccessPolicies) contextValidateUserAccessPolicies(ctx 
 	}
 
 	if err := m.UserAccessPolicies.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("UserAccessPolicies")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("UserAccessPolicies")
 		}
+
 		return err
 	}
 

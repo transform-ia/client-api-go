@@ -18,7 +18,8 @@ import (
 // swagger:model v1.EnvVar
 type V1EnvVar struct {
 
-	// Name of the environment variable. Must be a C_IDENTIFIER.
+	// Name of the environment variable.
+	// May consist of any printable ASCII characters except '='.
 	Name string `json:"name,omitempty"`
 
 	// Variable references $(VAR_NAME) are expanded
@@ -35,7 +36,9 @@ type V1EnvVar struct {
 
 	// Source for the environment variable's value. Cannot be used if value is not empty.
 	// +optional
-	ValueFrom *V1EnvVarSource `json:"valueFrom,omitempty"`
+	ValueFrom struct {
+		V1EnvVarSource
+	} `json:"valueFrom,omitempty"`
 }
 
 // Validate validates this v1 env var
@@ -57,17 +60,6 @@ func (m *V1EnvVar) validateValueFrom(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.ValueFrom != nil {
-		if err := m.ValueFrom.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("valueFrom")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("valueFrom")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -86,22 +78,6 @@ func (m *V1EnvVar) ContextValidate(ctx context.Context, formats strfmt.Registry)
 }
 
 func (m *V1EnvVar) contextValidateValueFrom(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.ValueFrom != nil {
-
-		if swag.IsZero(m.ValueFrom) { // not required
-			return nil
-		}
-
-		if err := m.ValueFrom.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("valueFrom")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("valueFrom")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

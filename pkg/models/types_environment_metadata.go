@@ -20,10 +20,10 @@ type TypesEnvironmentMetadata struct {
 	// custom template content
 	CustomTemplateContent string `json:"customTemplateContent,omitempty"`
 
-	// CustomTemplate Identifier
+	// custom template ID
 	CustomTemplateID int64 `json:"customTemplateID,omitempty"`
 
-	// Environment(Endpoint) group identifier
+	// group Id
 	GroupID int64 `json:"groupId,omitempty"`
 
 	// stack name

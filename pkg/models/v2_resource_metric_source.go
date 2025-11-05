@@ -19,15 +19,23 @@ import (
 type V2ResourceMetricSource struct {
 
 	// name is the name of the resource in question.
-	Name string `json:"name,omitempty"`
+	Name struct {
+		V1ResourceName
+	} `json:"name,omitempty"`
 
 	// target specifies the target value for the given metric
-	Target *V2MetricTarget `json:"target,omitempty"`
+	Target struct {
+		V2MetricTarget
+	} `json:"target,omitempty"`
 }
 
 // Validate validates this v2 resource metric source
 func (m *V2ResourceMetricSource) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateTarget(formats); err != nil {
 		res = append(res, err)
@@ -39,20 +47,17 @@ func (m *V2ResourceMetricSource) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *V2ResourceMetricSource) validateTarget(formats strfmt.Registry) error {
-	if swag.IsZero(m.Target) { // not required
+func (m *V2ResourceMetricSource) validateName(formats strfmt.Registry) error {
+	if swag.IsZero(m.Name) { // not required
 		return nil
 	}
 
-	if m.Target != nil {
-		if err := m.Target.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("target")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("target")
-			}
-			return err
-		}
+	return nil
+}
+
+func (m *V2ResourceMetricSource) validateTarget(formats strfmt.Registry) error {
+	if swag.IsZero(m.Target) { // not required
+		return nil
 	}
 
 	return nil
@@ -61,6 +66,10 @@ func (m *V2ResourceMetricSource) validateTarget(formats strfmt.Registry) error {
 // ContextValidate validate this v2 resource metric source based on the context it is used
 func (m *V2ResourceMetricSource) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.contextValidateName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.contextValidateTarget(ctx, formats); err != nil {
 		res = append(res, err)
@@ -72,23 +81,12 @@ func (m *V2ResourceMetricSource) ContextValidate(ctx context.Context, formats st
 	return nil
 }
 
+func (m *V2ResourceMetricSource) contextValidateName(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
 func (m *V2ResourceMetricSource) contextValidateTarget(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Target != nil {
-
-		if swag.IsZero(m.Target) { // not required
-			return nil
-		}
-
-		if err := m.Target.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("target")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("target")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

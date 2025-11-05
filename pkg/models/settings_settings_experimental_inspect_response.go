@@ -8,7 +8,6 @@ package models
 import (
 	"context"
 
-	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -19,74 +18,16 @@ import (
 type SettingsSettingsExperimentalInspectResponse struct {
 
 	// experimental features
-	ExperimentalFeatures *PortainereeExperimentalFeatures `json:"experimentalFeatures,omitempty"`
+	ExperimentalFeatures PortainereeExperimentalFeatures `json:"experimentalFeatures,omitempty"`
 }
 
 // Validate validates this settings settings experimental inspect response
 func (m *SettingsSettingsExperimentalInspectResponse) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.validateExperimentalFeatures(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
 	return nil
 }
 
-func (m *SettingsSettingsExperimentalInspectResponse) validateExperimentalFeatures(formats strfmt.Registry) error {
-	if swag.IsZero(m.ExperimentalFeatures) { // not required
-		return nil
-	}
-
-	if m.ExperimentalFeatures != nil {
-		if err := m.ExperimentalFeatures.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("experimentalFeatures")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("experimentalFeatures")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-// ContextValidate validate this settings settings experimental inspect response based on the context it is used
+// ContextValidate validates this settings settings experimental inspect response based on context it is used
 func (m *SettingsSettingsExperimentalInspectResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateExperimentalFeatures(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *SettingsSettingsExperimentalInspectResponse) contextValidateExperimentalFeatures(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.ExperimentalFeatures != nil {
-
-		if swag.IsZero(m.ExperimentalFeatures) { // not required
-			return nil
-		}
-
-		if err := m.ExperimentalFeatures.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("experimentalFeatures")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("experimentalFeatures")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 

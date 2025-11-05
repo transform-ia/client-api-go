@@ -7,7 +7,10 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
+	"strconv"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -18,7 +21,7 @@ import (
 type PodsecurityPodSecurityVolumeTypes struct {
 
 	// allowed types
-	AllowedTypes []string `json:"allowedTypes"`
+	AllowedTypes []PodsecurityFSType `json:"allowedTypes"`
 
 	// enabled
 	Enabled bool `json:"enabled,omitempty"`
@@ -26,11 +29,80 @@ type PodsecurityPodSecurityVolumeTypes struct {
 
 // Validate validates this podsecurity pod security volume types
 func (m *PodsecurityPodSecurityVolumeTypes) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateAllowedTypes(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this podsecurity pod security volume types based on context it is used
+func (m *PodsecurityPodSecurityVolumeTypes) validateAllowedTypes(formats strfmt.Registry) error {
+	if swag.IsZero(m.AllowedTypes) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.AllowedTypes); i++ {
+
+		if err := m.AllowedTypes[i].Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("allowedTypes" + "." + strconv.Itoa(i))
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("allowedTypes" + "." + strconv.Itoa(i))
+			}
+
+			return err
+		}
+
+	}
+
+	return nil
+}
+
+// ContextValidate validate this podsecurity pod security volume types based on the context it is used
 func (m *PodsecurityPodSecurityVolumeTypes) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateAllowedTypes(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *PodsecurityPodSecurityVolumeTypes) contextValidateAllowedTypes(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.AllowedTypes); i++ {
+
+		if swag.IsZero(m.AllowedTypes[i]) { // not required
+			return nil
+		}
+
+		if err := m.AllowedTypes[i].ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("allowedTypes" + "." + strconv.Itoa(i))
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("allowedTypes" + "." + strconv.Itoa(i))
+			}
+
+			return err
+		}
+
+	}
+
 	return nil
 }
 

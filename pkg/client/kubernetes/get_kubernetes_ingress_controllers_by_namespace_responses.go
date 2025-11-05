@@ -7,6 +7,7 @@ package kubernetes
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type GetKubernetesIngressControllersByNamespaceReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *GetKubernetesIngressControllersByNamespaceReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *GetKubernetesIngressControllersByNamespaceReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewGetKubernetesIngressControllersByNamespaceOK()
@@ -76,7 +77,7 @@ GetKubernetesIngressControllersByNamespaceOK describes a response with status co
 Success
 */
 type GetKubernetesIngressControllersByNamespaceOK struct {
-	Payload []*models.KubernetesK8sIngressController
+	Payload []*models.ModelsK8sIngressController
 }
 
 // IsSuccess returns true when this get kubernetes ingress controllers by namespace o k response has a 2xx status code
@@ -119,14 +120,14 @@ func (o *GetKubernetesIngressControllersByNamespaceOK) String() string {
 	return fmt.Sprintf("[GET /kubernetes/{id}/namespaces/{namespace}/ingresscontrollers][%d] getKubernetesIngressControllersByNamespaceOK %s", 200, payload)
 }
 
-func (o *GetKubernetesIngressControllersByNamespaceOK) GetPayload() []*models.KubernetesK8sIngressController {
+func (o *GetKubernetesIngressControllersByNamespaceOK) GetPayload() []*models.ModelsK8sIngressController {
 	return o.Payload
 }
 
 func (o *GetKubernetesIngressControllersByNamespaceOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

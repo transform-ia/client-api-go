@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -18,6 +19,11 @@ import (
 //
 // swagger:model portaineree.Settings
 type PortainereeSettings struct {
+
+	// Additional Functionality
+	AdditionalFunctionality struct {
+		PortainereeAdditionalFunctionality
+	} `json:"AdditionalFunctionality,omitempty"`
 
 	// Container environment parameter AGENT_SECRET
 	AgentSecret string `json:"AgentSecret,omitempty"`
@@ -45,13 +51,20 @@ type PortainereeSettings struct {
 
 	// Active authentication method for the Portainer instance. Valid values are: 1 for internal, 2 for LDAP, or 3 for oauth
 	// Example: 1
-	AuthenticationMethod int64 `json:"AuthenticationMethod,omitempty"`
+	AuthenticationMethod struct {
+		PortainerAuthenticationMethod
+	} `json:"AuthenticationMethod,omitempty"`
+
+	// auto patch settings
+	AutoPatchSettings *PortainereeAutoPatchSettings `json:"AutoPatchSettings,omitempty"`
 
 	// A list of label name & value that will be used to hide containers when querying containers
 	BlackListedLabels []*PortainerPair `json:"BlackListedLabels"`
 
 	// CloudAPIKeys
-	CloudAPIKeys *PortainereeCloudAPIKeys `json:"CloudApiKeys,omitempty"`
+	CloudAPIKeys struct {
+		PortainereeCloudAPIKeys
+	} `json:"CloudApiKeys,omitempty"`
 
 	// The content in plaintext used to display in the login page. Will hide when value is empty string
 	CustomLoginBanner string `json:"CustomLoginBanner,omitempty"`
@@ -99,13 +112,17 @@ type PortainereeSettings struct {
 	EnforceEdgeID bool `json:"EnforceEdgeID,omitempty"`
 
 	// Experimental features
-	ExperimentalFeatures *PortainereeExperimentalFeatures `json:"ExperimentalFeatures,omitempty"`
+	ExperimentalFeatures struct {
+		PortainereeExperimentalFeatures
+	} `json:"ExperimentalFeatures,omitempty"`
 
 	// feature flag settings
 	FeatureFlagSettings map[string]bool `json:"FeatureFlagSettings,omitempty"`
 
 	// Deployment options for encouraging git ops workflows
-	GlobalDeploymentOptions *PortainereeGlobalDeploymentOptions `json:"GlobalDeploymentOptions,omitempty"`
+	GlobalDeploymentOptions struct {
+		PortainereeGlobalDeploymentOptions
+	} `json:"GlobalDeploymentOptions,omitempty"`
 
 	// Helm repository URL, defaults to "https://charts.bitnami.com/bitnami"
 	// Example: https://charts.bitnami.com/bitnami
@@ -162,6 +179,18 @@ type PortainereeSettings struct {
 func (m *PortainereeSettings) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateAdditionalFunctionality(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateAuthenticationMethod(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateAutoPatchSettings(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateBlackListedLabels(formats); err != nil {
 		res = append(res, err)
 	}
@@ -208,6 +237,45 @@ func (m *PortainereeSettings) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *PortainereeSettings) validateAdditionalFunctionality(formats strfmt.Registry) error {
+	if swag.IsZero(m.AdditionalFunctionality) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+func (m *PortainereeSettings) validateAuthenticationMethod(formats strfmt.Registry) error {
+	if swag.IsZero(m.AuthenticationMethod) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+func (m *PortainereeSettings) validateAutoPatchSettings(formats strfmt.Registry) error {
+	if swag.IsZero(m.AutoPatchSettings) { // not required
+		return nil
+	}
+
+	if m.AutoPatchSettings != nil {
+		if err := m.AutoPatchSettings.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("AutoPatchSettings")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("AutoPatchSettings")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *PortainereeSettings) validateBlackListedLabels(formats strfmt.Registry) error {
 	if swag.IsZero(m.BlackListedLabels) { // not required
 		return nil
@@ -220,11 +288,15 @@ func (m *PortainereeSettings) validateBlackListedLabels(formats strfmt.Registry)
 
 		if m.BlackListedLabels[i] != nil {
 			if err := m.BlackListedLabels[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("BlackListedLabels" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("BlackListedLabels" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -239,17 +311,6 @@ func (m *PortainereeSettings) validateCloudAPIKeys(formats strfmt.Registry) erro
 		return nil
 	}
 
-	if m.CloudAPIKeys != nil {
-		if err := m.CloudAPIKeys.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("CloudApiKeys")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("CloudApiKeys")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -260,11 +321,15 @@ func (m *PortainereeSettings) validateEdge(formats strfmt.Registry) error {
 
 	if m.Edge != nil {
 		if err := m.Edge.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Edge")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Edge")
 			}
+
 			return err
 		}
 	}
@@ -277,34 +342,12 @@ func (m *PortainereeSettings) validateExperimentalFeatures(formats strfmt.Regist
 		return nil
 	}
 
-	if m.ExperimentalFeatures != nil {
-		if err := m.ExperimentalFeatures.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("ExperimentalFeatures")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("ExperimentalFeatures")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *PortainereeSettings) validateGlobalDeploymentOptions(formats strfmt.Registry) error {
 	if swag.IsZero(m.GlobalDeploymentOptions) { // not required
 		return nil
-	}
-
-	if m.GlobalDeploymentOptions != nil {
-		if err := m.GlobalDeploymentOptions.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("GlobalDeploymentOptions")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("GlobalDeploymentOptions")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -317,11 +360,15 @@ func (m *PortainereeSettings) validateInternalAuthSettings(formats strfmt.Regist
 
 	if m.InternalAuthSettings != nil {
 		if err := m.InternalAuthSettings.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("InternalAuthSettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("InternalAuthSettings")
 			}
+
 			return err
 		}
 	}
@@ -336,11 +383,15 @@ func (m *PortainereeSettings) validateLDAPSettings(formats strfmt.Registry) erro
 
 	if m.LDAPSettings != nil {
 		if err := m.LDAPSettings.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("LDAPSettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("LDAPSettings")
 			}
+
 			return err
 		}
 	}
@@ -355,11 +406,15 @@ func (m *PortainereeSettings) validateOAuthSettings(formats strfmt.Registry) err
 
 	if m.OAuthSettings != nil {
 		if err := m.OAuthSettings.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("OAuthSettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("OAuthSettings")
 			}
+
 			return err
 		}
 	}
@@ -374,11 +429,15 @@ func (m *PortainereeSettings) validateDefaultRegistry(formats strfmt.Registry) e
 
 	if m.DefaultRegistry != nil {
 		if err := m.DefaultRegistry.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("defaultRegistry")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("defaultRegistry")
 			}
+
 			return err
 		}
 	}
@@ -393,11 +452,15 @@ func (m *PortainereeSettings) validateOpenAMTConfiguration(formats strfmt.Regist
 
 	if m.OpenAMTConfiguration != nil {
 		if err := m.OpenAMTConfiguration.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("openAMTConfiguration")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("openAMTConfiguration")
 			}
+
 			return err
 		}
 	}
@@ -409,6 +472,18 @@ func (m *PortainereeSettings) validateOpenAMTConfiguration(formats strfmt.Regist
 func (m *PortainereeSettings) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateAdditionalFunctionality(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateAuthenticationMethod(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateAutoPatchSettings(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateBlackListedLabels(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -418,10 +493,6 @@ func (m *PortainereeSettings) ContextValidate(ctx context.Context, formats strfm
 	}
 
 	if err := m.contextValidateEdge(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateExperimentalFeatures(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -455,6 +526,41 @@ func (m *PortainereeSettings) ContextValidate(ctx context.Context, formats strfm
 	return nil
 }
 
+func (m *PortainereeSettings) contextValidateAdditionalFunctionality(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
+func (m *PortainereeSettings) contextValidateAuthenticationMethod(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
+func (m *PortainereeSettings) contextValidateAutoPatchSettings(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.AutoPatchSettings != nil {
+
+		if swag.IsZero(m.AutoPatchSettings) { // not required
+			return nil
+		}
+
+		if err := m.AutoPatchSettings.ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("AutoPatchSettings")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("AutoPatchSettings")
+			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *PortainereeSettings) contextValidateBlackListedLabels(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.BlackListedLabels); i++ {
@@ -466,11 +572,15 @@ func (m *PortainereeSettings) contextValidateBlackListedLabels(ctx context.Conte
 			}
 
 			if err := m.BlackListedLabels[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("BlackListedLabels" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("BlackListedLabels" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -481,22 +591,6 @@ func (m *PortainereeSettings) contextValidateBlackListedLabels(ctx context.Conte
 }
 
 func (m *PortainereeSettings) contextValidateCloudAPIKeys(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.CloudAPIKeys != nil {
-
-		if swag.IsZero(m.CloudAPIKeys) { // not required
-			return nil
-		}
-
-		if err := m.CloudAPIKeys.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("CloudApiKeys")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("CloudApiKeys")
-			}
-			return err
-		}
-	}
 
 	return nil
 }
@@ -510,32 +604,15 @@ func (m *PortainereeSettings) contextValidateEdge(ctx context.Context, formats s
 		}
 
 		if err := m.Edge.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Edge")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Edge")
 			}
-			return err
-		}
-	}
 
-	return nil
-}
-
-func (m *PortainereeSettings) contextValidateExperimentalFeatures(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.ExperimentalFeatures != nil {
-
-		if swag.IsZero(m.ExperimentalFeatures) { // not required
-			return nil
-		}
-
-		if err := m.ExperimentalFeatures.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("ExperimentalFeatures")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("ExperimentalFeatures")
-			}
 			return err
 		}
 	}
@@ -544,22 +621,6 @@ func (m *PortainereeSettings) contextValidateExperimentalFeatures(ctx context.Co
 }
 
 func (m *PortainereeSettings) contextValidateGlobalDeploymentOptions(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.GlobalDeploymentOptions != nil {
-
-		if swag.IsZero(m.GlobalDeploymentOptions) { // not required
-			return nil
-		}
-
-		if err := m.GlobalDeploymentOptions.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("GlobalDeploymentOptions")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("GlobalDeploymentOptions")
-			}
-			return err
-		}
-	}
 
 	return nil
 }
@@ -573,11 +634,15 @@ func (m *PortainereeSettings) contextValidateInternalAuthSettings(ctx context.Co
 		}
 
 		if err := m.InternalAuthSettings.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("InternalAuthSettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("InternalAuthSettings")
 			}
+
 			return err
 		}
 	}
@@ -594,11 +659,15 @@ func (m *PortainereeSettings) contextValidateLDAPSettings(ctx context.Context, f
 		}
 
 		if err := m.LDAPSettings.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("LDAPSettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("LDAPSettings")
 			}
+
 			return err
 		}
 	}
@@ -615,11 +684,15 @@ func (m *PortainereeSettings) contextValidateOAuthSettings(ctx context.Context, 
 		}
 
 		if err := m.OAuthSettings.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("OAuthSettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("OAuthSettings")
 			}
+
 			return err
 		}
 	}
@@ -636,11 +709,15 @@ func (m *PortainereeSettings) contextValidateDefaultRegistry(ctx context.Context
 		}
 
 		if err := m.DefaultRegistry.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("defaultRegistry")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("defaultRegistry")
 			}
+
 			return err
 		}
 	}
@@ -657,11 +734,15 @@ func (m *PortainereeSettings) contextValidateOpenAMTConfiguration(ctx context.Co
 		}
 
 		if err := m.OpenAMTConfiguration.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("openAMTConfiguration")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("openAMTConfiguration")
 			}
+
 			return err
 		}
 	}

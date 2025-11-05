@@ -137,7 +137,7 @@ EdgeStackWebhookInvoke webhooks for triggering edge stack updates from git
 **Access policy**: public
 */
 func (a *Client) EdgeStackWebhookInvoke(params *EdgeStackWebhookInvokeParams, opts ...ClientOption) (*EdgeStackWebhookInvokeOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeStackWebhookInvokeParams()
 	}
@@ -156,17 +156,22 @@ func (a *Client) EdgeStackWebhookInvoke(params *EdgeStackWebhookInvokeParams, op
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeStackWebhookInvokeOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeStackWebhookInvoke: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -177,7 +182,7 @@ StackAssociate associates an orphaned stack to a new environment endpoint
 **Access policy**: administrator
 */
 func (a *Client) StackAssociate(params *StackAssociateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackAssociateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackAssociateParams()
 	}
@@ -197,17 +202,22 @@ func (a *Client) StackAssociate(params *StackAssociateParams, authInfo runtime.C
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackAssociateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackAssociate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -220,7 +230,7 @@ func (a *Client) StackAssociate(params *StackAssociateParams, authInfo runtime.C
 **Access policy**: authenticated
 */
 func (a *Client) StackCreateDockerStandaloneFile(params *StackCreateDockerStandaloneFileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackCreateDockerStandaloneFileOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackCreateDockerStandaloneFileParams()
 	}
@@ -240,17 +250,22 @@ func (a *Client) StackCreateDockerStandaloneFile(params *StackCreateDockerStanda
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackCreateDockerStandaloneFileOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackCreateDockerStandaloneFile: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -263,7 +278,7 @@ func (a *Client) StackCreateDockerStandaloneFile(params *StackCreateDockerStanda
 **Access policy**: authenticated
 */
 func (a *Client) StackCreateDockerStandaloneRepository(params *StackCreateDockerStandaloneRepositoryParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackCreateDockerStandaloneRepositoryOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackCreateDockerStandaloneRepositoryParams()
 	}
@@ -283,17 +298,22 @@ func (a *Client) StackCreateDockerStandaloneRepository(params *StackCreateDocker
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackCreateDockerStandaloneRepositoryOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackCreateDockerStandaloneRepository: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -306,7 +326,7 @@ func (a *Client) StackCreateDockerStandaloneRepository(params *StackCreateDocker
 **Access policy**: authenticated
 */
 func (a *Client) StackCreateDockerStandaloneString(params *StackCreateDockerStandaloneStringParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackCreateDockerStandaloneStringOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackCreateDockerStandaloneStringParams()
 	}
@@ -326,17 +346,22 @@ func (a *Client) StackCreateDockerStandaloneString(params *StackCreateDockerStan
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackCreateDockerStandaloneStringOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackCreateDockerStandaloneString: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -349,7 +374,7 @@ func (a *Client) StackCreateDockerStandaloneString(params *StackCreateDockerStan
 **Access policy**: authenticated
 */
 func (a *Client) StackCreateDockerSwarmFile(params *StackCreateDockerSwarmFileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackCreateDockerSwarmFileOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackCreateDockerSwarmFileParams()
 	}
@@ -369,17 +394,22 @@ func (a *Client) StackCreateDockerSwarmFile(params *StackCreateDockerSwarmFilePa
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackCreateDockerSwarmFileOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackCreateDockerSwarmFile: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -392,7 +422,7 @@ func (a *Client) StackCreateDockerSwarmFile(params *StackCreateDockerSwarmFilePa
 **Access policy**: authenticated
 */
 func (a *Client) StackCreateDockerSwarmRepository(params *StackCreateDockerSwarmRepositoryParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackCreateDockerSwarmRepositoryOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackCreateDockerSwarmRepositoryParams()
 	}
@@ -412,17 +442,22 @@ func (a *Client) StackCreateDockerSwarmRepository(params *StackCreateDockerSwarm
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackCreateDockerSwarmRepositoryOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackCreateDockerSwarmRepository: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -435,7 +470,7 @@ func (a *Client) StackCreateDockerSwarmRepository(params *StackCreateDockerSwarm
 **Access policy**: authenticated
 */
 func (a *Client) StackCreateDockerSwarmString(params *StackCreateDockerSwarmStringParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackCreateDockerSwarmStringOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackCreateDockerSwarmStringParams()
 	}
@@ -455,17 +490,22 @@ func (a *Client) StackCreateDockerSwarmString(params *StackCreateDockerSwarmStri
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackCreateDockerSwarmStringOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackCreateDockerSwarmString: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -478,7 +518,7 @@ func (a *Client) StackCreateDockerSwarmString(params *StackCreateDockerSwarmStri
 **Access policy**: authenticated
 */
 func (a *Client) StackCreateKubernetesFile(params *StackCreateKubernetesFileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackCreateKubernetesFileOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackCreateKubernetesFileParams()
 	}
@@ -498,17 +538,22 @@ func (a *Client) StackCreateKubernetesFile(params *StackCreateKubernetesFilePara
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackCreateKubernetesFileOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackCreateKubernetesFile: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -521,7 +566,7 @@ func (a *Client) StackCreateKubernetesFile(params *StackCreateKubernetesFilePara
 **Access policy**: authenticated
 */
 func (a *Client) StackCreateKubernetesGit(params *StackCreateKubernetesGitParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackCreateKubernetesGitOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackCreateKubernetesGitParams()
 	}
@@ -541,17 +586,22 @@ func (a *Client) StackCreateKubernetesGit(params *StackCreateKubernetesGitParams
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackCreateKubernetesGitOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackCreateKubernetesGit: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -564,7 +614,7 @@ func (a *Client) StackCreateKubernetesGit(params *StackCreateKubernetesGitParams
 **Access policy**: authenticated
 */
 func (a *Client) StackCreateKubernetesURL(params *StackCreateKubernetesURLParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackCreateKubernetesURLOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackCreateKubernetesURLParams()
 	}
@@ -584,17 +634,22 @@ func (a *Client) StackCreateKubernetesURL(params *StackCreateKubernetesURLParams
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackCreateKubernetesURLOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackCreateKubernetesUrl: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -607,7 +662,7 @@ func (a *Client) StackCreateKubernetesURL(params *StackCreateKubernetesURLParams
 **Access policy**: restricted
 */
 func (a *Client) StackDelete(params *StackDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackDeleteNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackDeleteParams()
 	}
@@ -627,17 +682,22 @@ func (a *Client) StackDelete(params *StackDeleteParams, authInfo runtime.ClientA
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackDeleteNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackDelete: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -650,7 +710,7 @@ func (a *Client) StackDelete(params *StackDeleteParams, authInfo runtime.ClientA
 **Access policy**: restricted
 */
 func (a *Client) StackDeleteKubernetesByName(params *StackDeleteKubernetesByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackDeleteKubernetesByNameNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackDeleteKubernetesByNameParams()
 	}
@@ -670,17 +730,22 @@ func (a *Client) StackDeleteKubernetesByName(params *StackDeleteKubernetesByName
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackDeleteKubernetesByNameNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackDeleteKubernetesByName: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -693,7 +758,7 @@ func (a *Client) StackDeleteKubernetesByName(params *StackDeleteKubernetesByName
 **Access policy**: restricted
 */
 func (a *Client) StackFileInspect(params *StackFileInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackFileInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackFileInspectParams()
 	}
@@ -713,17 +778,22 @@ func (a *Client) StackFileInspect(params *StackFileInspectParams, authInfo runti
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackFileInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackFileInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -736,7 +806,7 @@ func (a *Client) StackFileInspect(params *StackFileInspectParams, authInfo runti
 **Access policy**: authenticated
 */
 func (a *Client) StackGitRedeploy(params *StackGitRedeployParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackGitRedeployOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackGitRedeployParams()
 	}
@@ -756,17 +826,22 @@ func (a *Client) StackGitRedeploy(params *StackGitRedeployParams, authInfo runti
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackGitRedeployOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackGitRedeploy: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -779,7 +854,7 @@ func (a *Client) StackGitRedeploy(params *StackGitRedeployParams, authInfo runti
 **Access policy**: restricted
 */
 func (a *Client) StackInspect(params *StackInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackInspectParams()
 	}
@@ -799,17 +874,22 @@ func (a *Client) StackInspect(params *StackInspectParams, authInfo runtime.Clien
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -825,7 +905,7 @@ Limited stacks will not be returned by this endpoint.
 **Access policy**: authenticated
 */
 func (a *Client) StackList(params *StackListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackListOK, *StackListNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackListParams()
 	}
@@ -845,18 +925,22 @@ func (a *Client) StackList(params *StackListParams, authInfo runtime.ClientAuthI
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, nil, err
 	}
+
+	// several success responses have to be checked
 	switch value := result.(type) {
 	case *StackListOK:
 		return value, nil, nil
 	case *StackListNoContent:
 		return nil, value, nil
 	}
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for stacks: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -869,7 +953,7 @@ func (a *Client) StackList(params *StackListParams, authInfo runtime.ClientAuthI
 **Access policy**: authenticated
 */
 func (a *Client) StackMigrate(params *StackMigrateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackMigrateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackMigrateParams()
 	}
@@ -889,17 +973,22 @@ func (a *Client) StackMigrate(params *StackMigrateParams, authInfo runtime.Clien
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackMigrateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackMigrate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -912,7 +1001,7 @@ func (a *Client) StackMigrate(params *StackMigrateParams, authInfo runtime.Clien
 **Access policy**: authenticated
 */
 func (a *Client) StackStart(params *StackStartParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackStartOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackStartParams()
 	}
@@ -932,17 +1021,22 @@ func (a *Client) StackStart(params *StackStartParams, authInfo runtime.ClientAut
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackStartOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackStart: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -955,7 +1049,7 @@ func (a *Client) StackStart(params *StackStartParams, authInfo runtime.ClientAut
 **Access policy**: authenticated
 */
 func (a *Client) StackStop(params *StackStopParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackStopOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackStopParams()
 	}
@@ -975,17 +1069,22 @@ func (a *Client) StackStop(params *StackStopParams, authInfo runtime.ClientAuthI
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackStopOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackStop: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -998,7 +1097,7 @@ func (a *Client) StackStop(params *StackStopParams, authInfo runtime.ClientAuthI
 **Access policy**: authenticated
 */
 func (a *Client) StackUpdate(params *StackUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackUpdateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackUpdateParams()
 	}
@@ -1018,17 +1117,22 @@ func (a *Client) StackUpdate(params *StackUpdateParams, authInfo runtime.ClientA
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackUpdateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -1041,7 +1145,7 @@ func (a *Client) StackUpdate(params *StackUpdateParams, authInfo runtime.ClientA
 **Access policy**: authenticated
 */
 func (a *Client) StackUpdateGit(params *StackUpdateGitParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackUpdateGitOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackUpdateGitParams()
 	}
@@ -1061,17 +1165,22 @@ func (a *Client) StackUpdateGit(params *StackUpdateGitParams, authInfo runtime.C
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackUpdateGitOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StackUpdateGit: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -1082,7 +1191,7 @@ StacksWebhookInvoke webhooks for triggering stack updates from git
 **Access policy**: public
 */
 func (a *Client) StacksWebhookInvoke(params *StacksWebhookInvokeParams, opts ...ClientOption) (*StacksWebhookInvokeOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStacksWebhookInvokeParams()
 	}
@@ -1101,17 +1210,22 @@ func (a *Client) StacksWebhookInvoke(params *StacksWebhookInvokeParams, opts ...
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StacksWebhookInvokeOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for StacksWebhookInvoke: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -1122,7 +1236,7 @@ StackImagesStatus fetches image status for stack
 **Access policy**:
 */
 func (a *Client) StackImagesStatus(params *StackImagesStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StackImagesStatusOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStackImagesStatusParams()
 	}
@@ -1142,17 +1256,22 @@ func (a *Client) StackImagesStatus(params *StackImagesStatusParams, authInfo run
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StackImagesStatusOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for stackImagesStatus: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

@@ -20,21 +20,38 @@ type V1EnvVarSource struct {
 
 	// Selects a key of a ConfigMap.
 	// +optional
-	ConfigMapKeyRef *V1ConfigMapKeySelector `json:"configMapKeyRef,omitempty"`
+	ConfigMapKeyRef struct {
+		V1ConfigMapKeySelector
+	} `json:"configMapKeyRef,omitempty"`
 
 	// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
 	// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 	// +optional
-	FieldRef *V1ObjectFieldSelector `json:"fieldRef,omitempty"`
+	FieldRef struct {
+		V1ObjectFieldSelector
+	} `json:"fieldRef,omitempty"`
+
+	// FileKeyRef selects a key of the env file.
+	// Requires the EnvFiles feature gate to be enabled.
+	//
+	// +featureGate=EnvFiles
+	// +optional
+	FileKeyRef struct {
+		V1FileKeySelector
+	} `json:"fileKeyRef,omitempty"`
 
 	// Selects a resource of the container: only resources limits and requests
 	// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 	// +optional
-	ResourceFieldRef *V1ResourceFieldSelector `json:"resourceFieldRef,omitempty"`
+	ResourceFieldRef struct {
+		V1ResourceFieldSelector
+	} `json:"resourceFieldRef,omitempty"`
 
 	// Selects a key of a secret in the pod's namespace
 	// +optional
-	SecretKeyRef *V1SecretKeySelector `json:"secretKeyRef,omitempty"`
+	SecretKeyRef struct {
+		V1SecretKeySelector
+	} `json:"secretKeyRef,omitempty"`
 }
 
 // Validate validates this v1 env var source
@@ -46,6 +63,10 @@ func (m *V1EnvVarSource) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateFieldRef(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateFileKeyRef(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -68,17 +89,6 @@ func (m *V1EnvVarSource) validateConfigMapKeyRef(formats strfmt.Registry) error 
 		return nil
 	}
 
-	if m.ConfigMapKeyRef != nil {
-		if err := m.ConfigMapKeyRef.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("configMapKeyRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("configMapKeyRef")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -87,15 +97,12 @@ func (m *V1EnvVarSource) validateFieldRef(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.FieldRef != nil {
-		if err := m.FieldRef.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("fieldRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("fieldRef")
-			}
-			return err
-		}
+	return nil
+}
+
+func (m *V1EnvVarSource) validateFileKeyRef(formats strfmt.Registry) error {
+	if swag.IsZero(m.FileKeyRef) { // not required
+		return nil
 	}
 
 	return nil
@@ -106,34 +113,12 @@ func (m *V1EnvVarSource) validateResourceFieldRef(formats strfmt.Registry) error
 		return nil
 	}
 
-	if m.ResourceFieldRef != nil {
-		if err := m.ResourceFieldRef.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("resourceFieldRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("resourceFieldRef")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V1EnvVarSource) validateSecretKeyRef(formats strfmt.Registry) error {
 	if swag.IsZero(m.SecretKeyRef) { // not required
 		return nil
-	}
-
-	if m.SecretKeyRef != nil {
-		if err := m.SecretKeyRef.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("secretKeyRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("secretKeyRef")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -148,6 +133,10 @@ func (m *V1EnvVarSource) ContextValidate(ctx context.Context, formats strfmt.Reg
 	}
 
 	if err := m.contextValidateFieldRef(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateFileKeyRef(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -167,84 +156,25 @@ func (m *V1EnvVarSource) ContextValidate(ctx context.Context, formats strfmt.Reg
 
 func (m *V1EnvVarSource) contextValidateConfigMapKeyRef(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.ConfigMapKeyRef != nil {
-
-		if swag.IsZero(m.ConfigMapKeyRef) { // not required
-			return nil
-		}
-
-		if err := m.ConfigMapKeyRef.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("configMapKeyRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("configMapKeyRef")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V1EnvVarSource) contextValidateFieldRef(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.FieldRef != nil {
+	return nil
+}
 
-		if swag.IsZero(m.FieldRef) { // not required
-			return nil
-		}
-
-		if err := m.FieldRef.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("fieldRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("fieldRef")
-			}
-			return err
-		}
-	}
+func (m *V1EnvVarSource) contextValidateFileKeyRef(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }
 
 func (m *V1EnvVarSource) contextValidateResourceFieldRef(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.ResourceFieldRef != nil {
-
-		if swag.IsZero(m.ResourceFieldRef) { // not required
-			return nil
-		}
-
-		if err := m.ResourceFieldRef.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("resourceFieldRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("resourceFieldRef")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V1EnvVarSource) contextValidateSecretKeyRef(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.SecretKeyRef != nil {
-
-		if swag.IsZero(m.SecretKeyRef) { // not required
-			return nil
-		}
-
-		if err := m.SecretKeyRef.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("secretKeyRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("secretKeyRef")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

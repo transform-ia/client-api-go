@@ -68,6 +68,8 @@ type ClientService interface {
 
 	RegistryUpdate(params *RegistryUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegistryUpdateOK, error)
 
+	RepositoryTagsDelete(params *RepositoryTagsDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RepositoryTagsDeleteNoContent, error)
+
 	EcrDeleteRepository(params *EcrDeleteRepositoryParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EcrDeleteRepositoryOK, error)
 
 	EcrDeleteTags(params *EcrDeleteTagsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EcrDeleteTagsNoContent, error)
@@ -83,7 +85,7 @@ type ClientService interface {
 **Access policy**: restricted
 */
 func (a *Client) RegistryConfigure(params *RegistryConfigureParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegistryConfigureNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewRegistryConfigureParams()
 	}
@@ -103,17 +105,22 @@ func (a *Client) RegistryConfigure(params *RegistryConfigureParams, authInfo run
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*RegistryConfigureNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for RegistryConfigure: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -126,7 +133,7 @@ func (a *Client) RegistryConfigure(params *RegistryConfigureParams, authInfo run
 **Access policy**: restricted
 */
 func (a *Client) RegistryCreate(params *RegistryCreateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegistryCreateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewRegistryCreateParams()
 	}
@@ -146,17 +153,22 @@ func (a *Client) RegistryCreate(params *RegistryCreateParams, authInfo runtime.C
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*RegistryCreateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for RegistryCreate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -169,7 +181,7 @@ func (a *Client) RegistryCreate(params *RegistryCreateParams, authInfo runtime.C
 **Access policy**: restricted
 */
 func (a *Client) RegistryDelete(params *RegistryDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegistryDeleteNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewRegistryDeleteParams()
 	}
@@ -189,17 +201,22 @@ func (a *Client) RegistryDelete(params *RegistryDeleteParams, authInfo runtime.C
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*RegistryDeleteNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for RegistryDelete: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -212,7 +229,7 @@ func (a *Client) RegistryDelete(params *RegistryDeleteParams, authInfo runtime.C
 **Access policy**: restricted
 */
 func (a *Client) RegistryInspect(params *RegistryInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegistryInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewRegistryInspectParams()
 	}
@@ -232,17 +249,22 @@ func (a *Client) RegistryInspect(params *RegistryInspectParams, authInfo runtime
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*RegistryInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for RegistryInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -257,7 +279,7 @@ will only return authorized registries.
 **Access policy**: restricted
 */
 func (a *Client) RegistryList(params *RegistryListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegistryListOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewRegistryListParams()
 	}
@@ -277,17 +299,22 @@ func (a *Client) RegistryList(params *RegistryListParams, authInfo runtime.Clien
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*RegistryListOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for RegistryList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -300,7 +327,7 @@ func (a *Client) RegistryList(params *RegistryListParams, authInfo runtime.Clien
 **Access policy**: restricted
 */
 func (a *Client) RegistryUpdate(params *RegistryUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RegistryUpdateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewRegistryUpdateParams()
 	}
@@ -320,18 +347,71 @@ func (a *Client) RegistryUpdate(params *RegistryUpdateParams, authInfo runtime.C
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*RegistryUpdateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for RegistryUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+	RepositoryTagsDelete deletes repository tags
+
+	Delete tags for a given repository
+
+**Access policy**: restricted
+*/
+func (a *Client) RepositoryTagsDelete(params *RepositoryTagsDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RepositoryTagsDeleteNoContent, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewRepositoryTagsDeleteParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "RepositoryTagsDelete",
+		Method:             "DELETE",
+		PathPattern:        "/registries/{id}/repositories/{repositoryName}/tags",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &RepositoryTagsDeleteReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*RepositoryTagsDeleteNoContent)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for RepositoryTagsDelete: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -343,7 +423,7 @@ func (a *Client) RegistryUpdate(params *RegistryUpdateParams, authInfo runtime.C
 **Access policy**: restricted
 */
 func (a *Client) EcrDeleteRepository(params *EcrDeleteRepositoryParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EcrDeleteRepositoryOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEcrDeleteRepositoryParams()
 	}
@@ -363,17 +443,22 @@ func (a *Client) EcrDeleteRepository(params *EcrDeleteRepositoryParams, authInfo
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EcrDeleteRepositoryOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for ecrDeleteRepository: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -386,7 +471,7 @@ func (a *Client) EcrDeleteRepository(params *EcrDeleteRepositoryParams, authInfo
 **Access policy**: restricted
 */
 func (a *Client) EcrDeleteTags(params *EcrDeleteTagsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EcrDeleteTagsNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEcrDeleteTagsParams()
 	}
@@ -406,17 +491,22 @@ func (a *Client) EcrDeleteTags(params *EcrDeleteTagsParams, authInfo runtime.Cli
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EcrDeleteTagsNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for ecrDeleteTags: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

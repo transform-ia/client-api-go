@@ -67,7 +67,7 @@ type EdgeStackCreateStringParams struct {
 
 	   stack config
 	*/
-	Body *models.EdgestacksEdgeStackFromStringPayload
+	Body *models.GithubComPortainerPortainerEeAPIHTTPHandlerEdgestacksEdgeStackFromStringPayload
 
 	/* Dryrun.
 
@@ -129,13 +129,13 @@ func (o *EdgeStackCreateStringParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the edge stack create string params
-func (o *EdgeStackCreateStringParams) WithBody(body *models.EdgestacksEdgeStackFromStringPayload) *EdgeStackCreateStringParams {
+func (o *EdgeStackCreateStringParams) WithBody(body *models.GithubComPortainerPortainerEeAPIHTTPHandlerEdgestacksEdgeStackFromStringPayload) *EdgeStackCreateStringParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the edge stack create string params
-func (o *EdgeStackCreateStringParams) SetBody(body *models.EdgestacksEdgeStackFromStringPayload) {
+func (o *EdgeStackCreateStringParams) SetBody(body *models.GithubComPortainerPortainerEeAPIHTTPHandlerEdgestacksEdgeStackFromStringPayload) {
 	o.Body = body
 }
 

@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -26,15 +27,6 @@ type V1beta1PodMetricsList struct {
 	// +optional
 	APIVersion string `json:"apiVersion,omitempty"`
 
-	// continue may be set if the user set a limit on the number of items returned, and indicates that
-	// the server has more data available. The value is opaque and may be used to issue another request
-	// to the endpoint that served this list to retrieve the next set of available objects. Continuing a
-	// consistent list may not be possible if the server configuration has changed or more than a few
-	// minutes have passed. The resourceVersion field returned when using this continue value will be
-	// identical to the value in the first response, unless you have received this token from an error
-	// message.
-	Continue string `json:"continue,omitempty"`
-
 	// List of pod metrics.
 	Items []*V1beta1PodMetrics `json:"items"`
 
@@ -46,30 +38,11 @@ type V1beta1PodMetricsList struct {
 	// +optional
 	Kind string `json:"kind,omitempty"`
 
-	// remainingItemCount is the number of subsequent items in the list which are not included in this
-	// list response. If the list request contained label or field selectors, then the number of
-	// remaining items is unknown and the field will be left unset and omitted during serialization.
-	// If the list is complete (either because it is not chunking or because this is the last chunk),
-	// then there are no more remaining items and this field will be left unset and omitted during
-	// serialization.
-	// Servers older than v1.15 do not set this field.
-	// The intended use of the remainingItemCount is *estimating* the size of a collection. Clients
-	// should not rely on the remainingItemCount to be set or to be exact.
-	// +optional
-	RemainingItemCount int64 `json:"remainingItemCount,omitempty"`
-
-	// String that identifies the server's internal version of this object that
-	// can be used by clients to determine when objects have changed.
-	// Value must be treated as opaque by clients and passed unmodified back to the server.
-	// Populated by the system.
-	// Read-only.
-	// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-	// +optional
-	ResourceVersion string `json:"resourceVersion,omitempty"`
-
-	// Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.
-	// +optional
-	SelfLink string `json:"selfLink,omitempty"`
+	// Standard list metadata.
+	// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+	Metadata struct {
+		V1ListMeta
+	} `json:"metadata,omitempty"`
 }
 
 // Validate validates this v1beta1 pod metrics list
@@ -77,6 +50,10 @@ func (m *V1beta1PodMetricsList) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateItems(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateMetadata(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -98,15 +75,27 @@ func (m *V1beta1PodMetricsList) validateItems(formats strfmt.Registry) error {
 
 		if m.Items[i] != nil {
 			if err := m.Items[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("items" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("items" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *V1beta1PodMetricsList) validateMetadata(formats strfmt.Registry) error {
+	if swag.IsZero(m.Metadata) { // not required
+		return nil
 	}
 
 	return nil
@@ -117,6 +106,10 @@ func (m *V1beta1PodMetricsList) ContextValidate(ctx context.Context, formats str
 	var res []error
 
 	if err := m.contextValidateItems(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateMetadata(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -137,16 +130,25 @@ func (m *V1beta1PodMetricsList) contextValidateItems(ctx context.Context, format
 			}
 
 			if err := m.Items[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("items" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("items" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
 	}
+
+	return nil
+}
+
+func (m *V1beta1PodMetricsList) contextValidateMetadata(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }

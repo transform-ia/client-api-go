@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -17,11 +18,17 @@ import (
 // swagger:model portaineree.GitCredential
 type PortainereeGitCredential struct {
 
+	// authorization type
+	// Example: 0
+	AuthorizationType struct {
+		GittypesGitCredentialAuthType
+	} `json:"authorizationType,omitempty"`
+
 	// creation date
 	// Example: 1587399600
 	CreationDate int64 `json:"creationDate,omitempty"`
 
-	// GitCredentialID used to identify the binded git credential
+	// id
 	// Example: 1
 	ID int64 `json:"id,omitempty"`
 
@@ -31,7 +38,7 @@ type PortainereeGitCredential struct {
 	// password
 	Password string `json:"password,omitempty"`
 
-	// User Identifier
+	// user Id
 	// Example: 1
 	UserID int64 `json:"userId,omitempty"`
 
@@ -41,11 +48,42 @@ type PortainereeGitCredential struct {
 
 // Validate validates this portaineree git credential
 func (m *PortainereeGitCredential) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateAuthorizationType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this portaineree git credential based on context it is used
+func (m *PortainereeGitCredential) validateAuthorizationType(formats strfmt.Registry) error {
+	if swag.IsZero(m.AuthorizationType) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+// ContextValidate validate this portaineree git credential based on the context it is used
 func (m *PortainereeGitCredential) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateAuthorizationType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *PortainereeGitCredential) contextValidateAuthorizationType(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -19,6 +20,9 @@ import (
 // swagger:model kubernetes.K8sApplication
 type KubernetesK8sApplication struct {
 
+	// annotations
+	Annotations map[string]string `json:"Annotations,omitempty"`
+
 	// application owner
 	ApplicationOwner string `json:"ApplicationOwner,omitempty"`
 
@@ -29,7 +33,7 @@ type KubernetesK8sApplication struct {
 	Configurations []*KubernetesConfiguration `json:"Configurations"`
 
 	// containers
-	Containers []interface{} `json:"Containers"`
+	Containers []any `json:"Containers"`
 
 	// creation date
 	CreationDate string `json:"CreationDate,omitempty"`
@@ -167,11 +171,15 @@ func (m *KubernetesK8sApplication) validateConfigurations(formats strfmt.Registr
 
 		if m.Configurations[i] != nil {
 			if err := m.Configurations[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Configurations" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Configurations" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -188,11 +196,15 @@ func (m *KubernetesK8sApplication) validateCustomResourceMetadata(formats strfmt
 
 	if m.CustomResourceMetadata != nil {
 		if err := m.CustomResourceMetadata.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("CustomResourceMetadata")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("CustomResourceMetadata")
 			}
+
 			return err
 		}
 	}
@@ -207,11 +219,15 @@ func (m *KubernetesK8sApplication) validateHorizontalPodAutoscaler(formats strfm
 
 	if m.HorizontalPodAutoscaler != nil {
 		if err := m.HorizontalPodAutoscaler.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("HorizontalPodAutoscaler")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("HorizontalPodAutoscaler")
 			}
+
 			return err
 		}
 	}
@@ -226,11 +242,15 @@ func (m *KubernetesK8sApplication) validateMetadata(formats strfmt.Registry) err
 
 	if m.Metadata != nil {
 		if err := m.Metadata.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Metadata")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Metadata")
 			}
+
 			return err
 		}
 	}
@@ -250,11 +270,15 @@ func (m *KubernetesK8sApplication) validatePods(formats strfmt.Registry) error {
 
 		if m.Pods[i] != nil {
 			if err := m.Pods[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Pods" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Pods" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -276,11 +300,15 @@ func (m *KubernetesK8sApplication) validatePublishedPorts(formats strfmt.Registr
 
 		if m.PublishedPorts[i] != nil {
 			if err := m.PublishedPorts[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("PublishedPorts" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("PublishedPorts" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -297,11 +325,15 @@ func (m *KubernetesK8sApplication) validateResource(formats strfmt.Registry) err
 
 	if m.Resource != nil {
 		if err := m.Resource.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Resource")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Resource")
 			}
+
 			return err
 		}
 	}
@@ -321,11 +353,15 @@ func (m *KubernetesK8sApplication) validateServices(formats strfmt.Registry) err
 
 		if m.Services[i] != nil {
 			if err := m.Services[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Services" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Services" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -388,11 +424,15 @@ func (m *KubernetesK8sApplication) contextValidateConfigurations(ctx context.Con
 			}
 
 			if err := m.Configurations[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Configurations" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Configurations" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -411,11 +451,15 @@ func (m *KubernetesK8sApplication) contextValidateCustomResourceMetadata(ctx con
 		}
 
 		if err := m.CustomResourceMetadata.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("CustomResourceMetadata")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("CustomResourceMetadata")
 			}
+
 			return err
 		}
 	}
@@ -432,11 +476,15 @@ func (m *KubernetesK8sApplication) contextValidateHorizontalPodAutoscaler(ctx co
 		}
 
 		if err := m.HorizontalPodAutoscaler.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("HorizontalPodAutoscaler")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("HorizontalPodAutoscaler")
 			}
+
 			return err
 		}
 	}
@@ -453,11 +501,15 @@ func (m *KubernetesK8sApplication) contextValidateMetadata(ctx context.Context, 
 		}
 
 		if err := m.Metadata.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Metadata")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Metadata")
 			}
+
 			return err
 		}
 	}
@@ -476,11 +528,15 @@ func (m *KubernetesK8sApplication) contextValidatePods(ctx context.Context, form
 			}
 
 			if err := m.Pods[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Pods" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Pods" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -501,11 +557,15 @@ func (m *KubernetesK8sApplication) contextValidatePublishedPorts(ctx context.Con
 			}
 
 			if err := m.PublishedPorts[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("PublishedPorts" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("PublishedPorts" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -524,11 +584,15 @@ func (m *KubernetesK8sApplication) contextValidateResource(ctx context.Context, 
 		}
 
 		if err := m.Resource.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Resource")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Resource")
 			}
+
 			return err
 		}
 	}
@@ -547,11 +611,15 @@ func (m *KubernetesK8sApplication) contextValidateServices(ctx context.Context, 
 			}
 
 			if err := m.Services[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Services" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Services" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

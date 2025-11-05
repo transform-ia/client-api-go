@@ -81,7 +81,7 @@ ServiceImageStatus fetches image status for service
 **Access policy**:
 */
 func (a *Client) ServiceImageStatus(params *ServiceImageStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ServiceImageStatusOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewServiceImageStatusParams()
 	}
@@ -101,17 +101,22 @@ func (a *Client) ServiceImageStatus(params *ServiceImageStatusParams, authInfo r
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*ServiceImageStatusOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for ServiceImageStatus: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -122,7 +127,7 @@ ContainerImageStatus fetches image status for container
 **Access policy**:
 */
 func (a *Client) ContainerImageStatus(params *ContainerImageStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ContainerImageStatusOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewContainerImageStatusParams()
 	}
@@ -142,17 +147,22 @@ func (a *Client) ContainerImageStatus(params *ContainerImageStatusParams, authIn
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*ContainerImageStatusOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for containerImageStatus: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -165,7 +175,7 @@ func (a *Client) ContainerImageStatus(params *ContainerImageStatusParams, authIn
 **Access policy**:
 */
 func (a *Client) ContainersImageStatusClear(params *ContainersImageStatusClearParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ContainersImageStatusClearNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewContainersImageStatusClearParams()
 	}
@@ -185,17 +195,22 @@ func (a *Client) ContainersImageStatusClear(params *ContainersImageStatusClearPa
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*ContainersImageStatusClearNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for containersImageStatusClear: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -206,7 +221,7 @@ DockerContainerGpusInspect fetches container gpus data
 **Access policy**:
 */
 func (a *Client) DockerContainerGpusInspect(params *DockerContainerGpusInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DockerContainerGpusInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewDockerContainerGpusInspectParams()
 	}
@@ -226,17 +241,22 @@ func (a *Client) DockerContainerGpusInspect(params *DockerContainerGpusInspectPa
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*DockerContainerGpusInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for dockerContainerGpusInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -247,13 +267,13 @@ DockerDashboard gets counters for the dashboard
 **Access policy**: restricted
 */
 func (a *Client) DockerDashboard(params *DockerDashboardParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DockerDashboardOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewDockerDashboardParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "dockerDashboard",
-		Method:             "POST",
+		Method:             "GET",
 		PathPattern:        "/docker/{environmentId}/dashboard",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
@@ -267,17 +287,22 @@ func (a *Client) DockerDashboard(params *DockerDashboardParams, authInfo runtime
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*DockerDashboardOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for dockerDashboard: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -288,7 +313,7 @@ DockerImagesList fetches images
 **Access policy**:
 */
 func (a *Client) DockerImagesList(params *DockerImagesListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DockerImagesListOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewDockerImagesListParams()
 	}
@@ -308,17 +333,22 @@ func (a *Client) DockerImagesList(params *DockerImagesListParams, authInfo runti
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*DockerImagesListOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for dockerImagesList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -331,7 +361,7 @@ func (a *Client) DockerImagesList(params *DockerImagesListParams, authInfo runti
 **Access policy**:
 */
 func (a *Client) ServiceImageStatusClear(params *ServiceImageStatusClearParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ServiceImageStatusClearNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewServiceImageStatusClearParams()
 	}
@@ -351,17 +381,22 @@ func (a *Client) ServiceImageStatusClear(params *ServiceImageStatusClearParams, 
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*ServiceImageStatusClearNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for serviceImageStatusClear: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -374,7 +409,7 @@ func (a *Client) ServiceImageStatusClear(params *ServiceImageStatusClearParams, 
 **Access policy**:
 */
 func (a *Client) StacksImageStatusClear(params *StacksImageStatusClearParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*StacksImageStatusClearNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewStacksImageStatusClearParams()
 	}
@@ -394,17 +429,22 @@ func (a *Client) StacksImageStatusClear(params *StacksImageStatusClearParams, au
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*StacksImageStatusClearNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for stacksImageStatusClear: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

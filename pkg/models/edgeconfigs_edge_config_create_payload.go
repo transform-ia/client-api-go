@@ -7,7 +7,9 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -21,7 +23,7 @@ type EdgeconfigsEdgeConfigCreatePayload struct {
 	BaseDir string `json:"baseDir,omitempty"`
 
 	// category
-	Category string `json:"category,omitempty"`
+	Category PortainereeEdgeConfigCategory `json:"category,omitempty"`
 
 	// edge group i ds
 	EdgeGroupIDs []int64 `json:"edgeGroupIDs"`
@@ -35,11 +37,72 @@ type EdgeconfigsEdgeConfigCreatePayload struct {
 
 // Validate validates this edgeconfigs edge config create payload
 func (m *EdgeconfigsEdgeConfigCreatePayload) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateCategory(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this edgeconfigs edge config create payload based on context it is used
+func (m *EdgeconfigsEdgeConfigCreatePayload) validateCategory(formats strfmt.Registry) error {
+	if swag.IsZero(m.Category) { // not required
+		return nil
+	}
+
+	if err := m.Category.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("category")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("category")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this edgeconfigs edge config create payload based on the context it is used
 func (m *EdgeconfigsEdgeConfigCreatePayload) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateCategory(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *EdgeconfigsEdgeConfigCreatePayload) contextValidateCategory(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Category) { // not required
+		return nil
+	}
+
+	if err := m.Category.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("category")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("category")
+		}
+
+		return err
+	}
+
 	return nil
 }
 

@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -65,7 +66,7 @@ type PortainerDockerContainerSnapshot struct {
 	SizeRw int64 `json:"sizeRw,omitempty"`
 
 	// state
-	State string `json:"state,omitempty"`
+	State ContainerContainerState `json:"state,omitempty"`
 
 	// status
 	Status string `json:"status,omitempty"`
@@ -95,6 +96,10 @@ func (m *PortainerDockerContainerSnapshot) Validate(formats strfmt.Registry) err
 		res = append(res, err)
 	}
 
+	if err := m.validateState(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -108,11 +113,15 @@ func (m *PortainerDockerContainerSnapshot) validateImageManifestDescriptor(forma
 
 	if m.ImageManifestDescriptor != nil {
 		if err := m.ImageManifestDescriptor.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("ImageManifestDescriptor")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("ImageManifestDescriptor")
 			}
+
 			return err
 		}
 	}
@@ -127,11 +136,15 @@ func (m *PortainerDockerContainerSnapshot) validateHostConfig(formats strfmt.Reg
 
 	if m.HostConfig != nil {
 		if err := m.HostConfig.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("hostConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("hostConfig")
 			}
+
 			return err
 		}
 	}
@@ -151,11 +164,15 @@ func (m *PortainerDockerContainerSnapshot) validateMounts(formats strfmt.Registr
 
 		if m.Mounts[i] != nil {
 			if err := m.Mounts[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("mounts" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("mounts" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -172,11 +189,15 @@ func (m *PortainerDockerContainerSnapshot) validateNetworkSettings(formats strfm
 
 	if m.NetworkSettings != nil {
 		if err := m.NetworkSettings.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("networkSettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("networkSettings")
 			}
+
 			return err
 		}
 	}
@@ -196,15 +217,40 @@ func (m *PortainerDockerContainerSnapshot) validatePorts(formats strfmt.Registry
 
 		if m.Ports[i] != nil {
 			if err := m.Ports[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("ports" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("ports" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *PortainerDockerContainerSnapshot) validateState(formats strfmt.Registry) error {
+	if swag.IsZero(m.State) { // not required
+		return nil
+	}
+
+	if err := m.State.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("state")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("state")
+		}
+
+		return err
 	}
 
 	return nil
@@ -234,6 +280,10 @@ func (m *PortainerDockerContainerSnapshot) ContextValidate(ctx context.Context, 
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateState(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -249,11 +299,15 @@ func (m *PortainerDockerContainerSnapshot) contextValidateImageManifestDescripto
 		}
 
 		if err := m.ImageManifestDescriptor.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("ImageManifestDescriptor")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("ImageManifestDescriptor")
 			}
+
 			return err
 		}
 	}
@@ -270,11 +324,15 @@ func (m *PortainerDockerContainerSnapshot) contextValidateHostConfig(ctx context
 		}
 
 		if err := m.HostConfig.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("hostConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("hostConfig")
 			}
+
 			return err
 		}
 	}
@@ -293,11 +351,15 @@ func (m *PortainerDockerContainerSnapshot) contextValidateMounts(ctx context.Con
 			}
 
 			if err := m.Mounts[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("mounts" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("mounts" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -316,11 +378,15 @@ func (m *PortainerDockerContainerSnapshot) contextValidateNetworkSettings(ctx co
 		}
 
 		if err := m.NetworkSettings.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("networkSettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("networkSettings")
 			}
+
 			return err
 		}
 	}
@@ -339,15 +405,41 @@ func (m *PortainerDockerContainerSnapshot) contextValidatePorts(ctx context.Cont
 			}
 
 			if err := m.Ports[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("ports" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("ports" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *PortainerDockerContainerSnapshot) contextValidateState(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.State) { // not required
+		return nil
+	}
+
+	if err := m.State.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("state")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("state")
+		}
+
+		return err
 	}
 
 	return nil

@@ -73,7 +73,7 @@ type ClientService interface {
 **Access policy**: administrator
 */
 func (a *Client) TagCreate(params *TagCreateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*TagCreateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewTagCreateParams()
 	}
@@ -93,17 +93,22 @@ func (a *Client) TagCreate(params *TagCreateParams, authInfo runtime.ClientAuthI
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*TagCreateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for TagCreate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -116,7 +121,7 @@ func (a *Client) TagCreate(params *TagCreateParams, authInfo runtime.ClientAuthI
 **Access policy**: administrator
 */
 func (a *Client) TagDelete(params *TagDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*TagDeleteNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewTagDeleteParams()
 	}
@@ -136,17 +141,22 @@ func (a *Client) TagDelete(params *TagDeleteParams, authInfo runtime.ClientAuthI
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*TagDeleteNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for TagDelete: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -159,7 +169,7 @@ func (a *Client) TagDelete(params *TagDeleteParams, authInfo runtime.ClientAuthI
 **Access policy**: authenticated
 */
 func (a *Client) TagList(params *TagListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*TagListOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewTagListParams()
 	}
@@ -179,17 +189,22 @@ func (a *Client) TagList(params *TagListParams, authInfo runtime.ClientAuthInfoW
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*TagListOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for TagList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

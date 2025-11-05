@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -20,7 +21,9 @@ import (
 type EndpointsEndpointUpdatePayload struct {
 
 	// Hide manual deployment forms for an environment
-	DeploymentOptions *PortainereeDeploymentOptions `json:"DeploymentOptions,omitempty"`
+	DeploymentOptions struct {
+		PortainereeDeploymentOptions
+	} `json:"DeploymentOptions,omitempty"`
 
 	// is set status message
 	IsSetStatusMessage bool `json:"IsSetStatusMessage,omitempty"`
@@ -38,7 +41,9 @@ type EndpointsEndpointUpdatePayload struct {
 	AzureTenantID string `json:"azureTenantID,omitempty"`
 
 	// Whether GitOps update time restrictions are enabled
-	ChangeWindow *PortainereeEndpointChangeWindow `json:"changeWindow,omitempty"`
+	ChangeWindow struct {
+		PortainereeEndpointChangeWindow
+	} `json:"changeWindow,omitempty"`
 
 	// edge
 	Edge *EndpointsEndpointUpdatePayloadEdge `json:"edge,omitempty"`
@@ -55,7 +60,9 @@ type EndpointsEndpointUpdatePayload struct {
 	GroupID int64 `json:"groupID,omitempty"`
 
 	// Associated Kubernetes data
-	Kubernetes *PortainereeKubernetesData `json:"kubernetes,omitempty"`
+	Kubernetes struct {
+		PortainereeKubernetesData
+	} `json:"kubernetes,omitempty"`
 
 	// Name that will be used to identify this environment(endpoint)
 	// Example: my-environment
@@ -147,34 +154,12 @@ func (m *EndpointsEndpointUpdatePayload) validateDeploymentOptions(formats strfm
 		return nil
 	}
 
-	if m.DeploymentOptions != nil {
-		if err := m.DeploymentOptions.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("DeploymentOptions")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("DeploymentOptions")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *EndpointsEndpointUpdatePayload) validateChangeWindow(formats strfmt.Registry) error {
 	if swag.IsZero(m.ChangeWindow) { // not required
 		return nil
-	}
-
-	if m.ChangeWindow != nil {
-		if err := m.ChangeWindow.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("changeWindow")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("changeWindow")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -187,11 +172,15 @@ func (m *EndpointsEndpointUpdatePayload) validateEdge(formats strfmt.Registry) e
 
 	if m.Edge != nil {
 		if err := m.Edge.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("edge")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("edge")
 			}
+
 			return err
 		}
 	}
@@ -211,11 +200,15 @@ func (m *EndpointsEndpointUpdatePayload) validateGpus(formats strfmt.Registry) e
 
 		if m.Gpus[i] != nil {
 			if err := m.Gpus[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("gpus" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("gpus" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -230,17 +223,6 @@ func (m *EndpointsEndpointUpdatePayload) validateKubernetes(formats strfmt.Regis
 		return nil
 	}
 
-	if m.Kubernetes != nil {
-		if err := m.Kubernetes.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("kubernetes")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("kubernetes")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -251,11 +233,15 @@ func (m *EndpointsEndpointUpdatePayload) validateStatusMessage(formats strfmt.Re
 
 	if m.StatusMessage != nil {
 		if err := m.StatusMessage.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("statusMessage")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("statusMessage")
 			}
+
 			return err
 		}
 	}
@@ -270,11 +256,15 @@ func (m *EndpointsEndpointUpdatePayload) validateTeamAccessPolicies(formats strf
 
 	if m.TeamAccessPolicies != nil {
 		if err := m.TeamAccessPolicies.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("teamAccessPolicies")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("teamAccessPolicies")
 			}
+
 			return err
 		}
 	}
@@ -289,11 +279,15 @@ func (m *EndpointsEndpointUpdatePayload) validateUserAccessPolicies(formats strf
 
 	if m.UserAccessPolicies != nil {
 		if err := m.UserAccessPolicies.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("userAccessPolicies")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("userAccessPolicies")
 			}
+
 			return err
 		}
 	}
@@ -345,42 +339,10 @@ func (m *EndpointsEndpointUpdatePayload) ContextValidate(ctx context.Context, fo
 
 func (m *EndpointsEndpointUpdatePayload) contextValidateDeploymentOptions(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.DeploymentOptions != nil {
-
-		if swag.IsZero(m.DeploymentOptions) { // not required
-			return nil
-		}
-
-		if err := m.DeploymentOptions.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("DeploymentOptions")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("DeploymentOptions")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *EndpointsEndpointUpdatePayload) contextValidateChangeWindow(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.ChangeWindow != nil {
-
-		if swag.IsZero(m.ChangeWindow) { // not required
-			return nil
-		}
-
-		if err := m.ChangeWindow.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("changeWindow")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("changeWindow")
-			}
-			return err
-		}
-	}
 
 	return nil
 }
@@ -394,11 +356,15 @@ func (m *EndpointsEndpointUpdatePayload) contextValidateEdge(ctx context.Context
 		}
 
 		if err := m.Edge.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("edge")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("edge")
 			}
+
 			return err
 		}
 	}
@@ -417,11 +383,15 @@ func (m *EndpointsEndpointUpdatePayload) contextValidateGpus(ctx context.Context
 			}
 
 			if err := m.Gpus[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("gpus" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("gpus" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -432,22 +402,6 @@ func (m *EndpointsEndpointUpdatePayload) contextValidateGpus(ctx context.Context
 }
 
 func (m *EndpointsEndpointUpdatePayload) contextValidateKubernetes(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Kubernetes != nil {
-
-		if swag.IsZero(m.Kubernetes) { // not required
-			return nil
-		}
-
-		if err := m.Kubernetes.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("kubernetes")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("kubernetes")
-			}
-			return err
-		}
-	}
 
 	return nil
 }
@@ -461,11 +415,15 @@ func (m *EndpointsEndpointUpdatePayload) contextValidateStatusMessage(ctx contex
 		}
 
 		if err := m.StatusMessage.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("statusMessage")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("statusMessage")
 			}
+
 			return err
 		}
 	}
@@ -480,11 +438,15 @@ func (m *EndpointsEndpointUpdatePayload) contextValidateTeamAccessPolicies(ctx c
 	}
 
 	if err := m.TeamAccessPolicies.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("teamAccessPolicies")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("teamAccessPolicies")
 		}
+
 		return err
 	}
 
@@ -498,11 +460,15 @@ func (m *EndpointsEndpointUpdatePayload) contextValidateUserAccessPolicies(ctx c
 	}
 
 	if err := m.UserAccessPolicies.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("userAccessPolicies")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("userAccessPolicies")
 		}
+
 		return err
 	}
 
@@ -590,18 +556,51 @@ type EndpointsEndpointUpdatePayloadStatusMessage struct {
 	// Example: scale
 	Operation string `json:"operation,omitempty"`
 
-	// ,processing,error
+	// '', 'error', 'processing'
 	// Example: error
-	OperationStatus string `json:"operationStatus,omitempty"`
+	OperationStatus struct {
+		PortainereeEndpointOperationStatus
+	} `json:"operationStatus,omitempty"`
 }
 
 // Validate validates this endpoints endpoint update payload status message
 func (m *EndpointsEndpointUpdatePayloadStatusMessage) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateOperationStatus(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this endpoints endpoint update payload status message based on context it is used
+func (m *EndpointsEndpointUpdatePayloadStatusMessage) validateOperationStatus(formats strfmt.Registry) error {
+	if swag.IsZero(m.OperationStatus) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+// ContextValidate validate this endpoints endpoint update payload status message based on the context it is used
 func (m *EndpointsEndpointUpdatePayloadStatusMessage) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateOperationStatus(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *EndpointsEndpointUpdatePayloadStatusMessage) contextValidateOperationStatus(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

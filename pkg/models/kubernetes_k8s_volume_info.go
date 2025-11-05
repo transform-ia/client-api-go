@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -57,11 +58,15 @@ func (m *KubernetesK8sVolumeInfo) validatePersistentVolume(formats strfmt.Regist
 
 	if m.PersistentVolume != nil {
 		if err := m.PersistentVolume.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("persistentVolume")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("persistentVolume")
 			}
+
 			return err
 		}
 	}
@@ -76,11 +81,15 @@ func (m *KubernetesK8sVolumeInfo) validatePersistentVolumeClaim(formats strfmt.R
 
 	if m.PersistentVolumeClaim != nil {
 		if err := m.PersistentVolumeClaim.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("persistentVolumeClaim")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("persistentVolumeClaim")
 			}
+
 			return err
 		}
 	}
@@ -95,11 +104,15 @@ func (m *KubernetesK8sVolumeInfo) validateStorageClass(formats strfmt.Registry) 
 
 	if m.StorageClass != nil {
 		if err := m.StorageClass.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("storageClass")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("storageClass")
 			}
+
 			return err
 		}
 	}
@@ -138,11 +151,15 @@ func (m *KubernetesK8sVolumeInfo) contextValidatePersistentVolume(ctx context.Co
 		}
 
 		if err := m.PersistentVolume.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("persistentVolume")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("persistentVolume")
 			}
+
 			return err
 		}
 	}
@@ -159,11 +176,15 @@ func (m *KubernetesK8sVolumeInfo) contextValidatePersistentVolumeClaim(ctx conte
 		}
 
 		if err := m.PersistentVolumeClaim.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("persistentVolumeClaim")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("persistentVolumeClaim")
 			}
+
 			return err
 		}
 	}
@@ -180,11 +201,15 @@ func (m *KubernetesK8sVolumeInfo) contextValidateStorageClass(ctx context.Contex
 		}
 
 		if err := m.StorageClass.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("storageClass")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("storageClass")
 			}
+
 			return err
 		}
 	}

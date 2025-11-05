@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -17,14 +18,14 @@ import (
 // swagger:model portainer.Webhook
 type PortainerWebhook struct {
 
-	// Environment(Endpoint) identifier. Reference the environment(endpoint) that will be used for deployment
+	// endpoint Id
 	EndpointID int64 `json:"EndpointId,omitempty"`
 
 	// Webhook Identifier
 	// Example: 1
 	ID int64 `json:"Id,omitempty"`
 
-	// Registry Identifier
+	// registry Id
 	RegistryID int64 `json:"RegistryId,omitempty"`
 
 	// resource Id
@@ -34,16 +35,49 @@ type PortainerWebhook struct {
 	Token string `json:"Token,omitempty"`
 
 	// Type of webhook (1 - service)
-	Type int64 `json:"Type,omitempty"`
+	Type struct {
+		PortainerWebhookType
+	} `json:"Type,omitempty"`
 }
 
 // Validate validates this portainer webhook
 func (m *PortainerWebhook) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this portainer webhook based on context it is used
+func (m *PortainerWebhook) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+// ContextValidate validate this portainer webhook based on the context it is used
 func (m *PortainerWebhook) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *PortainerWebhook) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

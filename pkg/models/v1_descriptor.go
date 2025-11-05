@@ -38,7 +38,9 @@ type V1Descriptor struct {
 	// Platform describes the platform which the image in the manifest runs on.
 	//
 	// This should only be used when referring to a manifest.
-	Platform *V1Platform `json:"platform,omitempty"`
+	Platform struct {
+		V1Platform
+	} `json:"platform,omitempty"`
 
 	// Size specifies the size in bytes of the blob.
 	Size int64 `json:"size,omitempty"`
@@ -66,17 +68,6 @@ func (m *V1Descriptor) validatePlatform(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.Platform != nil {
-		if err := m.Platform.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("platform")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("platform")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -95,22 +86,6 @@ func (m *V1Descriptor) ContextValidate(ctx context.Context, formats strfmt.Regis
 }
 
 func (m *V1Descriptor) contextValidatePlatform(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Platform != nil {
-
-		if swag.IsZero(m.Platform) { // not required
-			return nil
-		}
-
-		if err := m.Platform.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("platform")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("platform")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

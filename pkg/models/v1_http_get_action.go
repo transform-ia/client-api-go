@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -36,12 +37,16 @@ type V1HTTPGetAction struct {
 	// Name or number of the port to access on the container.
 	// Number must be in the range 1 to 65535.
 	// Name must be an IANA_SVC_NAME.
-	Port *IntstrIntOrString `json:"port,omitempty"`
+	Port struct {
+		IntstrIntOrString
+	} `json:"port,omitempty"`
 
 	// Scheme to use for connecting to the host.
 	// Defaults to HTTP.
 	// +optional
-	Scheme string `json:"scheme,omitempty"`
+	Scheme struct {
+		V1URIScheme
+	} `json:"scheme,omitempty"`
 }
 
 // Validate validates this v1 HTTP get action
@@ -53,6 +58,10 @@ func (m *V1HTTPGetAction) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validatePort(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateScheme(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -74,11 +83,15 @@ func (m *V1HTTPGetAction) validateHTTPHeaders(formats strfmt.Registry) error {
 
 		if m.HTTPHeaders[i] != nil {
 			if err := m.HTTPHeaders[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("httpHeaders" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("httpHeaders" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -93,15 +106,12 @@ func (m *V1HTTPGetAction) validatePort(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.Port != nil {
-		if err := m.Port.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("port")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("port")
-			}
-			return err
-		}
+	return nil
+}
+
+func (m *V1HTTPGetAction) validateScheme(formats strfmt.Registry) error {
+	if swag.IsZero(m.Scheme) { // not required
+		return nil
 	}
 
 	return nil
@@ -116,6 +126,10 @@ func (m *V1HTTPGetAction) ContextValidate(ctx context.Context, formats strfmt.Re
 	}
 
 	if err := m.contextValidatePort(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateScheme(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -136,11 +150,15 @@ func (m *V1HTTPGetAction) contextValidateHTTPHeaders(ctx context.Context, format
 			}
 
 			if err := m.HTTPHeaders[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("httpHeaders" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("httpHeaders" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -152,21 +170,10 @@ func (m *V1HTTPGetAction) contextValidateHTTPHeaders(ctx context.Context, format
 
 func (m *V1HTTPGetAction) contextValidatePort(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.Port != nil {
+	return nil
+}
 
-		if swag.IsZero(m.Port) { // not required
-			return nil
-		}
-
-		if err := m.Port.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("port")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("port")
-			}
-			return err
-		}
-	}
+func (m *V1HTTPGetAction) contextValidateScheme(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }

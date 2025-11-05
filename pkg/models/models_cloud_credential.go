@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -59,11 +60,15 @@ func (m *ModelsCloudCredential) validateCredentials(formats strfmt.Registry) err
 
 	if m.Credentials != nil {
 		if err := m.Credentials.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("credentials")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("credentials")
 			}
+
 			return err
 		}
 	}
@@ -92,11 +97,15 @@ func (m *ModelsCloudCredential) contextValidateCredentials(ctx context.Context, 
 	}
 
 	if err := m.Credentials.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("credentials")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("credentials")
 		}
+
 		return err
 	}
 

@@ -59,7 +59,7 @@ func (m *TeammembershipsTeamMembershipUpdatePayload) Validate(formats strfmt.Reg
 	return nil
 }
 
-var teammembershipsTeamMembershipUpdatePayloadTypeRolePropEnum []interface{}
+var teammembershipsTeamMembershipUpdatePayloadTypeRolePropEnum []any
 
 func init() {
 	var res []int64

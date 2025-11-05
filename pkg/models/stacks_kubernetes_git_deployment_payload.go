@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -27,6 +28,12 @@ type StacksKubernetesGitDeploymentPayload struct {
 	// compose format
 	ComposeFormat bool `json:"composeFormat,omitempty"`
 
+	// Helm-specific fields
+	HelmChartPath string `json:"helmChartPath,omitempty"`
+
+	// Array of paths to values YAML files in Git repo
+	HelmValuesFiles []string `json:"helmValuesFiles"`
+
 	// manifest file
 	ManifestFile string `json:"manifestFile,omitempty"`
 
@@ -35,6 +42,9 @@ type StacksKubernetesGitDeploymentPayload struct {
 
 	// repository authentication
 	RepositoryAuthentication bool `json:"repositoryAuthentication,omitempty"`
+
+	// repository authorization type
+	RepositoryAuthorizationType GittypesGitCredentialAuthType `json:"repositoryAuthorizationType,omitempty"`
 
 	// repository git credential ID
 	RepositoryGitCredentialID int64 `json:"repositoryGitCredentialID,omitempty"`
@@ -67,6 +77,10 @@ func (m *StacksKubernetesGitDeploymentPayload) Validate(formats strfmt.Registry)
 		res = append(res, err)
 	}
 
+	if err := m.validateRepositoryAuthorizationType(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -80,13 +94,38 @@ func (m *StacksKubernetesGitDeploymentPayload) validateAutoUpdate(formats strfmt
 
 	if m.AutoUpdate != nil {
 		if err := m.AutoUpdate.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("autoUpdate")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("autoUpdate")
 			}
+
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *StacksKubernetesGitDeploymentPayload) validateRepositoryAuthorizationType(formats strfmt.Registry) error {
+	if swag.IsZero(m.RepositoryAuthorizationType) { // not required
+		return nil
+	}
+
+	if err := m.RepositoryAuthorizationType.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("repositoryAuthorizationType")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("repositoryAuthorizationType")
+		}
+
+		return err
 	}
 
 	return nil
@@ -97,6 +136,10 @@ func (m *StacksKubernetesGitDeploymentPayload) ContextValidate(ctx context.Conte
 	var res []error
 
 	if err := m.contextValidateAutoUpdate(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateRepositoryAuthorizationType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -115,13 +158,39 @@ func (m *StacksKubernetesGitDeploymentPayload) contextValidateAutoUpdate(ctx con
 		}
 
 		if err := m.AutoUpdate.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("autoUpdate")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("autoUpdate")
 			}
+
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *StacksKubernetesGitDeploymentPayload) contextValidateRepositoryAuthorizationType(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.RepositoryAuthorizationType) { // not required
+		return nil
+	}
+
+	if err := m.RepositoryAuthorizationType.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("repositoryAuthorizationType")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("repositoryAuthorizationType")
+		}
+
+		return err
 	}
 
 	return nil

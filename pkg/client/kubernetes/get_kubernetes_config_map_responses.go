@@ -7,6 +7,7 @@ package kubernetes
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type GetKubernetesConfigMapReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *GetKubernetesConfigMapReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *GetKubernetesConfigMapReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewGetKubernetesConfigMapOK()
@@ -76,7 +77,7 @@ GetKubernetesConfigMapOK describes a response with status code 200, with default
 Success
 */
 type GetKubernetesConfigMapOK struct {
-	Payload *models.KubernetesK8sConfigMap
+	Payload *models.ModelsK8sConfigMap
 }
 
 // IsSuccess returns true when this get kubernetes config map o k response has a 2xx status code
@@ -119,16 +120,16 @@ func (o *GetKubernetesConfigMapOK) String() string {
 	return fmt.Sprintf("[GET /kubernetes/{id}/namespaces/{namespace}/configmaps/{configmap}][%d] getKubernetesConfigMapOK %s", 200, payload)
 }
 
-func (o *GetKubernetesConfigMapOK) GetPayload() *models.KubernetesK8sConfigMap {
+func (o *GetKubernetesConfigMapOK) GetPayload() *models.ModelsK8sConfigMap {
 	return o.Payload
 }
 
 func (o *GetKubernetesConfigMapOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.KubernetesK8sConfigMap)
+	o.Payload = new(models.ModelsK8sConfigMap)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

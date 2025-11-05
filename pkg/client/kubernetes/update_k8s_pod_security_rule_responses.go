@@ -18,7 +18,7 @@ type UpdateK8sPodSecurityRuleReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *UpdateK8sPodSecurityRuleReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *UpdateK8sPodSecurityRuleReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewUpdateK8sPodSecurityRuleOK()

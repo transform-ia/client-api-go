@@ -19,7 +19,9 @@ import (
 type SettingsSettingsCACertResponse struct {
 
 	// MTLSCACertificate is the X.509 Certificate of the MTLS CA Certificate
-	MTLSCACertificate *SslCertificate `json:"MTLSCACertificate,omitempty"`
+	MTLSCACertificate struct {
+		SslCertificate
+	} `json:"MTLSCACertificate,omitempty"`
 }
 
 // Validate validates this settings settings c a cert response
@@ -41,17 +43,6 @@ func (m *SettingsSettingsCACertResponse) validateMTLSCACertificate(formats strfm
 		return nil
 	}
 
-	if m.MTLSCACertificate != nil {
-		if err := m.MTLSCACertificate.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("MTLSCACertificate")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("MTLSCACertificate")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -70,22 +61,6 @@ func (m *SettingsSettingsCACertResponse) ContextValidate(ctx context.Context, fo
 }
 
 func (m *SettingsSettingsCACertResponse) contextValidateMTLSCACertificate(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.MTLSCACertificate != nil {
-
-		if swag.IsZero(m.MTLSCACertificate) { // not required
-			return nil
-		}
-
-		if err := m.MTLSCACertificate.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("MTLSCACertificate")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("MTLSCACertificate")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

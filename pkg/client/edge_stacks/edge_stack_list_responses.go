@@ -7,6 +7,7 @@ package edge_stacks
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type EdgeStackListReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *EdgeStackListReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *EdgeStackListReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewEdgeStackListOK()
@@ -64,7 +65,7 @@ EdgeStackListOK describes a response with status code 200, with default header v
 OK
 */
 type EdgeStackListOK struct {
-	Payload []*models.PortainereeEdgeStack
+	Payload []*models.GithubComPortainerPortainerEeAPIHTTPHandlerEdgestacksEdgeStackListResponseItem
 }
 
 // IsSuccess returns true when this edge stack list o k response has a 2xx status code
@@ -107,14 +108,14 @@ func (o *EdgeStackListOK) String() string {
 	return fmt.Sprintf("[GET /edge_stacks][%d] edgeStackListOK %s", 200, payload)
 }
 
-func (o *EdgeStackListOK) GetPayload() []*models.PortainereeEdgeStack {
+func (o *EdgeStackListOK) GetPayload() []*models.GithubComPortainerPortainerEeAPIHTTPHandlerEdgestacksEdgeStackListResponseItem {
 	return o.Payload
 }
 
 func (o *EdgeStackListOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

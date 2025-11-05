@@ -18,7 +18,7 @@ type GetWebsocketPodReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *GetWebsocketPodReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *GetWebsocketPodReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewGetWebsocketPodOK()

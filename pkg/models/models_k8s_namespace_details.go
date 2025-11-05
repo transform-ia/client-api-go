@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -67,11 +68,15 @@ func (m *ModelsK8sNamespaceDetails) validateLoadBalancerQuota(formats strfmt.Reg
 
 	if m.LoadBalancerQuota != nil {
 		if err := m.LoadBalancerQuota.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("LoadBalancerQuota")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("LoadBalancerQuota")
 			}
+
 			return err
 		}
 	}
@@ -86,11 +91,15 @@ func (m *ModelsK8sNamespaceDetails) validateResourceQuota(formats strfmt.Registr
 
 	if m.ResourceQuota != nil {
 		if err := m.ResourceQuota.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("ResourceQuota")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("ResourceQuota")
 			}
+
 			return err
 		}
 	}
@@ -110,11 +119,15 @@ func (m *ModelsK8sNamespaceDetails) validateStorageQuotas(formats strfmt.Registr
 		}
 		if val, ok := m.StorageQuotas[k]; ok {
 			if err := val.Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("StorageQuotas" + "." + k)
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("StorageQuotas" + "." + k)
 				}
+
 				return err
 			}
 		}
@@ -155,11 +168,15 @@ func (m *ModelsK8sNamespaceDetails) contextValidateLoadBalancerQuota(ctx context
 		}
 
 		if err := m.LoadBalancerQuota.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("LoadBalancerQuota")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("LoadBalancerQuota")
 			}
+
 			return err
 		}
 	}
@@ -176,11 +193,15 @@ func (m *ModelsK8sNamespaceDetails) contextValidateResourceQuota(ctx context.Con
 		}
 
 		if err := m.ResourceQuota.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("ResourceQuota")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("ResourceQuota")
 			}
+
 			return err
 		}
 	}

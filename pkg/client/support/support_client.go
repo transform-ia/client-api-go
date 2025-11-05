@@ -97,7 +97,7 @@ type ClientService interface {
 **Access policy**: administrator
 */
 func (a *Client) GetDebugLogStatus(params *GetDebugLogStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDebugLogStatusOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetDebugLogStatusParams()
 	}
@@ -117,17 +117,22 @@ func (a *Client) GetDebugLogStatus(params *GetDebugLogStatusParams, authInfo run
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetDebugLogStatusOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for GetDebugLogStatus: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -140,7 +145,7 @@ func (a *Client) GetDebugLogStatus(params *GetDebugLogStatusParams, authInfo run
 **Access policy**: administrator
 */
 func (a *Client) SetDebugLogStatus(params *SetDebugLogStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SetDebugLogStatusOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSetDebugLogStatusParams()
 	}
@@ -160,17 +165,22 @@ func (a *Client) SetDebugLogStatus(params *SetDebugLogStatusParams, authInfo run
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SetDebugLogStatusOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for SetDebugLogStatus: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -181,7 +191,7 @@ SupportBundleDownload downloads a bundle of files to help support diagnose issue
 **Access policy**: administrator
 */
 func (a *Client) SupportBundleDownload(params *SupportBundleDownloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SupportBundleDownloadOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSupportBundleDownloadParams()
 	}
@@ -201,17 +211,22 @@ func (a *Client) SupportBundleDownload(params *SupportBundleDownloadParams, auth
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SupportBundleDownloadOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for SupportBundleDownload: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

@@ -68,7 +68,7 @@ type DeleteKubernetesServicesParams struct {
 
 	   A map where the key is the namespace and the value is an array of services to delete
 	*/
-	Body models.KubernetesK8sServiceDeleteRequests
+	Body models.ModelsK8sServiceDeleteRequests
 
 	/* ID.
 
@@ -130,13 +130,13 @@ func (o *DeleteKubernetesServicesParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the delete kubernetes services params
-func (o *DeleteKubernetesServicesParams) WithBody(body models.KubernetesK8sServiceDeleteRequests) *DeleteKubernetesServicesParams {
+func (o *DeleteKubernetesServicesParams) WithBody(body models.ModelsK8sServiceDeleteRequests) *DeleteKubernetesServicesParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the delete kubernetes services params
-func (o *DeleteKubernetesServicesParams) SetBody(body models.KubernetesK8sServiceDeleteRequests) {
+func (o *DeleteKubernetesServicesParams) SetBody(body models.ModelsK8sServiceDeleteRequests) {
 	o.Body = body
 }
 

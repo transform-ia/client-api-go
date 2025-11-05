@@ -18,7 +18,7 @@ type UserAdminCheckReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *UserAdminCheckReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *UserAdminCheckReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 204:
 		result := NewUserAdminCheckNoContent()

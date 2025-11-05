@@ -86,6 +86,8 @@ type ClientService interface {
 
 	HelmGetHistory(params *HelmGetHistoryParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HelmGetHistoryOK, error)
 
+	HelmGitDryRun(params *HelmGitDryRunParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HelmGitDryRunOK, error)
+
 	HelmInstall(params *HelmInstallParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HelmInstallCreated, error)
 
 	HelmList(params *HelmListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HelmListOK, error)
@@ -111,7 +113,7 @@ HelmDelete deletes helm release
 **Access policy**: authenticated
 */
 func (a *Client) HelmDelete(params *HelmDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HelmDeleteNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewHelmDeleteParams()
 	}
@@ -131,17 +133,22 @@ func (a *Client) HelmDelete(params *HelmDeleteParams, authInfo runtime.ClientAut
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*HelmDeleteNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for HelmDelete: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -154,7 +161,7 @@ func (a *Client) HelmDelete(params *HelmDeleteParams, authInfo runtime.ClientAut
 **Access policy**: authenticated
 */
 func (a *Client) HelmGet(params *HelmGetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HelmGetOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewHelmGetParams()
 	}
@@ -174,17 +181,22 @@ func (a *Client) HelmGet(params *HelmGetParams, authInfo runtime.ClientAuthInfoW
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*HelmGetOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for HelmGet: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -197,7 +209,7 @@ func (a *Client) HelmGet(params *HelmGetParams, authInfo runtime.ClientAuthInfoW
 **Access policy**: authenticated
 */
 func (a *Client) HelmGetHistory(params *HelmGetHistoryParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HelmGetHistoryOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewHelmGetHistoryParams()
 	}
@@ -217,18 +229,69 @@ func (a *Client) HelmGetHistory(params *HelmGetHistoryParams, authInfo runtime.C
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*HelmGetHistoryOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for HelmGetHistory: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+HelmGitDryRun helms git dry run
+
+**Access policy**: authenticated
+*/
+func (a *Client) HelmGitDryRun(params *HelmGitDryRunParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HelmGitDryRunOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewHelmGitDryRunParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "HelmGitDryRun",
+		Method:             "POST",
+		PathPattern:        "/endpoints/{id}/kubernetes/helm/git/dryrun",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &HelmGitDryRunReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*HelmGitDryRunOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for HelmGitDryRun: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -238,7 +301,7 @@ HelmInstall installs helm chart
 **Access policy**: authenticated
 */
 func (a *Client) HelmInstall(params *HelmInstallParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HelmInstallCreated, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewHelmInstallParams()
 	}
@@ -258,17 +321,22 @@ func (a *Client) HelmInstall(params *HelmInstallParams, authInfo runtime.ClientA
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*HelmInstallCreated)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for HelmInstall: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -279,7 +347,7 @@ HelmList lists helm releases
 **Access policy**: authenticated
 */
 func (a *Client) HelmList(params *HelmListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HelmListOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewHelmListParams()
 	}
@@ -299,17 +367,22 @@ func (a *Client) HelmList(params *HelmListParams, authInfo runtime.ClientAuthInf
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*HelmListOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for HelmList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -320,7 +393,7 @@ HelmRepoSearch searches helm charts
 **Access policy**: authenticated
 */
 func (a *Client) HelmRepoSearch(params *HelmRepoSearchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HelmRepoSearchOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewHelmRepoSearchParams()
 	}
@@ -340,17 +413,22 @@ func (a *Client) HelmRepoSearch(params *HelmRepoSearchParams, authInfo runtime.C
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*HelmRepoSearchOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for HelmRepoSearch: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -363,7 +441,7 @@ func (a *Client) HelmRepoSearch(params *HelmRepoSearchParams, authInfo runtime.C
 **Access policy**: authenticated
 */
 func (a *Client) HelmRollback(params *HelmRollbackParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HelmRollbackOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewHelmRollbackParams()
 	}
@@ -383,28 +461,35 @@ func (a *Client) HelmRollback(params *HelmRollbackParams, authInfo runtime.Clien
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*HelmRollbackOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for HelmRollback: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
 /*
-HelmShow shows helm chart information
+	HelmShow shows helm chart information
 
-**Access policy**: authenticated
+	**Access policy**: authenticated
+
+Either `repo` or `registryId` parameter is required (but not both)
 */
 func (a *Client) HelmShow(params *HelmShowParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HelmShowOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewHelmShowParams()
 	}
@@ -424,17 +509,22 @@ func (a *Client) HelmShow(params *HelmShowParams, authInfo runtime.ClientAuthInf
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*HelmShowOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for HelmShow: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -447,7 +537,7 @@ func (a *Client) HelmShow(params *HelmShowParams, authInfo runtime.ClientAuthInf
 **Access policy**: authenticated
 */
 func (a *Client) HelmUserRepositoriesList(params *HelmUserRepositoriesListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HelmUserRepositoriesListOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewHelmUserRepositoriesListParams()
 	}
@@ -467,17 +557,22 @@ func (a *Client) HelmUserRepositoriesList(params *HelmUserRepositoriesListParams
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*HelmUserRepositoriesListOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for HelmUserRepositoriesList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -490,7 +585,7 @@ func (a *Client) HelmUserRepositoriesList(params *HelmUserRepositoriesListParams
 **Access policy**: authenticated
 */
 func (a *Client) HelmUserRepositoryCreate(params *HelmUserRepositoryCreateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HelmUserRepositoryCreateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewHelmUserRepositoryCreateParams()
 	}
@@ -510,17 +605,22 @@ func (a *Client) HelmUserRepositoryCreate(params *HelmUserRepositoryCreateParams
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*HelmUserRepositoryCreateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for HelmUserRepositoryCreate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -531,7 +631,7 @@ HelmUserRepositoryDelete deletes a users helm repository
 **Access policy**: authenticated
 */
 func (a *Client) HelmUserRepositoryDelete(params *HelmUserRepositoryDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HelmUserRepositoryDeleteNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewHelmUserRepositoryDeleteParams()
 	}
@@ -551,17 +651,22 @@ func (a *Client) HelmUserRepositoryDelete(params *HelmUserRepositoryDeleteParams
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*HelmUserRepositoryDeleteNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for HelmUserRepositoryDelete: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

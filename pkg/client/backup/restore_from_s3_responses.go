@@ -18,7 +18,7 @@ type RestoreFromS3Reader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *RestoreFromS3Reader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *RestoreFromS3Reader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewRestoreFromS3OK()

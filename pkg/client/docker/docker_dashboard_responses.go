@@ -7,6 +7,7 @@ package docker
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type DockerDashboardReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *DockerDashboardReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *DockerDashboardReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewDockerDashboardOK()
@@ -43,7 +44,7 @@ func (o *DockerDashboardReader) ReadResponse(response runtime.ClientResponse, co
 		}
 		return nil, result
 	default:
-		return nil, runtime.NewAPIError("[POST /docker/{environmentId}/dashboard] dockerDashboard", response, response.Code())
+		return nil, runtime.NewAPIError("[GET /docker/{environmentId}/dashboard] dockerDashboard", response, response.Code())
 	}
 }
 
@@ -93,12 +94,12 @@ func (o *DockerDashboardOK) Code() int {
 
 func (o *DockerDashboardOK) Error() string {
 	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[POST /docker/{environmentId}/dashboard][%d] dockerDashboardOK %s", 200, payload)
+	return fmt.Sprintf("[GET /docker/{environmentId}/dashboard][%d] dockerDashboardOK %s", 200, payload)
 }
 
 func (o *DockerDashboardOK) String() string {
 	payload, _ := json.Marshal(o.Payload)
-	return fmt.Sprintf("[POST /docker/{environmentId}/dashboard][%d] dockerDashboardOK %s", 200, payload)
+	return fmt.Sprintf("[GET /docker/{environmentId}/dashboard][%d] dockerDashboardOK %s", 200, payload)
 }
 
 func (o *DockerDashboardOK) GetPayload() *models.DockerDashboardResponse {
@@ -110,7 +111,7 @@ func (o *DockerDashboardOK) readResponse(response runtime.ClientResponse, consum
 	o.Payload = new(models.DockerDashboardResponse)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 
@@ -161,11 +162,11 @@ func (o *DockerDashboardBadRequest) Code() int {
 }
 
 func (o *DockerDashboardBadRequest) Error() string {
-	return fmt.Sprintf("[POST /docker/{environmentId}/dashboard][%d] dockerDashboardBadRequest", 400)
+	return fmt.Sprintf("[GET /docker/{environmentId}/dashboard][%d] dockerDashboardBadRequest", 400)
 }
 
 func (o *DockerDashboardBadRequest) String() string {
-	return fmt.Sprintf("[POST /docker/{environmentId}/dashboard][%d] dockerDashboardBadRequest", 400)
+	return fmt.Sprintf("[GET /docker/{environmentId}/dashboard][%d] dockerDashboardBadRequest", 400)
 }
 
 func (o *DockerDashboardBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
@@ -217,11 +218,11 @@ func (o *DockerDashboardInternalServerError) Code() int {
 }
 
 func (o *DockerDashboardInternalServerError) Error() string {
-	return fmt.Sprintf("[POST /docker/{environmentId}/dashboard][%d] dockerDashboardInternalServerError", 500)
+	return fmt.Sprintf("[GET /docker/{environmentId}/dashboard][%d] dockerDashboardInternalServerError", 500)
 }
 
 func (o *DockerDashboardInternalServerError) String() string {
-	return fmt.Sprintf("[POST /docker/{environmentId}/dashboard][%d] dockerDashboardInternalServerError", 500)
+	return fmt.Sprintf("[GET /docker/{environmentId}/dashboard][%d] dockerDashboardInternalServerError", 500)
 }
 
 func (o *DockerDashboardInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {

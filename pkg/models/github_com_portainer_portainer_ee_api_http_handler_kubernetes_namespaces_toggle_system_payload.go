@@ -14,7 +14,7 @@ import (
 
 // GithubComPortainerPortainerEeAPIHTTPHandlerKubernetesNamespacesToggleSystemPayload github com portainer portainer ee api http handler kubernetes namespaces toggle system payload
 //
-// swagger:model github.com_portainer_portainer-ee_api_http_handler_kubernetes.namespacesToggleSystemPayload
+// swagger:model github_com_portainer_portainer-ee_api_http_handler_kubernetes.namespacesToggleSystemPayload
 type GithubComPortainerPortainerEeAPIHTTPHandlerKubernetesNamespacesToggleSystemPayload struct {
 
 	// Toggle the system state of this namespace to true or false

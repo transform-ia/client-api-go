@@ -111,7 +111,7 @@ EdgeJobCreateFile creates an edge job from a file
 **Access policy**: administrator
 */
 func (a *Client) EdgeJobCreateFile(params *EdgeJobCreateFileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeJobCreateFileOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeJobCreateFileParams()
 	}
@@ -131,17 +131,22 @@ func (a *Client) EdgeJobCreateFile(params *EdgeJobCreateFileParams, authInfo run
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeJobCreateFileOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeJobCreateFile: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -152,7 +157,7 @@ EdgeJobCreateString creates an edge job from a text
 **Access policy**: administrator
 */
 func (a *Client) EdgeJobCreateString(params *EdgeJobCreateStringParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeJobCreateStringOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeJobCreateStringParams()
 	}
@@ -172,17 +177,22 @@ func (a *Client) EdgeJobCreateString(params *EdgeJobCreateStringParams, authInfo
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeJobCreateStringOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeJobCreateString: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -193,7 +203,7 @@ EdgeJobDelete deletes an edge job
 **Access policy**: administrator
 */
 func (a *Client) EdgeJobDelete(params *EdgeJobDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeJobDeleteNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeJobDeleteParams()
 	}
@@ -213,17 +223,22 @@ func (a *Client) EdgeJobDelete(params *EdgeJobDeleteParams, authInfo runtime.Cli
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeJobDeleteNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeJobDelete: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -234,7 +249,7 @@ EdgeJobFile fetches a file of an edge job
 **Access policy**: administrator
 */
 func (a *Client) EdgeJobFile(params *EdgeJobFileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeJobFileOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeJobFileParams()
 	}
@@ -254,17 +269,22 @@ func (a *Client) EdgeJobFile(params *EdgeJobFileParams, authInfo runtime.ClientA
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeJobFileOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeJobFile: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -275,7 +295,7 @@ EdgeJobInspect inspects an edge job
 **Access policy**: administrator
 */
 func (a *Client) EdgeJobInspect(params *EdgeJobInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeJobInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeJobInspectParams()
 	}
@@ -295,17 +315,22 @@ func (a *Client) EdgeJobInspect(params *EdgeJobInspectParams, authInfo runtime.C
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeJobInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeJobInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -316,7 +341,7 @@ EdgeJobList fetches edge jobs list
 **Access policy**: administrator
 */
 func (a *Client) EdgeJobList(params *EdgeJobListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeJobListOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeJobListParams()
 	}
@@ -336,17 +361,22 @@ func (a *Client) EdgeJobList(params *EdgeJobListParams, authInfo runtime.ClientA
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeJobListOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeJobList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -357,7 +387,7 @@ EdgeJobTaskLogsInspect fetches the log for a specifc task on an edge job
 **Access policy**: administrator
 */
 func (a *Client) EdgeJobTaskLogsInspect(params *EdgeJobTaskLogsInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeJobTaskLogsInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeJobTaskLogsInspectParams()
 	}
@@ -377,17 +407,22 @@ func (a *Client) EdgeJobTaskLogsInspect(params *EdgeJobTaskLogsInspectParams, au
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeJobTaskLogsInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeJobTaskLogsInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -398,7 +433,7 @@ EdgeJobTasksClear clears the log for a specifc task on an edge job
 **Access policy**: administrator
 */
 func (a *Client) EdgeJobTasksClear(params *EdgeJobTasksClearParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeJobTasksClearNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeJobTasksClearParams()
 	}
@@ -418,17 +453,22 @@ func (a *Client) EdgeJobTasksClear(params *EdgeJobTasksClearParams, authInfo run
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeJobTasksClearNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeJobTasksClear: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -439,7 +479,7 @@ EdgeJobTasksCollect collects the log for a specifc task on an edge job
 **Access policy**: administrator
 */
 func (a *Client) EdgeJobTasksCollect(params *EdgeJobTasksCollectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeJobTasksCollectNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeJobTasksCollectParams()
 	}
@@ -459,17 +499,22 @@ func (a *Client) EdgeJobTasksCollect(params *EdgeJobTasksCollectParams, authInfo
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeJobTasksCollectNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeJobTasksCollect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -480,7 +525,7 @@ EdgeJobTasksList fetches the list of tasks on an edge job
 **Access policy**: administrator
 */
 func (a *Client) EdgeJobTasksList(params *EdgeJobTasksListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeJobTasksListOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeJobTasksListParams()
 	}
@@ -500,17 +545,22 @@ func (a *Client) EdgeJobTasksList(params *EdgeJobTasksListParams, authInfo runti
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeJobTasksListOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeJobTasksList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -521,7 +571,7 @@ EdgeJobUpdate updates an edge job
 **Access policy**: administrator
 */
 func (a *Client) EdgeJobUpdate(params *EdgeJobUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeJobUpdateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeJobUpdateParams()
 	}
@@ -541,17 +591,22 @@ func (a *Client) EdgeJobUpdate(params *EdgeJobUpdateParams, authInfo runtime.Cli
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeJobUpdateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeJobUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

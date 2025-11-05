@@ -14,6 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 )
 
 // NewEdgeGroupListParams creates a new EdgeGroupListParams object,
@@ -60,6 +61,13 @@ EdgeGroupListParams contains all the parameters to send to the API endpoint
 	Typically these are written to a http.Request.
 */
 type EdgeGroupListParams struct {
+
+	/* Summarize.
+
+	   will summarize the env count
+	*/
+	Summarize *bool
+
 	timeout    time.Duration
 	Context    context.Context
 	HTTPClient *http.Client
@@ -113,6 +121,17 @@ func (o *EdgeGroupListParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
+// WithSummarize adds the summarize to the edge group list params
+func (o *EdgeGroupListParams) WithSummarize(summarize *bool) *EdgeGroupListParams {
+	o.SetSummarize(summarize)
+	return o
+}
+
+// SetSummarize adds the summarize to the edge group list params
+func (o *EdgeGroupListParams) SetSummarize(summarize *bool) {
+	o.Summarize = summarize
+}
+
 // WriteToRequest writes these params to a swagger request
 func (o *EdgeGroupListParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
@@ -120,6 +139,23 @@ func (o *EdgeGroupListParams) WriteToRequest(r runtime.ClientRequest, reg strfmt
 		return err
 	}
 	var res []error
+
+	if o.Summarize != nil {
+
+		// query param summarize
+		var qrSummarize bool
+
+		if o.Summarize != nil {
+			qrSummarize = *o.Summarize
+		}
+		qSummarize := swag.FormatBool(qrSummarize)
+		if qSummarize != "" {
+
+			if err := r.SetQueryParam("summarize", qSummarize); err != nil {
+				return err
+			}
+		}
+	}
 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)

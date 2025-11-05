@@ -7,6 +7,7 @@ package ldap
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type LDAPUsersReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *LDAPUsersReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *LDAPUsersReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewLDAPUsersOK()
@@ -108,7 +109,7 @@ func (o *LDAPUsersOK) GetPayload() []*models.PortainerLDAPUser {
 func (o *LDAPUsersOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

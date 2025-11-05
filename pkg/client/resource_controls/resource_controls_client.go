@@ -73,7 +73,7 @@ type ClientService interface {
 **Access policy**: administrator
 */
 func (a *Client) ResourceControlCreate(params *ResourceControlCreateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceControlCreateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewResourceControlCreateParams()
 	}
@@ -93,17 +93,22 @@ func (a *Client) ResourceControlCreate(params *ResourceControlCreateParams, auth
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*ResourceControlCreateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for ResourceControlCreate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -116,7 +121,7 @@ func (a *Client) ResourceControlCreate(params *ResourceControlCreateParams, auth
 **Access policy**: administrator
 */
 func (a *Client) ResourceControlDelete(params *ResourceControlDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceControlDeleteNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewResourceControlDeleteParams()
 	}
@@ -136,17 +141,22 @@ func (a *Client) ResourceControlDelete(params *ResourceControlDeleteParams, auth
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*ResourceControlDeleteNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for ResourceControlDelete: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -159,7 +169,7 @@ func (a *Client) ResourceControlDelete(params *ResourceControlDeleteParams, auth
 **Access policy**: authenticated
 */
 func (a *Client) ResourceControlUpdate(params *ResourceControlUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceControlUpdateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewResourceControlUpdateParams()
 	}
@@ -179,17 +189,22 @@ func (a *Client) ResourceControlUpdate(params *ResourceControlUpdateParams, auth
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*ResourceControlUpdateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for ResourceControlUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

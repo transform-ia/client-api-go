@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -63,11 +64,15 @@ func (m *PortainereeEdge) validateMtls(formats strfmt.Registry) error {
 
 	if m.Mtls != nil {
 		if err := m.Mtls.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("mtls")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("mtls")
 			}
+
 			return err
 		}
 	}
@@ -98,11 +103,15 @@ func (m *PortainereeEdge) contextValidateMtls(ctx context.Context, formats strfm
 		}
 
 		if err := m.Mtls.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("mtls")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("mtls")
 			}
+
 			return err
 		}
 	}

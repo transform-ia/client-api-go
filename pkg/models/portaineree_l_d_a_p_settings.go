@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -42,7 +43,9 @@ type PortainereeLDAPSettings struct {
 	GroupSearchSettings []*PortainerLDAPGroupSearchSettings `json:"GroupSearchSettings"`
 
 	// Kerberos settings
-	Kerberos *PortainereeLDAPKerberosSettings `json:"Kerberos,omitempty"`
+	Kerberos struct {
+		PortainereeLDAPKerberosSettings
+	} `json:"Kerberos,omitempty"`
 
 	// Password of the account that will be used to search users
 	// Example: readonly-password
@@ -57,7 +60,9 @@ type PortainereeLDAPSettings struct {
 
 	// server type
 	// Example: 1
-	ServerType int64 `json:"ServerType,omitempty"`
+	ServerType struct {
+		PortainereeLDAPServerType
+	} `json:"ServerType,omitempty"`
 
 	// Whether LDAP connection should use StartTLS
 	// Example: true
@@ -93,6 +98,10 @@ func (m *PortainereeLDAPSettings) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateServerType(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateTLSConfig(formats); err != nil {
 		res = append(res, err)
 	}
@@ -115,11 +124,15 @@ func (m *PortainereeLDAPSettings) validateAdminGroupSearchSettings(formats strfm
 
 		if m.AdminGroupSearchSettings[i] != nil {
 			if err := m.AdminGroupSearchSettings[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("AdminGroupSearchSettings" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("AdminGroupSearchSettings" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -141,11 +154,15 @@ func (m *PortainereeLDAPSettings) validateGroupSearchSettings(formats strfmt.Reg
 
 		if m.GroupSearchSettings[i] != nil {
 			if err := m.GroupSearchSettings[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("GroupSearchSettings" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("GroupSearchSettings" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -158,17 +175,6 @@ func (m *PortainereeLDAPSettings) validateGroupSearchSettings(formats strfmt.Reg
 func (m *PortainereeLDAPSettings) validateKerberos(formats strfmt.Registry) error {
 	if swag.IsZero(m.Kerberos) { // not required
 		return nil
-	}
-
-	if m.Kerberos != nil {
-		if err := m.Kerberos.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("Kerberos")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("Kerberos")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -186,15 +192,27 @@ func (m *PortainereeLDAPSettings) validateSearchSettings(formats strfmt.Registry
 
 		if m.SearchSettings[i] != nil {
 			if err := m.SearchSettings[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("SearchSettings" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("SearchSettings" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *PortainereeLDAPSettings) validateServerType(formats strfmt.Registry) error {
+	if swag.IsZero(m.ServerType) { // not required
+		return nil
 	}
 
 	return nil
@@ -207,11 +225,15 @@ func (m *PortainereeLDAPSettings) validateTLSConfig(formats strfmt.Registry) err
 
 	if m.TLSConfig != nil {
 		if err := m.TLSConfig.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("TLSConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("TLSConfig")
 			}
+
 			return err
 		}
 	}
@@ -239,6 +261,10 @@ func (m *PortainereeLDAPSettings) ContextValidate(ctx context.Context, formats s
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateServerType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateTLSConfig(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -260,11 +286,15 @@ func (m *PortainereeLDAPSettings) contextValidateAdminGroupSearchSettings(ctx co
 			}
 
 			if err := m.AdminGroupSearchSettings[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("AdminGroupSearchSettings" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("AdminGroupSearchSettings" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -285,11 +315,15 @@ func (m *PortainereeLDAPSettings) contextValidateGroupSearchSettings(ctx context
 			}
 
 			if err := m.GroupSearchSettings[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("GroupSearchSettings" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("GroupSearchSettings" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -300,22 +334,6 @@ func (m *PortainereeLDAPSettings) contextValidateGroupSearchSettings(ctx context
 }
 
 func (m *PortainereeLDAPSettings) contextValidateKerberos(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Kerberos != nil {
-
-		if swag.IsZero(m.Kerberos) { // not required
-			return nil
-		}
-
-		if err := m.Kerberos.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("Kerberos")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("Kerberos")
-			}
-			return err
-		}
-	}
 
 	return nil
 }
@@ -331,16 +349,25 @@ func (m *PortainereeLDAPSettings) contextValidateSearchSettings(ctx context.Cont
 			}
 
 			if err := m.SearchSettings[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("SearchSettings" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("SearchSettings" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
 	}
+
+	return nil
+}
+
+func (m *PortainereeLDAPSettings) contextValidateServerType(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }
@@ -354,11 +381,15 @@ func (m *PortainereeLDAPSettings) contextValidateTLSConfig(ctx context.Context, 
 		}
 
 		if err := m.TLSConfig.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("TLSConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("TLSConfig")
 			}
+
 			return err
 		}
 	}

@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -22,13 +23,12 @@ type PortainereeEdgeConfig struct {
 	BaseDir string `json:"baseDir,omitempty"`
 
 	// category
-	Category string `json:"category,omitempty"`
+	Category PortainereeEdgeConfigCategory `json:"category,omitempty"`
 
 	// created
 	Created int64 `json:"created,omitempty"`
 
-	// Deprecated fields
-	// Deprecated in DBVersion == 2
+	// created by
 	CreatedBy int64 `json:"createdBy,omitempty"`
 
 	// edge group i ds
@@ -47,7 +47,7 @@ type PortainereeEdgeConfig struct {
 	Progress *PortainereeEdgeConfigProgress `json:"progress,omitempty"`
 
 	// state
-	State int64 `json:"state,omitempty"`
+	State PortainereeEdgeConfigStateType `json:"state,omitempty"`
 
 	// type
 	Type int64 `json:"type,omitempty"`
@@ -55,14 +55,17 @@ type PortainereeEdgeConfig struct {
 	// updated
 	Updated int64 `json:"updated,omitempty"`
 
-	// Deprecated fields
-	// Deprecated in DBVersion == 2
+	// updated by
 	UpdatedBy int64 `json:"updatedBy,omitempty"`
 }
 
 // Validate validates this portaineree edge config
 func (m *PortainereeEdgeConfig) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateCategory(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validatePrev(formats); err != nil {
 		res = append(res, err)
@@ -72,9 +75,34 @@ func (m *PortainereeEdgeConfig) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateState(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *PortainereeEdgeConfig) validateCategory(formats strfmt.Registry) error {
+	if swag.IsZero(m.Category) { // not required
+		return nil
+	}
+
+	if err := m.Category.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("category")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("category")
+		}
+
+		return err
+	}
+
 	return nil
 }
 
@@ -85,11 +113,15 @@ func (m *PortainereeEdgeConfig) validatePrev(formats strfmt.Registry) error {
 
 	if m.Prev != nil {
 		if err := m.Prev.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("prev")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("prev")
 			}
+
 			return err
 		}
 	}
@@ -104,13 +136,38 @@ func (m *PortainereeEdgeConfig) validateProgress(formats strfmt.Registry) error 
 
 	if m.Progress != nil {
 		if err := m.Progress.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("progress")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("progress")
 			}
+
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *PortainereeEdgeConfig) validateState(formats strfmt.Registry) error {
+	if swag.IsZero(m.State) { // not required
+		return nil
+	}
+
+	if err := m.State.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("state")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("state")
+		}
+
+		return err
 	}
 
 	return nil
@@ -120,6 +177,10 @@ func (m *PortainereeEdgeConfig) validateProgress(formats strfmt.Registry) error 
 func (m *PortainereeEdgeConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateCategory(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidatePrev(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -128,9 +189,35 @@ func (m *PortainereeEdgeConfig) ContextValidate(ctx context.Context, formats str
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateState(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *PortainereeEdgeConfig) contextValidateCategory(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Category) { // not required
+		return nil
+	}
+
+	if err := m.Category.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("category")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("category")
+		}
+
+		return err
+	}
+
 	return nil
 }
 
@@ -143,11 +230,15 @@ func (m *PortainereeEdgeConfig) contextValidatePrev(ctx context.Context, formats
 		}
 
 		if err := m.Prev.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("prev")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("prev")
 			}
+
 			return err
 		}
 	}
@@ -164,13 +255,39 @@ func (m *PortainereeEdgeConfig) contextValidateProgress(ctx context.Context, for
 		}
 
 		if err := m.Progress.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("progress")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("progress")
 			}
+
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *PortainereeEdgeConfig) contextValidateState(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.State) { // not required
+		return nil
+	}
+
+	if err := m.State.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("state")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("state")
+		}
+
+		return err
 	}
 
 	return nil

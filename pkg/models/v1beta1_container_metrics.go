@@ -22,7 +22,9 @@ type V1beta1ContainerMetrics struct {
 	Name string `json:"name,omitempty"`
 
 	// The memory usage is the memory working set.
-	Usage V1ResourceList `json:"usage,omitempty"`
+	Usage struct {
+		V1ResourceList
+	} `json:"usage,omitempty"`
 }
 
 // Validate validates this v1beta1 container metrics
@@ -44,17 +46,6 @@ func (m *V1beta1ContainerMetrics) validateUsage(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.Usage != nil {
-		if err := m.Usage.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("usage")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("usage")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -73,19 +64,6 @@ func (m *V1beta1ContainerMetrics) ContextValidate(ctx context.Context, formats s
 }
 
 func (m *V1beta1ContainerMetrics) contextValidateUsage(ctx context.Context, formats strfmt.Registry) error {
-
-	if swag.IsZero(m.Usage) { // not required
-		return nil
-	}
-
-	if err := m.Usage.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("usage")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce.ValidateName("usage")
-		}
-		return err
-	}
 
 	return nil
 }

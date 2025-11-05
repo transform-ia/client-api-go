@@ -17,6 +17,9 @@ import (
 // swagger:model kubernetes.Metadata
 type KubernetesMetadata struct {
 
+	// annotations
+	Annotations map[string]string `json:"annotations,omitempty"`
+
 	// labels
 	Labels map[string]string `json:"labels,omitempty"`
 }

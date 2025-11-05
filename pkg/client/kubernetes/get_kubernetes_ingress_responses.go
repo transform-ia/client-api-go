@@ -7,6 +7,7 @@ package kubernetes
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type GetKubernetesIngressReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *GetKubernetesIngressReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *GetKubernetesIngressReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewGetKubernetesIngressOK()
@@ -76,7 +77,7 @@ GetKubernetesIngressOK describes a response with status code 200, with default h
 Success
 */
 type GetKubernetesIngressOK struct {
-	Payload *models.KubernetesK8sIngressInfo
+	Payload *models.ModelsK8sIngressInfo
 }
 
 // IsSuccess returns true when this get kubernetes ingress o k response has a 2xx status code
@@ -119,16 +120,16 @@ func (o *GetKubernetesIngressOK) String() string {
 	return fmt.Sprintf("[GET /kubernetes/{id}/namespaces/{namespace}/ingresses/{ingress}][%d] getKubernetesIngressOK %s", 200, payload)
 }
 
-func (o *GetKubernetesIngressOK) GetPayload() *models.KubernetesK8sIngressInfo {
+func (o *GetKubernetesIngressOK) GetPayload() *models.ModelsK8sIngressInfo {
 	return o.Payload
 }
 
 func (o *GetKubernetesIngressOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.KubernetesK8sIngressInfo)
+	o.Payload = new(models.ModelsK8sIngressInfo)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

@@ -196,8 +196,8 @@ func (o *EdgeUpdatePreviousVersionsParams) bindParamEdgeGroupIds(formats strfmt.
 		edgeGroupIdsIC = append(edgeGroupIdsIC, edgeGroupIdsIIV)
 	}
 
-	// items.CollectionFormat: ""
-	edgeGroupIdsIS := swag.JoinByFormat(edgeGroupIdsIC, "")
+	// items.CollectionFormat: "csv"
+	edgeGroupIdsIS := swag.JoinByFormat(edgeGroupIdsIC, "csv")
 
 	return edgeGroupIdsIS
 }
@@ -213,8 +213,8 @@ func (o *EdgeUpdatePreviousVersionsParams) bindParamEnvironmentIds(formats strfm
 		environmentIdsIC = append(environmentIdsIC, environmentIdsIIV)
 	}
 
-	// items.CollectionFormat: ""
-	environmentIdsIS := swag.JoinByFormat(environmentIdsIC, "")
+	// items.CollectionFormat: "csv"
+	environmentIdsIS := swag.JoinByFormat(environmentIdsIC, "csv")
 
 	return environmentIdsIS
 }

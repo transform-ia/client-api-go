@@ -18,7 +18,7 @@ type UpdateS3SettingsReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *UpdateS3SettingsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *UpdateS3SettingsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewUpdateS3SettingsOK()

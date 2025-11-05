@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -20,7 +21,9 @@ import (
 type V2HPAScalingRules struct {
 
 	// policies is a list of potential scaling polices which can be used during scaling.
-	// At least one policy must be specified, otherwise the HPAScalingRules will be discarded as invalid
+	// If not set, use the default values:
+	// - For scale up: allow doubling the number of pods, or an absolute change of 4 pods in a 15s window.
+	// - For scale down: allow all pods to be removed in a 15s window.
 	// +listType=atomic
 	// +optional
 	Policies []*V2HPAScalingPolicy `json:"policies"`
@@ -28,7 +31,9 @@ type V2HPAScalingRules struct {
 	// selectPolicy is used to specify which policy should be used.
 	// If not set, the default value Max is used.
 	// +optional
-	SelectPolicy string `json:"selectPolicy,omitempty"`
+	SelectPolicy struct {
+		V2ScalingPolicySelect
+	} `json:"selectPolicy,omitempty"`
 
 	// stabilizationWindowSeconds is the number of seconds for which past recommendations should be
 	// considered while scaling up or scaling down.
@@ -38,6 +43,24 @@ type V2HPAScalingRules struct {
 	// - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
 	// +optional
 	StabilizationWindowSeconds int64 `json:"stabilizationWindowSeconds,omitempty"`
+
+	// tolerance is the tolerance on the ratio between the current and desired
+	// metric value under which no updates are made to the desired number of
+	// replicas (e.g. 0.01 for 1%). Must be greater than or equal to zero. If not
+	// set, the default cluster-wide tolerance is applied (by default 10%).
+	//
+	// For example, if autoscaling is configured with a memory consumption target of 100Mi,
+	// and scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be
+	// triggered when the actual consumption falls below 95Mi or exceeds 101Mi.
+	//
+	// This is an alpha field and requires enabling the HPAConfigurableTolerance
+	// feature gate.
+	//
+	// +featureGate=HPAConfigurableTolerance
+	// +optional
+	Tolerance struct {
+		ResourceQuantity
+	} `json:"tolerance,omitempty"`
 }
 
 // Validate validates this v2 h p a scaling rules
@@ -45,6 +68,14 @@ func (m *V2HPAScalingRules) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validatePolicies(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateSelectPolicy(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateTolerance(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -66,15 +97,35 @@ func (m *V2HPAScalingRules) validatePolicies(formats strfmt.Registry) error {
 
 		if m.Policies[i] != nil {
 			if err := m.Policies[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("policies" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("policies" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *V2HPAScalingRules) validateSelectPolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.SelectPolicy) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+func (m *V2HPAScalingRules) validateTolerance(formats strfmt.Registry) error {
+	if swag.IsZero(m.Tolerance) { // not required
+		return nil
 	}
 
 	return nil
@@ -85,6 +136,14 @@ func (m *V2HPAScalingRules) ContextValidate(ctx context.Context, formats strfmt.
 	var res []error
 
 	if err := m.contextValidatePolicies(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateSelectPolicy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateTolerance(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -105,16 +164,30 @@ func (m *V2HPAScalingRules) contextValidatePolicies(ctx context.Context, formats
 			}
 
 			if err := m.Policies[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("policies" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("policies" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
 	}
+
+	return nil
+}
+
+func (m *V2HPAScalingRules) contextValidateSelectPolicy(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
+func (m *V2HPAScalingRules) contextValidateTolerance(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }

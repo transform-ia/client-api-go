@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -35,10 +36,9 @@ type KubernetesK8sClusterRoleBinding struct {
 	RoleRef *V1RoleRef `json:"roleRef,omitempty"`
 
 	// subjects
-	Subjects []*V1Subject `json:"subjects"`
+	Subjects []*K8sIoAPIRbacV1Subject `json:"subjects"`
 
-	// UID of the referent.
-	// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
+	// uid
 	UID string `json:"uid,omitempty"`
 }
 
@@ -67,11 +67,15 @@ func (m *KubernetesK8sClusterRoleBinding) validateRoleRef(formats strfmt.Registr
 
 	if m.RoleRef != nil {
 		if err := m.RoleRef.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("roleRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("roleRef")
 			}
+
 			return err
 		}
 	}
@@ -91,11 +95,15 @@ func (m *KubernetesK8sClusterRoleBinding) validateSubjects(formats strfmt.Regist
 
 		if m.Subjects[i] != nil {
 			if err := m.Subjects[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("subjects" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("subjects" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -132,11 +140,15 @@ func (m *KubernetesK8sClusterRoleBinding) contextValidateRoleRef(ctx context.Con
 		}
 
 		if err := m.RoleRef.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("roleRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("roleRef")
 			}
+
 			return err
 		}
 	}
@@ -155,11 +167,15 @@ func (m *KubernetesK8sClusterRoleBinding) contextValidateSubjects(ctx context.Co
 			}
 
 			if err := m.Subjects[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("subjects" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("subjects" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

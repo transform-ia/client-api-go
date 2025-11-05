@@ -21,7 +21,7 @@ type KubernetesConfiguration struct {
 	ConfigurationOwner string `json:"ConfigurationOwner,omitempty"`
 
 	// data
-	Data interface{} `json:"Data,omitempty"`
+	Data any `json:"Data,omitempty"`
 
 	// kind
 	Kind string `json:"Kind,omitempty"`

@@ -23,7 +23,9 @@ type V2HorizontalPodAutoscalerBehavior struct {
 	// 300 second stabilization window (i.e., the highest recommendation for
 	// the last 300sec is used).
 	// +optional
-	ScaleDown *V2HPAScalingRules `json:"scaleDown,omitempty"`
+	ScaleDown struct {
+		V2HPAScalingRules
+	} `json:"scaleDown,omitempty"`
 
 	// scaleUp is scaling policy for scaling Up.
 	// If not set, the default value is the higher of:
@@ -31,7 +33,9 @@ type V2HorizontalPodAutoscalerBehavior struct {
 	//   * double the number of pods per 60 seconds
 	// No stabilization is used.
 	// +optional
-	ScaleUp *V2HPAScalingRules `json:"scaleUp,omitempty"`
+	ScaleUp struct {
+		V2HPAScalingRules
+	} `json:"scaleUp,omitempty"`
 }
 
 // Validate validates this v2 horizontal pod autoscaler behavior
@@ -57,34 +61,12 @@ func (m *V2HorizontalPodAutoscalerBehavior) validateScaleDown(formats strfmt.Reg
 		return nil
 	}
 
-	if m.ScaleDown != nil {
-		if err := m.ScaleDown.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("scaleDown")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("scaleDown")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V2HorizontalPodAutoscalerBehavior) validateScaleUp(formats strfmt.Registry) error {
 	if swag.IsZero(m.ScaleUp) { // not required
 		return nil
-	}
-
-	if m.ScaleUp != nil {
-		if err := m.ScaleUp.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("scaleUp")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("scaleUp")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -110,42 +92,10 @@ func (m *V2HorizontalPodAutoscalerBehavior) ContextValidate(ctx context.Context,
 
 func (m *V2HorizontalPodAutoscalerBehavior) contextValidateScaleDown(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.ScaleDown != nil {
-
-		if swag.IsZero(m.ScaleDown) { // not required
-			return nil
-		}
-
-		if err := m.ScaleDown.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("scaleDown")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("scaleDown")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V2HorizontalPodAutoscalerBehavior) contextValidateScaleUp(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.ScaleUp != nil {
-
-		if swag.IsZero(m.ScaleUp) { // not required
-			return nil
-		}
-
-		if err := m.ScaleUp.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("scaleUp")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("scaleUp")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

@@ -23,7 +23,9 @@ type V1Lifecycle struct {
 	// Other management of the container blocks until the hook completes.
 	// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 	// +optional
-	PostStart *V1LifecycleHandler `json:"postStart,omitempty"`
+	PostStart struct {
+		V1LifecycleHandler
+	} `json:"postStart,omitempty"`
 
 	// PreStop is called immediately before a container is terminated due to an
 	// API request or management event such as liveness/startup probe failure,
@@ -35,7 +37,17 @@ type V1Lifecycle struct {
 	// or until the termination grace period is reached.
 	// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 	// +optional
-	PreStop *V1LifecycleHandler `json:"preStop,omitempty"`
+	PreStop struct {
+		V1LifecycleHandler
+	} `json:"preStop,omitempty"`
+
+	// StopSignal defines which signal will be sent to a container when it is being stopped.
+	// If not specified, the default is defined by the container runtime in use.
+	// StopSignal can only be set for Pods with a non-empty .spec.os.name
+	// +optional
+	StopSignal struct {
+		V1Signal
+	} `json:"stopSignal,omitempty"`
 }
 
 // Validate validates this v1 lifecycle
@@ -50,6 +62,10 @@ func (m *V1Lifecycle) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateStopSignal(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -61,17 +77,6 @@ func (m *V1Lifecycle) validatePostStart(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.PostStart != nil {
-		if err := m.PostStart.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("postStart")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("postStart")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -80,15 +85,12 @@ func (m *V1Lifecycle) validatePreStop(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.PreStop != nil {
-		if err := m.PreStop.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("preStop")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("preStop")
-			}
-			return err
-		}
+	return nil
+}
+
+func (m *V1Lifecycle) validateStopSignal(formats strfmt.Registry) error {
+	if swag.IsZero(m.StopSignal) { // not required
+		return nil
 	}
 
 	return nil
@@ -106,6 +108,10 @@ func (m *V1Lifecycle) ContextValidate(ctx context.Context, formats strfmt.Regist
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateStopSignal(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -114,42 +120,15 @@ func (m *V1Lifecycle) ContextValidate(ctx context.Context, formats strfmt.Regist
 
 func (m *V1Lifecycle) contextValidatePostStart(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.PostStart != nil {
-
-		if swag.IsZero(m.PostStart) { // not required
-			return nil
-		}
-
-		if err := m.PostStart.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("postStart")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("postStart")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V1Lifecycle) contextValidatePreStop(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.PreStop != nil {
+	return nil
+}
 
-		if swag.IsZero(m.PreStop) { // not required
-			return nil
-		}
-
-		if err := m.PreStop.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("preStop")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("preStop")
-			}
-			return err
-		}
-	}
+func (m *V1Lifecycle) contextValidateStopSignal(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }

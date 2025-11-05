@@ -27,12 +27,16 @@ type PortainereeCustomTemplateRelativePathSettings struct {
 	// Per device configs group match type
 	// Example: file
 	// Enum: ["file"," dir"]
-	PerDeviceConfigsGroupMatchType string `json:"perDeviceConfigsGroupMatchType,omitempty"`
+	PerDeviceConfigsGroupMatchType struct {
+		PortainerPerDevConfigsFilterType
+	} `json:"perDeviceConfigsGroupMatchType,omitempty"`
 
 	// Per device configs match type
 	// Example: file
 	// Enum: ["file"," dir"]
-	PerDeviceConfigsMatchType string `json:"perDeviceConfigsMatchType,omitempty"`
+	PerDeviceConfigsMatchType struct {
+		PortainerPerDevConfigsFilterType
+	} `json:"perDeviceConfigsMatchType,omitempty"`
 
 	// Per device configs path
 	// Example: configs
@@ -65,10 +69,12 @@ func (m *PortainereeCustomTemplateRelativePathSettings) Validate(formats strfmt.
 	return nil
 }
 
-var portainereeCustomTemplateRelativePathSettingsTypePerDeviceConfigsGroupMatchTypePropEnum []interface{}
+var portainereeCustomTemplateRelativePathSettingsTypePerDeviceConfigsGroupMatchTypePropEnum []any
 
 func init() {
-	var res []string
+	var res []struct {
+		PortainerPerDevConfigsFilterType
+	}
 	if err := json.Unmarshal([]byte(`["file"," dir"]`), &res); err != nil {
 		panic(err)
 	}
@@ -77,17 +83,10 @@ func init() {
 	}
 }
 
-const (
-
-	// PortainereeCustomTemplateRelativePathSettingsPerDeviceConfigsGroupMatchTypeFile captures enum value "file"
-	PortainereeCustomTemplateRelativePathSettingsPerDeviceConfigsGroupMatchTypeFile string = "file"
-
-	// PortainereeCustomTemplateRelativePathSettingsPerDeviceConfigsGroupMatchTypeDir captures enum value " dir"
-	PortainereeCustomTemplateRelativePathSettingsPerDeviceConfigsGroupMatchTypeDir string = " dir"
-)
-
 // prop value enum
-func (m *PortainereeCustomTemplateRelativePathSettings) validatePerDeviceConfigsGroupMatchTypeEnum(path, location string, value string) error {
+func (m *PortainereeCustomTemplateRelativePathSettings) validatePerDeviceConfigsGroupMatchTypeEnum(path, location string, value *struct {
+	PortainerPerDevConfigsFilterType
+}) error {
 	if err := validate.EnumCase(path, location, value, portainereeCustomTemplateRelativePathSettingsTypePerDeviceConfigsGroupMatchTypePropEnum, true); err != nil {
 		return err
 	}
@@ -99,18 +98,15 @@ func (m *PortainereeCustomTemplateRelativePathSettings) validatePerDeviceConfigs
 		return nil
 	}
 
-	// value enum
-	if err := m.validatePerDeviceConfigsGroupMatchTypeEnum("perDeviceConfigsGroupMatchType", "body", m.PerDeviceConfigsGroupMatchType); err != nil {
-		return err
-	}
-
 	return nil
 }
 
-var portainereeCustomTemplateRelativePathSettingsTypePerDeviceConfigsMatchTypePropEnum []interface{}
+var portainereeCustomTemplateRelativePathSettingsTypePerDeviceConfigsMatchTypePropEnum []any
 
 func init() {
-	var res []string
+	var res []struct {
+		PortainerPerDevConfigsFilterType
+	}
 	if err := json.Unmarshal([]byte(`["file"," dir"]`), &res); err != nil {
 		panic(err)
 	}
@@ -119,17 +115,10 @@ func init() {
 	}
 }
 
-const (
-
-	// PortainereeCustomTemplateRelativePathSettingsPerDeviceConfigsMatchTypeFile captures enum value "file"
-	PortainereeCustomTemplateRelativePathSettingsPerDeviceConfigsMatchTypeFile string = "file"
-
-	// PortainereeCustomTemplateRelativePathSettingsPerDeviceConfigsMatchTypeDir captures enum value " dir"
-	PortainereeCustomTemplateRelativePathSettingsPerDeviceConfigsMatchTypeDir string = " dir"
-)
-
 // prop value enum
-func (m *PortainereeCustomTemplateRelativePathSettings) validatePerDeviceConfigsMatchTypeEnum(path, location string, value string) error {
+func (m *PortainereeCustomTemplateRelativePathSettings) validatePerDeviceConfigsMatchTypeEnum(path, location string, value *struct {
+	PortainerPerDevConfigsFilterType
+}) error {
 	if err := validate.EnumCase(path, location, value, portainereeCustomTemplateRelativePathSettingsTypePerDeviceConfigsMatchTypePropEnum, true); err != nil {
 		return err
 	}
@@ -141,16 +130,34 @@ func (m *PortainereeCustomTemplateRelativePathSettings) validatePerDeviceConfigs
 		return nil
 	}
 
-	// value enum
-	if err := m.validatePerDeviceConfigsMatchTypeEnum("perDeviceConfigsMatchType", "body", m.PerDeviceConfigsMatchType); err != nil {
-		return err
+	return nil
+}
+
+// ContextValidate validate this portaineree custom template relative path settings based on the context it is used
+func (m *PortainereeCustomTemplateRelativePathSettings) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidatePerDeviceConfigsGroupMatchType(ctx, formats); err != nil {
+		res = append(res, err)
 	}
+
+	if err := m.contextValidatePerDeviceConfigsMatchType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *PortainereeCustomTemplateRelativePathSettings) contextValidatePerDeviceConfigsGroupMatchType(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }
 
-// ContextValidate validates this portaineree custom template relative path settings based on context it is used
-func (m *PortainereeCustomTemplateRelativePathSettings) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *PortainereeCustomTemplateRelativePathSettings) contextValidatePerDeviceConfigsMatchType(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

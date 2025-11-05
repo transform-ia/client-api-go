@@ -8,4 +8,4 @@ package models
 // PortainerDockerSnapshotRaw portainer docker snapshot raw
 //
 // swagger:model portainer.DockerSnapshotRaw
-type PortainerDockerSnapshotRaw interface{}
+type PortainerDockerSnapshotRaw any

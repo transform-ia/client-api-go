@@ -68,7 +68,7 @@ type CreateKubernetesIngressParams struct {
 
 	   Ingress details
 	*/
-	Body *models.KubernetesK8sIngressInfo
+	Body *models.ModelsK8sIngressInfo
 
 	/* ID.
 
@@ -136,13 +136,13 @@ func (o *CreateKubernetesIngressParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the create kubernetes ingress params
-func (o *CreateKubernetesIngressParams) WithBody(body *models.KubernetesK8sIngressInfo) *CreateKubernetesIngressParams {
+func (o *CreateKubernetesIngressParams) WithBody(body *models.ModelsK8sIngressInfo) *CreateKubernetesIngressParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the create kubernetes ingress params
-func (o *CreateKubernetesIngressParams) SetBody(body *models.KubernetesK8sIngressInfo) {
+func (o *CreateKubernetesIngressParams) SetBody(body *models.ModelsK8sIngressInfo) {
 	o.Body = body
 }
 

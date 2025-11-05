@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -37,7 +38,9 @@ type UsersUserUpdatePayload struct {
 	// Example: 2
 	// Required: true
 	// Enum: [1,2,3]
-	Role *int64 `json:"role"`
+	Role struct {
+		PortainerUserRole
+	} `json:"role"`
 
 	// theme
 	Theme *UsersThemePayload `json:"theme,omitempty"`
@@ -105,10 +108,12 @@ func (m *UsersUserUpdatePayload) validatePassword(formats strfmt.Registry) error
 	return nil
 }
 
-var usersUserUpdatePayloadTypeRolePropEnum []interface{}
+var usersUserUpdatePayloadTypeRolePropEnum []any
 
 func init() {
-	var res []int64
+	var res []struct {
+		PortainerUserRole
+	}
 	if err := json.Unmarshal([]byte(`[1,2,3]`), &res); err != nil {
 		panic(err)
 	}
@@ -118,7 +123,9 @@ func init() {
 }
 
 // prop value enum
-func (m *UsersUserUpdatePayload) validateRoleEnum(path, location string, value int64) error {
+func (m *UsersUserUpdatePayload) validateRoleEnum(path, location string, value *struct {
+	PortainerUserRole
+}) error {
 	if err := validate.EnumCase(path, location, value, usersUserUpdatePayloadTypeRolePropEnum, true); err != nil {
 		return err
 	}
@@ -126,15 +133,6 @@ func (m *UsersUserUpdatePayload) validateRoleEnum(path, location string, value i
 }
 
 func (m *UsersUserUpdatePayload) validateRole(formats strfmt.Registry) error {
-
-	if err := validate.Required("role", "body", m.Role); err != nil {
-		return err
-	}
-
-	// value enum
-	if err := m.validateRoleEnum("role", "body", *m.Role); err != nil {
-		return err
-	}
 
 	return nil
 }
@@ -146,11 +144,15 @@ func (m *UsersUserUpdatePayload) validateTheme(formats strfmt.Registry) error {
 
 	if m.Theme != nil {
 		if err := m.Theme.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("theme")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("theme")
 			}
+
 			return err
 		}
 	}
@@ -180,6 +182,10 @@ func (m *UsersUserUpdatePayload) validateUsername(formats strfmt.Registry) error
 func (m *UsersUserUpdatePayload) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateRole(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateTheme(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -187,6 +193,11 @@ func (m *UsersUserUpdatePayload) ContextValidate(ctx context.Context, formats st
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *UsersUserUpdatePayload) contextValidateRole(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 
@@ -199,11 +210,15 @@ func (m *UsersUserUpdatePayload) contextValidateTheme(ctx context.Context, forma
 		}
 
 		if err := m.Theme.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("theme")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("theme")
 			}
+
 			return err
 		}
 	}

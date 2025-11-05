@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -113,11 +114,15 @@ func (m *RegistriesRegistryUpdatePayload) validateEcr(formats strfmt.Registry) e
 
 	if m.Ecr != nil {
 		if err := m.Ecr.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("ecr")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("ecr")
 			}
+
 			return err
 		}
 	}
@@ -132,11 +137,15 @@ func (m *RegistriesRegistryUpdatePayload) validateGithub(formats strfmt.Registry
 
 	if m.Github != nil {
 		if err := m.Github.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("github")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("github")
 			}
+
 			return err
 		}
 	}
@@ -160,11 +169,15 @@ func (m *RegistriesRegistryUpdatePayload) validateQuay(formats strfmt.Registry) 
 
 	if m.Quay != nil {
 		if err := m.Quay.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("quay")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("quay")
 			}
+
 			return err
 		}
 	}
@@ -179,11 +192,15 @@ func (m *RegistriesRegistryUpdatePayload) validateRegistryAccesses(formats strfm
 
 	if m.RegistryAccesses != nil {
 		if err := m.RegistryAccesses.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("registryAccesses")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("registryAccesses")
 			}
+
 			return err
 		}
 	}
@@ -235,11 +252,15 @@ func (m *RegistriesRegistryUpdatePayload) contextValidateEcr(ctx context.Context
 		}
 
 		if err := m.Ecr.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("ecr")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("ecr")
 			}
+
 			return err
 		}
 	}
@@ -256,11 +277,15 @@ func (m *RegistriesRegistryUpdatePayload) contextValidateGithub(ctx context.Cont
 		}
 
 		if err := m.Github.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("github")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("github")
 			}
+
 			return err
 		}
 	}
@@ -277,11 +302,15 @@ func (m *RegistriesRegistryUpdatePayload) contextValidateQuay(ctx context.Contex
 		}
 
 		if err := m.Quay.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("quay")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("quay")
 			}
+
 			return err
 		}
 	}
@@ -296,11 +325,15 @@ func (m *RegistriesRegistryUpdatePayload) contextValidateRegistryAccesses(ctx co
 	}
 
 	if err := m.RegistryAccesses.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("registryAccesses")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("registryAccesses")
 		}
+
 		return err
 	}
 

@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -52,11 +53,15 @@ func (m *V1LoadBalancerStatus) validateIngress(formats strfmt.Registry) error {
 
 		if m.Ingress[i] != nil {
 			if err := m.Ingress[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("ingress" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("ingress" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -91,11 +96,15 @@ func (m *V1LoadBalancerStatus) contextValidateIngress(ctx context.Context, forma
 			}
 
 			if err := m.Ingress[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("ingress" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("ingress" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

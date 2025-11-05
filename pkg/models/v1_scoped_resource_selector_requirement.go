@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -19,10 +20,14 @@ type V1ScopedResourceSelectorRequirement struct {
 
 	// Represents a scope's relationship to a set of values.
 	// Valid operators are In, NotIn, Exists, DoesNotExist.
-	Operator string `json:"operator,omitempty"`
+	Operator struct {
+		V1ScopeSelectorOperator
+	} `json:"operator,omitempty"`
 
 	// The name of the scope that the selector applies to.
-	ScopeName string `json:"scopeName,omitempty"`
+	ScopeName struct {
+		V1ResourceQuotaScope
+	} `json:"scopeName,omitempty"`
 
 	// An array of string values. If the operator is In or NotIn,
 	// the values array must be non-empty. If the operator is Exists or DoesNotExist,
@@ -35,11 +40,63 @@ type V1ScopedResourceSelectorRequirement struct {
 
 // Validate validates this v1 scoped resource selector requirement
 func (m *V1ScopedResourceSelectorRequirement) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateOperator(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateScopeName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this v1 scoped resource selector requirement based on context it is used
+func (m *V1ScopedResourceSelectorRequirement) validateOperator(formats strfmt.Registry) error {
+	if swag.IsZero(m.Operator) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+func (m *V1ScopedResourceSelectorRequirement) validateScopeName(formats strfmt.Registry) error {
+	if swag.IsZero(m.ScopeName) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 scoped resource selector requirement based on the context it is used
 func (m *V1ScopedResourceSelectorRequirement) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateOperator(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateScopeName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1ScopedResourceSelectorRequirement) contextValidateOperator(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
+func (m *V1ScopedResourceSelectorRequirement) contextValidateScopeName(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

@@ -18,7 +18,7 @@ type EndpointSnapshotsReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *EndpointSnapshotsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *EndpointSnapshotsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 204:
 		result := NewEndpointSnapshotsNoContent()

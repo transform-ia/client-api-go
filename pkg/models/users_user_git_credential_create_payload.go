@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -18,6 +19,10 @@ import (
 //
 // swagger:model users.userGitCredentialCreatePayload
 type UsersUserGitCredentialCreatePayload struct {
+
+	// authorization type
+	// Required: true
+	AuthorizationType *GittypesGitCredentialAuthType `json:"authorizationType"`
 
 	// name
 	// Example: my-credential
@@ -37,6 +42,10 @@ type UsersUserGitCredentialCreatePayload struct {
 func (m *UsersUserGitCredentialCreatePayload) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateAuthorizationType(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateName(formats); err != nil {
 		res = append(res, err)
 	}
@@ -52,6 +61,34 @@ func (m *UsersUserGitCredentialCreatePayload) Validate(formats strfmt.Registry) 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *UsersUserGitCredentialCreatePayload) validateAuthorizationType(formats strfmt.Registry) error {
+
+	if err := validate.Required("authorizationType", "body", m.AuthorizationType); err != nil {
+		return err
+	}
+
+	if err := validate.Required("authorizationType", "body", m.AuthorizationType); err != nil {
+		return err
+	}
+
+	if m.AuthorizationType != nil {
+		if err := m.AuthorizationType.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("authorizationType")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("authorizationType")
+			}
+
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -82,8 +119,38 @@ func (m *UsersUserGitCredentialCreatePayload) validateUsername(formats strfmt.Re
 	return nil
 }
 
-// ContextValidate validates this users user git credential create payload based on context it is used
+// ContextValidate validate this users user git credential create payload based on the context it is used
 func (m *UsersUserGitCredentialCreatePayload) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateAuthorizationType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *UsersUserGitCredentialCreatePayload) contextValidateAuthorizationType(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.AuthorizationType != nil {
+
+		if err := m.AuthorizationType.ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("authorizationType")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("authorizationType")
+			}
+
+			return err
+		}
+	}
+
 	return nil
 }
 

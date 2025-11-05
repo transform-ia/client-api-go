@@ -7,6 +7,7 @@ package custom_templates
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type CustomTemplateListReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *CustomTemplateListReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *CustomTemplateListReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewCustomTemplateListOK()
@@ -102,7 +103,7 @@ func (o *CustomTemplateListOK) GetPayload() []*models.PortainereeCustomTemplate 
 func (o *CustomTemplateListOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

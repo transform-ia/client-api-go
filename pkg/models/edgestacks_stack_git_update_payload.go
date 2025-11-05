@@ -7,13 +7,12 @@ package models
 
 import (
 	"context"
-	"encoding/json"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // EdgestacksStackGitUpdatePayload edgestacks stack git update payload
@@ -28,15 +27,12 @@ type EdgestacksStackGitUpdatePayload struct {
 	AutoUpdate *PortainerAutoUpdateSettings `json:"autoUpdate,omitempty"`
 
 	// Options to control the deployer behaviour
-	DeployerOptions *EdgestacksDeployerOptionsPayload `json:"deployerOptions,omitempty"`
+	DeployerOptions struct {
+		EdgestacksDeployerOptionsPayload
+	} `json:"deployerOptions,omitempty"`
 
-	// Deployment type to deploy this stack
-	// Valid values are: 0 - 'compose', 1 - 'kubernetes'
-	// compose is enabled only for docker environments
-	// kubernetes is enabled only for kubernetes environments
-	// Example: 0
-	// Enum: [0,1]
-	DeploymentType int64 `json:"deploymentType,omitempty"`
+	// deployment type
+	DeploymentType PortainerEdgeStackDeploymentType `json:"deploymentType,omitempty"`
 
 	// env vars
 	EnvVars []*PortainerPair `json:"envVars"`
@@ -63,7 +59,9 @@ type EdgestacksStackGitUpdatePayload struct {
 	RetryPeriod int64 `json:"retryPeriod,omitempty"`
 
 	// Configuration for stagger updates
-	StaggerConfig *PortainereeEdgeStaggerConfig `json:"staggerConfig,omitempty"`
+	StaggerConfig struct {
+		PortainereeEdgeStaggerConfig
+	} `json:"staggerConfig,omitempty"`
 
 	// Update the stack file content from the git repository
 	// If this is set to true, it indicates that the stack is being redeployed,
@@ -112,11 +110,15 @@ func (m *EdgestacksStackGitUpdatePayload) validateAuthentication(formats strfmt.
 
 	if m.Authentication != nil {
 		if err := m.Authentication.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("authentication")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("authentication")
 			}
+
 			return err
 		}
 	}
@@ -131,11 +133,15 @@ func (m *EdgestacksStackGitUpdatePayload) validateAutoUpdate(formats strfmt.Regi
 
 	if m.AutoUpdate != nil {
 		if err := m.AutoUpdate.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("autoUpdate")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("autoUpdate")
 			}
+
 			return err
 		}
 	}
@@ -148,37 +154,6 @@ func (m *EdgestacksStackGitUpdatePayload) validateDeployerOptions(formats strfmt
 		return nil
 	}
 
-	if m.DeployerOptions != nil {
-		if err := m.DeployerOptions.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("deployerOptions")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("deployerOptions")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-var edgestacksStackGitUpdatePayloadTypeDeploymentTypePropEnum []interface{}
-
-func init() {
-	var res []int64
-	if err := json.Unmarshal([]byte(`[0,1]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		edgestacksStackGitUpdatePayloadTypeDeploymentTypePropEnum = append(edgestacksStackGitUpdatePayloadTypeDeploymentTypePropEnum, v)
-	}
-}
-
-// prop value enum
-func (m *EdgestacksStackGitUpdatePayload) validateDeploymentTypeEnum(path, location string, value int64) error {
-	if err := validate.EnumCase(path, location, value, edgestacksStackGitUpdatePayloadTypeDeploymentTypePropEnum, true); err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -187,8 +162,16 @@ func (m *EdgestacksStackGitUpdatePayload) validateDeploymentType(formats strfmt.
 		return nil
 	}
 
-	// value enum
-	if err := m.validateDeploymentTypeEnum("deploymentType", "body", m.DeploymentType); err != nil {
+	if err := m.DeploymentType.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("deploymentType")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("deploymentType")
+		}
+
 		return err
 	}
 
@@ -207,11 +190,15 @@ func (m *EdgestacksStackGitUpdatePayload) validateEnvVars(formats strfmt.Registr
 
 		if m.EnvVars[i] != nil {
 			if err := m.EnvVars[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("envVars" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("envVars" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -224,17 +211,6 @@ func (m *EdgestacksStackGitUpdatePayload) validateEnvVars(formats strfmt.Registr
 func (m *EdgestacksStackGitUpdatePayload) validateStaggerConfig(formats strfmt.Registry) error {
 	if swag.IsZero(m.StaggerConfig) { // not required
 		return nil
-	}
-
-	if m.StaggerConfig != nil {
-		if err := m.StaggerConfig.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("staggerConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("staggerConfig")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -253,6 +229,10 @@ func (m *EdgestacksStackGitUpdatePayload) ContextValidate(ctx context.Context, f
 	}
 
 	if err := m.contextValidateDeployerOptions(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateDeploymentType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -279,11 +259,15 @@ func (m *EdgestacksStackGitUpdatePayload) contextValidateAuthentication(ctx cont
 		}
 
 		if err := m.Authentication.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("authentication")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("authentication")
 			}
+
 			return err
 		}
 	}
@@ -300,11 +284,15 @@ func (m *EdgestacksStackGitUpdatePayload) contextValidateAutoUpdate(ctx context.
 		}
 
 		if err := m.AutoUpdate.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("autoUpdate")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("autoUpdate")
 			}
+
 			return err
 		}
 	}
@@ -314,20 +302,26 @@ func (m *EdgestacksStackGitUpdatePayload) contextValidateAutoUpdate(ctx context.
 
 func (m *EdgestacksStackGitUpdatePayload) contextValidateDeployerOptions(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.DeployerOptions != nil {
+	return nil
+}
 
-		if swag.IsZero(m.DeployerOptions) { // not required
-			return nil
+func (m *EdgestacksStackGitUpdatePayload) contextValidateDeploymentType(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.DeploymentType) { // not required
+		return nil
+	}
+
+	if err := m.DeploymentType.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("deploymentType")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("deploymentType")
 		}
 
-		if err := m.DeployerOptions.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("deployerOptions")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("deployerOptions")
-			}
-			return err
-		}
+		return err
 	}
 
 	return nil
@@ -344,11 +338,15 @@ func (m *EdgestacksStackGitUpdatePayload) contextValidateEnvVars(ctx context.Con
 			}
 
 			if err := m.EnvVars[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("envVars" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("envVars" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -359,22 +357,6 @@ func (m *EdgestacksStackGitUpdatePayload) contextValidateEnvVars(ctx context.Con
 }
 
 func (m *EdgestacksStackGitUpdatePayload) contextValidateStaggerConfig(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.StaggerConfig != nil {
-
-		if swag.IsZero(m.StaggerConfig) { // not required
-			return nil
-		}
-
-		if err := m.StaggerConfig.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("staggerConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("staggerConfig")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

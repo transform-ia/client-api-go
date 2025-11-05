@@ -24,7 +24,9 @@ type V1CSIPersistentVolumeSource struct {
 	// This field is optional, and may be empty if no secret is required. If the
 	// secret object contains more than one secret, all secrets are passed.
 	// +optional
-	ControllerExpandSecretRef *V1SecretReference `json:"controllerExpandSecretRef,omitempty"`
+	ControllerExpandSecretRef struct {
+		V1SecretReference
+	} `json:"controllerExpandSecretRef,omitempty"`
 
 	// controllerPublishSecretRef is a reference to the secret object containing
 	// sensitive information to pass to the CSI driver to complete the CSI
@@ -32,7 +34,9 @@ type V1CSIPersistentVolumeSource struct {
 	// This field is optional, and may be empty if no secret is required. If the
 	// secret object contains more than one secret, all secrets are passed.
 	// +optional
-	ControllerPublishSecretRef *V1SecretReference `json:"controllerPublishSecretRef,omitempty"`
+	ControllerPublishSecretRef struct {
+		V1SecretReference
+	} `json:"controllerPublishSecretRef,omitempty"`
 
 	// driver is the name of the driver to use for this volume.
 	// Required.
@@ -49,7 +53,9 @@ type V1CSIPersistentVolumeSource struct {
 	// This field is optional, may be omitted if no secret is required. If the
 	// secret object contains more than one secret, all secrets are passed.
 	// +optional
-	NodeExpandSecretRef *V1SecretReference `json:"nodeExpandSecretRef,omitempty"`
+	NodeExpandSecretRef struct {
+		V1SecretReference
+	} `json:"nodeExpandSecretRef,omitempty"`
 
 	// nodePublishSecretRef is a reference to the secret object containing
 	// sensitive information to pass to the CSI driver to complete the CSI
@@ -57,7 +63,9 @@ type V1CSIPersistentVolumeSource struct {
 	// This field is optional, and may be empty if no secret is required. If the
 	// secret object contains more than one secret, all secrets are passed.
 	// +optional
-	NodePublishSecretRef *V1SecretReference `json:"nodePublishSecretRef,omitempty"`
+	NodePublishSecretRef struct {
+		V1SecretReference
+	} `json:"nodePublishSecretRef,omitempty"`
 
 	// nodeStageSecretRef is a reference to the secret object containing sensitive
 	// information to pass to the CSI driver to complete the CSI NodeStageVolume
@@ -65,7 +73,9 @@ type V1CSIPersistentVolumeSource struct {
 	// This field is optional, and may be empty if no secret is required. If the
 	// secret object contains more than one secret, all secrets are passed.
 	// +optional
-	NodeStageSecretRef *V1SecretReference `json:"nodeStageSecretRef,omitempty"`
+	NodeStageSecretRef struct {
+		V1SecretReference
+	} `json:"nodeStageSecretRef,omitempty"`
 
 	// readOnly value to pass to ControllerPublishVolumeRequest.
 	// Defaults to false (read/write).
@@ -117,34 +127,12 @@ func (m *V1CSIPersistentVolumeSource) validateControllerExpandSecretRef(formats 
 		return nil
 	}
 
-	if m.ControllerExpandSecretRef != nil {
-		if err := m.ControllerExpandSecretRef.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("controllerExpandSecretRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("controllerExpandSecretRef")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V1CSIPersistentVolumeSource) validateControllerPublishSecretRef(formats strfmt.Registry) error {
 	if swag.IsZero(m.ControllerPublishSecretRef) { // not required
 		return nil
-	}
-
-	if m.ControllerPublishSecretRef != nil {
-		if err := m.ControllerPublishSecretRef.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("controllerPublishSecretRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("controllerPublishSecretRef")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -155,17 +143,6 @@ func (m *V1CSIPersistentVolumeSource) validateNodeExpandSecretRef(formats strfmt
 		return nil
 	}
 
-	if m.NodeExpandSecretRef != nil {
-		if err := m.NodeExpandSecretRef.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("nodeExpandSecretRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("nodeExpandSecretRef")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -174,34 +151,12 @@ func (m *V1CSIPersistentVolumeSource) validateNodePublishSecretRef(formats strfm
 		return nil
 	}
 
-	if m.NodePublishSecretRef != nil {
-		if err := m.NodePublishSecretRef.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("nodePublishSecretRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("nodePublishSecretRef")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V1CSIPersistentVolumeSource) validateNodeStageSecretRef(formats strfmt.Registry) error {
 	if swag.IsZero(m.NodeStageSecretRef) { // not required
 		return nil
-	}
-
-	if m.NodeStageSecretRef != nil {
-		if err := m.NodeStageSecretRef.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("nodeStageSecretRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("nodeStageSecretRef")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -239,105 +194,25 @@ func (m *V1CSIPersistentVolumeSource) ContextValidate(ctx context.Context, forma
 
 func (m *V1CSIPersistentVolumeSource) contextValidateControllerExpandSecretRef(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.ControllerExpandSecretRef != nil {
-
-		if swag.IsZero(m.ControllerExpandSecretRef) { // not required
-			return nil
-		}
-
-		if err := m.ControllerExpandSecretRef.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("controllerExpandSecretRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("controllerExpandSecretRef")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V1CSIPersistentVolumeSource) contextValidateControllerPublishSecretRef(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.ControllerPublishSecretRef != nil {
-
-		if swag.IsZero(m.ControllerPublishSecretRef) { // not required
-			return nil
-		}
-
-		if err := m.ControllerPublishSecretRef.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("controllerPublishSecretRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("controllerPublishSecretRef")
-			}
-			return err
-		}
-	}
 
 	return nil
 }
 
 func (m *V1CSIPersistentVolumeSource) contextValidateNodeExpandSecretRef(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.NodeExpandSecretRef != nil {
-
-		if swag.IsZero(m.NodeExpandSecretRef) { // not required
-			return nil
-		}
-
-		if err := m.NodeExpandSecretRef.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("nodeExpandSecretRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("nodeExpandSecretRef")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V1CSIPersistentVolumeSource) contextValidateNodePublishSecretRef(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.NodePublishSecretRef != nil {
-
-		if swag.IsZero(m.NodePublishSecretRef) { // not required
-			return nil
-		}
-
-		if err := m.NodePublishSecretRef.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("nodePublishSecretRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("nodePublishSecretRef")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V1CSIPersistentVolumeSource) contextValidateNodeStageSecretRef(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.NodeStageSecretRef != nil {
-
-		if swag.IsZero(m.NodeStageSecretRef) { // not required
-			return nil
-		}
-
-		if err := m.NodeStageSecretRef.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("nodeStageSecretRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("nodeStageSecretRef")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

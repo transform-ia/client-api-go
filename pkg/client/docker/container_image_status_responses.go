@@ -7,6 +7,7 @@ package docker
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type ContainerImageStatusReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *ContainerImageStatusReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *ContainerImageStatusReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewContainerImageStatusOK()
@@ -110,7 +111,7 @@ func (o *ContainerImageStatusOK) readResponse(response runtime.ClientResponse, c
 	o.Payload = new(models.ImagesStatusResponse)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

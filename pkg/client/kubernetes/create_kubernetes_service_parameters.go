@@ -68,7 +68,7 @@ type CreateKubernetesServiceParams struct {
 
 	   Service definition
 	*/
-	Body *models.KubernetesK8sServiceInfo
+	Body *models.ModelsK8sServiceInfo
 
 	/* ID.
 
@@ -136,13 +136,13 @@ func (o *CreateKubernetesServiceParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the create kubernetes service params
-func (o *CreateKubernetesServiceParams) WithBody(body *models.KubernetesK8sServiceInfo) *CreateKubernetesServiceParams {
+func (o *CreateKubernetesServiceParams) WithBody(body *models.ModelsK8sServiceInfo) *CreateKubernetesServiceParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the create kubernetes service params
-func (o *CreateKubernetesServiceParams) SetBody(body *models.KubernetesK8sServiceInfo) {
+func (o *CreateKubernetesServiceParams) SetBody(body *models.ModelsK8sServiceInfo) {
 	o.Body = body
 }
 

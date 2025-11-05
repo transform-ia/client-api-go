@@ -20,7 +20,7 @@ type UnstructuredUnstructured struct {
 	// Object is a JSON compatible map with string, float, int, bool, []interface{}, or
 	// map[string]interface{}
 	// children.
-	Object interface{} `json:"object,omitempty"`
+	Object any `json:"object,omitempty"`
 }
 
 // Validate validates this unstructured unstructured

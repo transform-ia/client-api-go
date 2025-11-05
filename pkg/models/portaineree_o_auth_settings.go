@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -22,7 +23,7 @@ type PortainereeOAuthSettings struct {
 	AccessTokenURI string `json:"AccessTokenURI,omitempty"`
 
 	// auth style
-	AuthStyle int64 `json:"AuthStyle,omitempty"`
+	AuthStyle Oauth2AuthStyle `json:"AuthStyle,omitempty"`
 
 	// authorization URI
 	AuthorizationURI string `json:"AuthorizationURI,omitempty"`
@@ -77,6 +78,10 @@ type PortainereeOAuthSettings struct {
 func (m *PortainereeOAuthSettings) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateAuthStyle(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateTeamMemberships(formats); err != nil {
 		res = append(res, err)
 	}
@@ -87,6 +92,27 @@ func (m *PortainereeOAuthSettings) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *PortainereeOAuthSettings) validateAuthStyle(formats strfmt.Registry) error {
+	if swag.IsZero(m.AuthStyle) { // not required
+		return nil
+	}
+
+	if err := m.AuthStyle.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("AuthStyle")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("AuthStyle")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
 func (m *PortainereeOAuthSettings) validateTeamMemberships(formats strfmt.Registry) error {
 	if swag.IsZero(m.TeamMemberships) { // not required
 		return nil
@@ -94,11 +120,15 @@ func (m *PortainereeOAuthSettings) validateTeamMemberships(formats strfmt.Regist
 
 	if m.TeamMemberships != nil {
 		if err := m.TeamMemberships.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("TeamMemberships")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("TeamMemberships")
 			}
+
 			return err
 		}
 	}
@@ -110,6 +140,10 @@ func (m *PortainereeOAuthSettings) validateTeamMemberships(formats strfmt.Regist
 func (m *PortainereeOAuthSettings) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateAuthStyle(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateTeamMemberships(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -117,6 +151,28 @@ func (m *PortainereeOAuthSettings) ContextValidate(ctx context.Context, formats 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *PortainereeOAuthSettings) contextValidateAuthStyle(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.AuthStyle) { // not required
+		return nil
+	}
+
+	if err := m.AuthStyle.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("AuthStyle")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("AuthStyle")
+		}
+
+		return err
+	}
+
 	return nil
 }
 
@@ -129,11 +185,15 @@ func (m *PortainereeOAuthSettings) contextValidateTeamMemberships(ctx context.Co
 		}
 
 		if err := m.TeamMemberships.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("TeamMemberships")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("TeamMemberships")
 			}
+
 			return err
 		}
 	}

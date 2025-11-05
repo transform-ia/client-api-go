@@ -17,6 +17,10 @@ import (
 // swagger:model portainer.StackOption
 type PortainerStackOption struct {
 
+	// Enable atomic rollback on failure (Helm --atomic flag for Kubernetes Helm stacks)
+	// Example: false
+	HelmAtomic bool `json:"helmAtomic,omitempty"`
+
 	// Prune services that are no longer referenced
 	// Example: false
 	Prune bool `json:"prune,omitempty"`

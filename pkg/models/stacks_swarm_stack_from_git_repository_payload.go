@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -25,7 +26,9 @@ type StacksSwarmStackFromGitRepositoryPayload struct {
 	AdditionalFiles []string `json:"additionalFiles"`
 
 	// Optional GitOps update configuration
-	AutoUpdate *PortainerAutoUpdateSettings `json:"autoUpdate,omitempty"`
+	AutoUpdate struct {
+		PortainerAutoUpdateSettings
+	} `json:"autoUpdate,omitempty"`
 
 	// Path to the Stack file inside the Git repository
 	// Example: docker-compose.yml
@@ -47,9 +50,18 @@ type StacksSwarmStackFromGitRepositoryPayload struct {
 	// Required: true
 	Name *string `json:"name"`
 
+	// List of Registries to use for this stack
+	Registries []int64 `json:"registries"`
+
 	// Use basic authentication to clone the Git repository
 	// Example: true
 	RepositoryAuthentication bool `json:"repositoryAuthentication,omitempty"`
+
+	// RepositoryAuthorizationType is the authorization type to use
+	// Example: 0
+	RepositoryAuthorizationType struct {
+		GittypesGitCredentialAuthType
+	} `json:"repositoryAuthorizationType,omitempty"`
 
 	// GitCredentialID used to identify the bound git credential. Required when RepositoryAuthentication
 	// is true and RepositoryUsername/RepositoryPassword are not provided
@@ -105,6 +117,10 @@ func (m *StacksSwarmStackFromGitRepositoryPayload) Validate(formats strfmt.Regis
 		res = append(res, err)
 	}
 
+	if err := m.validateRepositoryAuthorizationType(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateRepositoryURL(formats); err != nil {
 		res = append(res, err)
 	}
@@ -124,17 +140,6 @@ func (m *StacksSwarmStackFromGitRepositoryPayload) validateAutoUpdate(formats st
 		return nil
 	}
 
-	if m.AutoUpdate != nil {
-		if err := m.AutoUpdate.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("autoUpdate")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("autoUpdate")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -150,11 +155,15 @@ func (m *StacksSwarmStackFromGitRepositoryPayload) validateEnv(formats strfmt.Re
 
 		if m.Env[i] != nil {
 			if err := m.Env[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("env" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("env" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -168,6 +177,14 @@ func (m *StacksSwarmStackFromGitRepositoryPayload) validateName(formats strfmt.R
 
 	if err := validate.Required("name", "body", m.Name); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *StacksSwarmStackFromGitRepositoryPayload) validateRepositoryAuthorizationType(formats strfmt.Registry) error {
+	if swag.IsZero(m.RepositoryAuthorizationType) { // not required
+		return nil
 	}
 
 	return nil
@@ -203,6 +220,10 @@ func (m *StacksSwarmStackFromGitRepositoryPayload) ContextValidate(ctx context.C
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateRepositoryAuthorizationType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -210,22 +231,6 @@ func (m *StacksSwarmStackFromGitRepositoryPayload) ContextValidate(ctx context.C
 }
 
 func (m *StacksSwarmStackFromGitRepositoryPayload) contextValidateAutoUpdate(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.AutoUpdate != nil {
-
-		if swag.IsZero(m.AutoUpdate) { // not required
-			return nil
-		}
-
-		if err := m.AutoUpdate.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("autoUpdate")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("autoUpdate")
-			}
-			return err
-		}
-	}
 
 	return nil
 }
@@ -241,16 +246,25 @@ func (m *StacksSwarmStackFromGitRepositoryPayload) contextValidateEnv(ctx contex
 			}
 
 			if err := m.Env[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("env" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("env" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
 	}
+
+	return nil
+}
+
+func (m *StacksSwarmStackFromGitRepositoryPayload) contextValidateRepositoryAuthorizationType(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }

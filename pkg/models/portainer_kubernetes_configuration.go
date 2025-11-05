@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -77,11 +78,15 @@ func (m *PortainerKubernetesConfiguration) validateIngressClasses(formats strfmt
 
 		if m.IngressClasses[i] != nil {
 			if err := m.IngressClasses[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("IngressClasses" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("IngressClasses" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -103,11 +108,15 @@ func (m *PortainerKubernetesConfiguration) validateStorageClasses(formats strfmt
 
 		if m.StorageClasses[i] != nil {
 			if err := m.StorageClasses[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("StorageClasses" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("StorageClasses" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -146,11 +155,15 @@ func (m *PortainerKubernetesConfiguration) contextValidateIngressClasses(ctx con
 			}
 
 			if err := m.IngressClasses[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("IngressClasses" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("IngressClasses" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -171,11 +184,15 @@ func (m *PortainerKubernetesConfiguration) contextValidateStorageClasses(ctx con
 			}
 
 			if err := m.StorageClasses[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("StorageClasses" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("StorageClasses" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

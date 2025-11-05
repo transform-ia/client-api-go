@@ -63,7 +63,9 @@ type V1ServicePort struct {
 	// Default is TCP.
 	// +default="TCP"
 	// +optional
-	Protocol string `json:"protocol,omitempty"`
+	Protocol struct {
+		V1Protocol
+	} `json:"protocol,omitempty"`
 
 	// Number or name of the port to access on the pods targeted by the service.
 	// Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
@@ -74,12 +76,18 @@ type V1ServicePort struct {
 	// omitted or set equal to the 'port' field.
 	// More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
 	// +optional
-	TargetPort *IntstrIntOrString `json:"targetPort,omitempty"`
+	TargetPort struct {
+		IntstrIntOrString
+	} `json:"targetPort,omitempty"`
 }
 
 // Validate validates this v1 service port
 func (m *V1ServicePort) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateProtocol(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateTargetPort(formats); err != nil {
 		res = append(res, err)
@@ -91,20 +99,17 @@ func (m *V1ServicePort) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *V1ServicePort) validateTargetPort(formats strfmt.Registry) error {
-	if swag.IsZero(m.TargetPort) { // not required
+func (m *V1ServicePort) validateProtocol(formats strfmt.Registry) error {
+	if swag.IsZero(m.Protocol) { // not required
 		return nil
 	}
 
-	if m.TargetPort != nil {
-		if err := m.TargetPort.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("targetPort")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("targetPort")
-			}
-			return err
-		}
+	return nil
+}
+
+func (m *V1ServicePort) validateTargetPort(formats strfmt.Registry) error {
+	if swag.IsZero(m.TargetPort) { // not required
+		return nil
 	}
 
 	return nil
@@ -113,6 +118,10 @@ func (m *V1ServicePort) validateTargetPort(formats strfmt.Registry) error {
 // ContextValidate validate this v1 service port based on the context it is used
 func (m *V1ServicePort) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.contextValidateProtocol(ctx, formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.contextValidateTargetPort(ctx, formats); err != nil {
 		res = append(res, err)
@@ -124,23 +133,12 @@ func (m *V1ServicePort) ContextValidate(ctx context.Context, formats strfmt.Regi
 	return nil
 }
 
+func (m *V1ServicePort) contextValidateProtocol(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
 func (m *V1ServicePort) contextValidateTargetPort(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.TargetPort != nil {
-
-		if swag.IsZero(m.TargetPort) { // not required
-			return nil
-		}
-
-		if err := m.TargetPort.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("targetPort")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("targetPort")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

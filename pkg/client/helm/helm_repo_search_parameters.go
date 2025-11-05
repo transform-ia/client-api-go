@@ -67,11 +67,17 @@ type HelmRepoSearchParams struct {
 	*/
 	Chart *string
 
+	/* RegistryID.
+
+	   Helm registry ID (required if repo not provided)
+	*/
+	RegistryID *string
+
 	/* Repo.
 
-	   Helm repository URL
+	   Helm repository URL (required if registryId not provided)
 	*/
-	Repo string
+	Repo *string
 
 	/* UseCache.
 
@@ -143,14 +149,25 @@ func (o *HelmRepoSearchParams) SetChart(chart *string) {
 	o.Chart = chart
 }
 
+// WithRegistryID adds the registryID to the helm repo search params
+func (o *HelmRepoSearchParams) WithRegistryID(registryID *string) *HelmRepoSearchParams {
+	o.SetRegistryID(registryID)
+	return o
+}
+
+// SetRegistryID adds the registryId to the helm repo search params
+func (o *HelmRepoSearchParams) SetRegistryID(registryID *string) {
+	o.RegistryID = registryID
+}
+
 // WithRepo adds the repo to the helm repo search params
-func (o *HelmRepoSearchParams) WithRepo(repo string) *HelmRepoSearchParams {
+func (o *HelmRepoSearchParams) WithRepo(repo *string) *HelmRepoSearchParams {
 	o.SetRepo(repo)
 	return o
 }
 
 // SetRepo adds the repo to the helm repo search params
-func (o *HelmRepoSearchParams) SetRepo(repo string) {
+func (o *HelmRepoSearchParams) SetRepo(repo *string) {
 	o.Repo = repo
 }
 
@@ -190,13 +207,37 @@ func (o *HelmRepoSearchParams) WriteToRequest(r runtime.ClientRequest, reg strfm
 		}
 	}
 
-	// query param repo
-	qrRepo := o.Repo
-	qRepo := qrRepo
-	if qRepo != "" {
+	if o.RegistryID != nil {
 
-		if err := r.SetQueryParam("repo", qRepo); err != nil {
-			return err
+		// query param registryId
+		var qrRegistryID string
+
+		if o.RegistryID != nil {
+			qrRegistryID = *o.RegistryID
+		}
+		qRegistryID := qrRegistryID
+		if qRegistryID != "" {
+
+			if err := r.SetQueryParam("registryId", qRegistryID); err != nil {
+				return err
+			}
+		}
+	}
+
+	if o.Repo != nil {
+
+		// query param repo
+		var qrRepo string
+
+		if o.Repo != nil {
+			qrRepo = *o.Repo
+		}
+		qRepo := qrRepo
+		if qRepo != "" {
+
+			if err := r.SetQueryParam("repo", qRepo); err != nil {
+				return err
+			}
 		}
 	}
 

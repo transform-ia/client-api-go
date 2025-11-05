@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -104,7 +105,9 @@ type V1ServiceSpec struct {
 	// a NodePort from within the cluster may need to take traffic policy into account
 	// when picking a node.
 	// +optional
-	ExternalTrafficPolicy string `json:"externalTrafficPolicy,omitempty"`
+	ExternalTrafficPolicy struct {
+		V1ServiceExternalTrafficPolicy
+	} `json:"externalTrafficPolicy,omitempty"`
 
 	// healthCheckNodePort specifies the healthcheck nodePort for the service.
 	// This only applies when type is set to LoadBalancer and
@@ -126,7 +129,9 @@ type V1ServiceSpec struct {
 	// "Cluster", uses the standard behavior of routing to all endpoints evenly
 	// (possibly modified by topology and other features).
 	// +optional
-	InternalTrafficPolicy string `json:"internalTrafficPolicy,omitempty"`
+	InternalTrafficPolicy struct {
+		V1ServiceInternalTrafficPolicy
+	} `json:"internalTrafficPolicy,omitempty"`
 
 	// IPFamilies is a list of IP families (e.g. IPv4, IPv6) assigned to this
 	// service. This field is usually assigned automatically based on cluster
@@ -146,7 +151,7 @@ type V1ServiceSpec struct {
 	// governed by the ipFamilyPolicy field.
 	// +listType=atomic
 	// +optional
-	IPFamilies []string `json:"ipFamilies"`
+	IPFamilies []V1IPFamily `json:"ipFamilies"`
 
 	// IPFamilyPolicy represents the dual-stack-ness requested or required by
 	// this Service. If there is no value provided, then this field will be set
@@ -157,7 +162,9 @@ type V1ServiceSpec struct {
 	// ipFamilies and clusterIPs fields depend on the value of this field. This
 	// field will be wiped when updating a service to type ExternalName.
 	// +optional
-	IPFamilyPolicy string `json:"ipFamilyPolicy,omitempty"`
+	IPFamilyPolicy struct {
+		V1IPFamilyPolicy
+	} `json:"ipFamilyPolicy,omitempty"`
 
 	// loadBalancerClass is the class of the load balancer implementation this Service belongs to.
 	// If specified, the value of this field must be a label-style identifier, with an optional prefix,
@@ -226,19 +233,22 @@ type V1ServiceSpec struct {
 	// Defaults to None.
 	// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
 	// +optional
-	SessionAffinity string `json:"sessionAffinity,omitempty"`
+	SessionAffinity struct {
+		V1ServiceAffinity
+	} `json:"sessionAffinity,omitempty"`
 
 	// sessionAffinityConfig contains the configurations of session affinity.
 	// +optional
-	SessionAffinityConfig *V1SessionAffinityConfig `json:"sessionAffinityConfig,omitempty"`
+	SessionAffinityConfig struct {
+		V1SessionAffinityConfig
+	} `json:"sessionAffinityConfig,omitempty"`
 
-	// TrafficDistribution offers a way to express preferences for how traffic is
-	// distributed to Service endpoints. Implementations can use this field as a
-	// hint, but are not required to guarantee strict adherence. If the field is
-	// not set, the implementation will apply its default routing strategy. If set
-	// to "PreferClose", implementations should prioritize endpoints that are
-	// topologically close (e.g., same zone).
-	// This is a beta field and requires enabling ServiceTrafficDistribution feature.
+	// TrafficDistribution offers a way to express preferences for how traffic
+	// is distributed to Service endpoints. Implementations can use this field
+	// as a hint, but are not required to guarantee strict adherence. If the
+	// field is not set, the implementation will apply its default routing
+	// strategy. If set to "PreferClose", implementations should prioritize
+	// endpoints that are in the same zone.
 	// +featureGate=ServiceTrafficDistribution
 	// +optional
 	TrafficDistribution string `json:"trafficDistribution,omitempty"`
@@ -260,14 +270,36 @@ type V1ServiceSpec struct {
 	// Several other fields do not apply to ExternalName services.
 	// More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
 	// +optional
-	Type string `json:"type,omitempty"`
+	Type struct {
+		V1ServiceType
+	} `json:"type,omitempty"`
 }
 
 // Validate validates this v1 service spec
 func (m *V1ServiceSpec) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateExternalTrafficPolicy(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateInternalTrafficPolicy(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateIPFamilies(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateIPFamilyPolicy(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validatePorts(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateSessionAffinity(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -275,9 +307,62 @@ func (m *V1ServiceSpec) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *V1ServiceSpec) validateExternalTrafficPolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.ExternalTrafficPolicy) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+func (m *V1ServiceSpec) validateInternalTrafficPolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.InternalTrafficPolicy) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+func (m *V1ServiceSpec) validateIPFamilies(formats strfmt.Registry) error {
+	if swag.IsZero(m.IPFamilies) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.IPFamilies); i++ {
+
+		if err := m.IPFamilies[i].Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("ipFamilies" + "." + strconv.Itoa(i))
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("ipFamilies" + "." + strconv.Itoa(i))
+			}
+
+			return err
+		}
+
+	}
+
+	return nil
+}
+
+func (m *V1ServiceSpec) validateIPFamilyPolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.IPFamilyPolicy) { // not required
+		return nil
+	}
+
 	return nil
 }
 
@@ -293,15 +378,27 @@ func (m *V1ServiceSpec) validatePorts(formats strfmt.Registry) error {
 
 		if m.Ports[i] != nil {
 			if err := m.Ports[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("ports" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("ports" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *V1ServiceSpec) validateSessionAffinity(formats strfmt.Registry) error {
+	if swag.IsZero(m.SessionAffinity) { // not required
+		return nil
 	}
 
 	return nil
@@ -312,15 +409,12 @@ func (m *V1ServiceSpec) validateSessionAffinityConfig(formats strfmt.Registry) e
 		return nil
 	}
 
-	if m.SessionAffinityConfig != nil {
-		if err := m.SessionAffinityConfig.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("sessionAffinityConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("sessionAffinityConfig")
-			}
-			return err
-		}
+	return nil
+}
+
+func (m *V1ServiceSpec) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
 	}
 
 	return nil
@@ -330,7 +424,27 @@ func (m *V1ServiceSpec) validateSessionAffinityConfig(formats strfmt.Registry) e
 func (m *V1ServiceSpec) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateExternalTrafficPolicy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateInternalTrafficPolicy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateIPFamilies(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateIPFamilyPolicy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidatePorts(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateSessionAffinity(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -338,9 +452,54 @@ func (m *V1ServiceSpec) ContextValidate(ctx context.Context, formats strfmt.Regi
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *V1ServiceSpec) contextValidateExternalTrafficPolicy(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
+func (m *V1ServiceSpec) contextValidateInternalTrafficPolicy(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
+func (m *V1ServiceSpec) contextValidateIPFamilies(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.IPFamilies); i++ {
+
+		if swag.IsZero(m.IPFamilies[i]) { // not required
+			return nil
+		}
+
+		if err := m.IPFamilies[i].ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("ipFamilies" + "." + strconv.Itoa(i))
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("ipFamilies" + "." + strconv.Itoa(i))
+			}
+
+			return err
+		}
+
+	}
+
+	return nil
+}
+
+func (m *V1ServiceSpec) contextValidateIPFamilyPolicy(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 
@@ -355,11 +514,15 @@ func (m *V1ServiceSpec) contextValidatePorts(ctx context.Context, formats strfmt
 			}
 
 			if err := m.Ports[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("ports" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("ports" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -369,23 +532,17 @@ func (m *V1ServiceSpec) contextValidatePorts(ctx context.Context, formats strfmt
 	return nil
 }
 
+func (m *V1ServiceSpec) contextValidateSessionAffinity(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
 func (m *V1ServiceSpec) contextValidateSessionAffinityConfig(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.SessionAffinityConfig != nil {
+	return nil
+}
 
-		if swag.IsZero(m.SessionAffinityConfig) { // not required
-			return nil
-		}
-
-		if err := m.SessionAffinityConfig.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("sessionAffinityConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("sessionAffinityConfig")
-			}
-			return err
-		}
-	}
+func (m *V1ServiceSpec) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }

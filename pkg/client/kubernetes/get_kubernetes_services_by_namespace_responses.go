@@ -7,6 +7,7 @@ package kubernetes
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type GetKubernetesServicesByNamespaceReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *GetKubernetesServicesByNamespaceReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *GetKubernetesServicesByNamespaceReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewGetKubernetesServicesByNamespaceOK()
@@ -76,7 +77,7 @@ GetKubernetesServicesByNamespaceOK describes a response with status code 200, wi
 Success
 */
 type GetKubernetesServicesByNamespaceOK struct {
-	Payload []*models.KubernetesK8sServiceInfo
+	Payload []*models.ModelsK8sServiceInfo
 }
 
 // IsSuccess returns true when this get kubernetes services by namespace o k response has a 2xx status code
@@ -119,14 +120,14 @@ func (o *GetKubernetesServicesByNamespaceOK) String() string {
 	return fmt.Sprintf("[GET /kubernetes/{id}/namespaces/{namespace}/services][%d] getKubernetesServicesByNamespaceOK %s", 200, payload)
 }
 
-func (o *GetKubernetesServicesByNamespaceOK) GetPayload() []*models.KubernetesK8sServiceInfo {
+func (o *GetKubernetesServicesByNamespaceOK) GetPayload() []*models.ModelsK8sServiceInfo {
 	return o.Payload
 }
 
 func (o *GetKubernetesServicesByNamespaceOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

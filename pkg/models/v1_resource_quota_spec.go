@@ -7,6 +7,8 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -21,19 +23,23 @@ type V1ResourceQuotaSpec struct {
 	// hard is the set of desired hard limits for each named resource.
 	// More info: https://kubernetes.io/docs/concepts/policy/resource-quotas/
 	// +optional
-	Hard V1ResourceList `json:"hard,omitempty"`
+	Hard struct {
+		V1ResourceList
+	} `json:"hard,omitempty"`
 
 	// scopeSelector is also a collection of filters like scopes that must match each object tracked by a quota
 	// but expressed using ScopeSelectorOperator in combination with possible values.
 	// For a resource to match, both scopes AND scopeSelector (if specified in spec), must be matched.
 	// +optional
-	ScopeSelector *V1ScopeSelector `json:"scopeSelector,omitempty"`
+	ScopeSelector struct {
+		V1ScopeSelector
+	} `json:"scopeSelector,omitempty"`
 
 	// A collection of filters that must match each object tracked by a quota.
 	// If not specified, the quota matches all objects.
 	// +optional
 	// +listType=atomic
-	Scopes []string `json:"scopes"`
+	Scopes []V1ResourceQuotaScope `json:"scopes"`
 }
 
 // Validate validates this v1 resource quota spec
@@ -48,6 +54,10 @@ func (m *V1ResourceQuotaSpec) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateScopes(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -59,17 +69,6 @@ func (m *V1ResourceQuotaSpec) validateHard(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.Hard != nil {
-		if err := m.Hard.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("hard")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("hard")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -78,15 +77,29 @@ func (m *V1ResourceQuotaSpec) validateScopeSelector(formats strfmt.Registry) err
 		return nil
 	}
 
-	if m.ScopeSelector != nil {
-		if err := m.ScopeSelector.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("scopeSelector")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("scopeSelector")
+	return nil
+}
+
+func (m *V1ResourceQuotaSpec) validateScopes(formats strfmt.Registry) error {
+	if swag.IsZero(m.Scopes) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.Scopes); i++ {
+
+		if err := m.Scopes[i].Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("scopes" + "." + strconv.Itoa(i))
 			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("scopes" + "." + strconv.Itoa(i))
+			}
+
 			return err
 		}
+
 	}
 
 	return nil
@@ -104,6 +117,10 @@ func (m *V1ResourceQuotaSpec) ContextValidate(ctx context.Context, formats strfm
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateScopes(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -112,38 +129,35 @@ func (m *V1ResourceQuotaSpec) ContextValidate(ctx context.Context, formats strfm
 
 func (m *V1ResourceQuotaSpec) contextValidateHard(ctx context.Context, formats strfmt.Registry) error {
 
-	if swag.IsZero(m.Hard) { // not required
-		return nil
-	}
-
-	if err := m.Hard.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("hard")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce.ValidateName("hard")
-		}
-		return err
-	}
-
 	return nil
 }
 
 func (m *V1ResourceQuotaSpec) contextValidateScopeSelector(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.ScopeSelector != nil {
+	return nil
+}
 
-		if swag.IsZero(m.ScopeSelector) { // not required
+func (m *V1ResourceQuotaSpec) contextValidateScopes(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.Scopes); i++ {
+
+		if swag.IsZero(m.Scopes[i]) { // not required
 			return nil
 		}
 
-		if err := m.ScopeSelector.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("scopeSelector")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("scopeSelector")
+		if err := m.Scopes[i].ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("scopes" + "." + strconv.Itoa(i))
 			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("scopes" + "." + strconv.Itoa(i))
+			}
+
 			return err
 		}
+
 	}
 
 	return nil

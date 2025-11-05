@@ -82,7 +82,7 @@ type LogsCSVParams struct {
 
 	/* Limit.
 
-	   Limit results
+	   Limit results (defaults to 1000000 if not provided, zero, negative, or exceeds maximum)
 	*/
 	Limit *int64
 

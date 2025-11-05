@@ -19,6 +19,12 @@ import (
 // swagger:model gitops.repositoryFilePreviewPayload
 type GitopsRepositoryFilePreviewPayload struct {
 
+	// authorization type
+	// Example: 0
+	AuthorizationType struct {
+		GittypesGitCredentialAuthType
+	} `json:"authorizationType,omitempty"`
+
 	// git credential ID
 	// Example: 0
 	GitCredentialID int64 `json:"gitCredentialID,omitempty"`
@@ -53,6 +59,10 @@ type GitopsRepositoryFilePreviewPayload struct {
 func (m *GitopsRepositoryFilePreviewPayload) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateAuthorizationType(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateRepository(formats); err != nil {
 		res = append(res, err)
 	}
@@ -60,6 +70,14 @@ func (m *GitopsRepositoryFilePreviewPayload) Validate(formats strfmt.Registry) e
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *GitopsRepositoryFilePreviewPayload) validateAuthorizationType(formats strfmt.Registry) error {
+	if swag.IsZero(m.AuthorizationType) { // not required
+		return nil
+	}
+
 	return nil
 }
 
@@ -72,8 +90,22 @@ func (m *GitopsRepositoryFilePreviewPayload) validateRepository(formats strfmt.R
 	return nil
 }
 
-// ContextValidate validates this gitops repository file preview payload based on context it is used
+// ContextValidate validate this gitops repository file preview payload based on the context it is used
 func (m *GitopsRepositoryFilePreviewPayload) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateAuthorizationType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *GitopsRepositoryFilePreviewPayload) contextValidateAuthorizationType(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

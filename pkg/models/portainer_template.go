@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -96,7 +97,9 @@ type PortainerTemplate struct {
 	Registry string `json:"registry,omitempty"`
 
 	// Mandatory stack fields
-	Repository *PortainerTemplateRepository `json:"repository,omitempty"`
+	Repository struct {
+		PortainerTemplateRepository
+	} `json:"repository,omitempty"`
 
 	// Container restart policy
 	// Example: on-failure
@@ -112,7 +115,9 @@ type PortainerTemplate struct {
 
 	// Template type. Valid values are: 1 (container), 2 (Swarm stack), 3 (Compose stack), 4 (Compose edge stack)
 	// Example: 1
-	Type int64 `json:"type,omitempty"`
+	Type struct {
+		PortainerTemplateType
+	} `json:"type,omitempty"`
 
 	// A list of volumes used during the container template deployment
 	Volumes []*PortainerTemplateVolume `json:"volumes"`
@@ -131,6 +136,10 @@ func (m *PortainerTemplate) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateRepository(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -156,11 +165,15 @@ func (m *PortainerTemplate) validateEnv(formats strfmt.Registry) error {
 
 		if m.Env[i] != nil {
 			if err := m.Env[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("env" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("env" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -182,11 +195,15 @@ func (m *PortainerTemplate) validateLabels(formats strfmt.Registry) error {
 
 		if m.Labels[i] != nil {
 			if err := m.Labels[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("labels" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("labels" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -201,15 +218,12 @@ func (m *PortainerTemplate) validateRepository(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.Repository != nil {
-		if err := m.Repository.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("repository")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("repository")
-			}
-			return err
-		}
+	return nil
+}
+
+func (m *PortainerTemplate) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
 	}
 
 	return nil
@@ -227,11 +241,15 @@ func (m *PortainerTemplate) validateVolumes(formats strfmt.Registry) error {
 
 		if m.Volumes[i] != nil {
 			if err := m.Volumes[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("volumes" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("volumes" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -257,6 +275,10 @@ func (m *PortainerTemplate) ContextValidate(ctx context.Context, formats strfmt.
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateVolumes(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -278,11 +300,15 @@ func (m *PortainerTemplate) contextValidateEnv(ctx context.Context, formats strf
 			}
 
 			if err := m.Env[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("env" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("env" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -303,11 +329,15 @@ func (m *PortainerTemplate) contextValidateLabels(ctx context.Context, formats s
 			}
 
 			if err := m.Labels[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("labels" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("labels" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -319,21 +349,10 @@ func (m *PortainerTemplate) contextValidateLabels(ctx context.Context, formats s
 
 func (m *PortainerTemplate) contextValidateRepository(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.Repository != nil {
+	return nil
+}
 
-		if swag.IsZero(m.Repository) { // not required
-			return nil
-		}
-
-		if err := m.Repository.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("repository")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("repository")
-			}
-			return err
-		}
-	}
+func (m *PortainerTemplate) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }
@@ -349,11 +368,15 @@ func (m *PortainerTemplate) contextValidateVolumes(ctx context.Context, formats 
 			}
 
 			if err := m.Volumes[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("volumes" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("volumes" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

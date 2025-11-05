@@ -81,7 +81,7 @@ type ClientService interface {
 **Access policy**: administrator
 */
 func (a *Client) EndpointGroupAddEndpoint(params *EndpointGroupAddEndpointParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointGroupAddEndpointNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointGroupAddEndpointParams()
 	}
@@ -101,17 +101,22 @@ func (a *Client) EndpointGroupAddEndpoint(params *EndpointGroupAddEndpointParams
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointGroupAddEndpointNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointGroupAddEndpoint: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -124,7 +129,7 @@ func (a *Client) EndpointGroupAddEndpoint(params *EndpointGroupAddEndpointParams
 **Access policy**: administrator
 */
 func (a *Client) EndpointGroupDelete(params *EndpointGroupDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointGroupDeleteNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointGroupDeleteParams()
 	}
@@ -144,17 +149,22 @@ func (a *Client) EndpointGroupDelete(params *EndpointGroupDeleteParams, authInfo
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointGroupDeleteNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointGroupDelete: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -165,7 +175,7 @@ EndpointGroupDeleteEndpoint removes environment endpoint from an environment end
 **Access policy**: administrator
 */
 func (a *Client) EndpointGroupDeleteEndpoint(params *EndpointGroupDeleteEndpointParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointGroupDeleteEndpointNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointGroupDeleteEndpointParams()
 	}
@@ -185,17 +195,22 @@ func (a *Client) EndpointGroupDeleteEndpoint(params *EndpointGroupDeleteEndpoint
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointGroupDeleteEndpointNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointGroupDeleteEndpoint: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -210,7 +225,7 @@ only return authorized environment(endpoint) groups.
 **Access policy**: restricted
 */
 func (a *Client) EndpointGroupList(params *EndpointGroupListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointGroupListOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointGroupListParams()
 	}
@@ -230,17 +245,22 @@ func (a *Client) EndpointGroupList(params *EndpointGroupListParams, authInfo run
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointGroupListOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointGroupList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -253,7 +273,7 @@ func (a *Client) EndpointGroupList(params *EndpointGroupListParams, authInfo run
 **Access policy**: administrator
 */
 func (a *Client) EndpointGroupUpdate(params *EndpointGroupUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EndpointGroupUpdateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEndpointGroupUpdateParams()
 	}
@@ -273,17 +293,22 @@ func (a *Client) EndpointGroupUpdate(params *EndpointGroupUpdateParams, authInfo
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EndpointGroupUpdateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EndpointGroupUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -296,7 +321,7 @@ func (a *Client) EndpointGroupUpdate(params *EndpointGroupUpdateParams, authInfo
 **Access policy**: administrator
 */
 func (a *Client) GetEndpointGroupsID(params *GetEndpointGroupsIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEndpointGroupsIDOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetEndpointGroupsIDParams()
 	}
@@ -316,17 +341,22 @@ func (a *Client) GetEndpointGroupsID(params *GetEndpointGroupsIDParams, authInfo
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetEndpointGroupsIDOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for GetEndpointGroupsID: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -339,7 +369,7 @@ func (a *Client) GetEndpointGroupsID(params *GetEndpointGroupsIDParams, authInfo
 **Access policy**: administrator
 */
 func (a *Client) PostEndpointGroups(params *PostEndpointGroupsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*PostEndpointGroupsOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewPostEndpointGroupsParams()
 	}
@@ -359,17 +389,22 @@ func (a *Client) PostEndpointGroups(params *PostEndpointGroupsParams, authInfo r
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*PostEndpointGroupsOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for PostEndpointGroups: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

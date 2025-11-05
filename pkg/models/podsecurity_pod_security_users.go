@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -67,11 +68,15 @@ func (m *PodsecurityPodSecurityUsers) validateFsGroups(formats strfmt.Registry) 
 
 	if m.FsGroups != nil {
 		if err := m.FsGroups.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("fsGroups")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("fsGroups")
 			}
+
 			return err
 		}
 	}
@@ -86,11 +91,15 @@ func (m *PodsecurityPodSecurityUsers) validateRunAsGroup(formats strfmt.Registry
 
 	if m.RunAsGroup != nil {
 		if err := m.RunAsGroup.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("runAsGroup")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("runAsGroup")
 			}
+
 			return err
 		}
 	}
@@ -105,11 +114,15 @@ func (m *PodsecurityPodSecurityUsers) validateRunAsUser(formats strfmt.Registry)
 
 	if m.RunAsUser != nil {
 		if err := m.RunAsUser.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("runAsUser")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("runAsUser")
 			}
+
 			return err
 		}
 	}
@@ -124,11 +137,15 @@ func (m *PodsecurityPodSecurityUsers) validateSupplementalGroups(formats strfmt.
 
 	if m.SupplementalGroups != nil {
 		if err := m.SupplementalGroups.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("supplementalGroups")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("supplementalGroups")
 			}
+
 			return err
 		}
 	}
@@ -171,11 +188,15 @@ func (m *PodsecurityPodSecurityUsers) contextValidateFsGroups(ctx context.Contex
 		}
 
 		if err := m.FsGroups.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("fsGroups")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("fsGroups")
 			}
+
 			return err
 		}
 	}
@@ -192,11 +213,15 @@ func (m *PodsecurityPodSecurityUsers) contextValidateRunAsGroup(ctx context.Cont
 		}
 
 		if err := m.RunAsGroup.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("runAsGroup")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("runAsGroup")
 			}
+
 			return err
 		}
 	}
@@ -213,11 +238,15 @@ func (m *PodsecurityPodSecurityUsers) contextValidateRunAsUser(ctx context.Conte
 		}
 
 		if err := m.RunAsUser.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("runAsUser")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("runAsUser")
 			}
+
 			return err
 		}
 	}
@@ -234,11 +263,15 @@ func (m *PodsecurityPodSecurityUsers) contextValidateSupplementalGroups(ctx cont
 		}
 
 		if err := m.SupplementalGroups.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("supplementalGroups")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("supplementalGroups")
 			}
+
 			return err
 		}
 	}

@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -23,7 +24,9 @@ type PortainerTeamMembership struct {
 
 	// Team role (1 for team leader and 2 for team member)
 	// Example: 1
-	Role int64 `json:"Role,omitempty"`
+	Role struct {
+		PortainerMembershipRole
+	} `json:"Role,omitempty"`
 
 	// Team identifier
 	// Example: 1
@@ -36,11 +39,42 @@ type PortainerTeamMembership struct {
 
 // Validate validates this portainer team membership
 func (m *PortainerTeamMembership) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateRole(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this portainer team membership based on context it is used
+func (m *PortainerTeamMembership) validateRole(formats strfmt.Registry) error {
+	if swag.IsZero(m.Role) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+// ContextValidate validate this portainer team membership based on the context it is used
 func (m *PortainerTeamMembership) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateRole(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *PortainerTeamMembership) contextValidateRole(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

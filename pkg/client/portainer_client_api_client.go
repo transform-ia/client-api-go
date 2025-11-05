@@ -11,8 +11,8 @@ import (
 	"github.com/go-openapi/strfmt"
 
 	"github.com/portainer/client-api-go/v2/pkg/client/auth"
+	"github.com/portainer/client-api-go/v2/pkg/client/auto_updates"
 	"github.com/portainer/client-api-go/v2/pkg/client/backup"
-	"github.com/portainer/client-api-go/v2/pkg/client/chat"
 	"github.com/portainer/client-api-go/v2/pkg/client/cloud_credentials"
 	"github.com/portainer/client-api-go/v2/pkg/client/custom_templates"
 	"github.com/portainer/client-api-go/v2/pkg/client/docker"
@@ -32,6 +32,7 @@ import (
 	"github.com/portainer/client-api-go/v2/pkg/client/ldap"
 	"github.com/portainer/client-api-go/v2/pkg/client/license"
 	"github.com/portainer/client-api-go/v2/pkg/client/motd"
+	"github.com/portainer/client-api-go/v2/pkg/client/observability"
 	"github.com/portainer/client-api-go/v2/pkg/client/registries"
 	"github.com/portainer/client-api-go/v2/pkg/client/resource_controls"
 	"github.com/portainer/client-api-go/v2/pkg/client/roles"
@@ -95,8 +96,8 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *PortainerC
 	cli := new(PortainerClientAPI)
 	cli.Transport = transport
 	cli.Auth = auth.New(transport, formats)
+	cli.AutoUpdates = auto_updates.New(transport, formats)
 	cli.Backup = backup.New(transport, formats)
-	cli.Chat = chat.New(transport, formats)
 	cli.CloudCredentials = cloud_credentials.New(transport, formats)
 	cli.CustomTemplates = custom_templates.New(transport, formats)
 	cli.Docker = docker.New(transport, formats)
@@ -116,6 +117,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *PortainerC
 	cli.Ldap = ldap.New(transport, formats)
 	cli.License = license.New(transport, formats)
 	cli.Motd = motd.New(transport, formats)
+	cli.Observability = observability.New(transport, formats)
 	cli.Registries = registries.New(transport, formats)
 	cli.ResourceControls = resource_controls.New(transport, formats)
 	cli.Roles = roles.New(transport, formats)
@@ -180,9 +182,9 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 type PortainerClientAPI struct {
 	Auth auth.ClientService
 
-	Backup backup.ClientService
+	AutoUpdates auto_updates.ClientService
 
-	Chat chat.ClientService
+	Backup backup.ClientService
 
 	CloudCredentials cloud_credentials.ClientService
 
@@ -221,6 +223,8 @@ type PortainerClientAPI struct {
 	License license.ClientService
 
 	Motd motd.ClientService
+
+	Observability observability.ClientService
 
 	Registries registries.ClientService
 
@@ -265,8 +269,8 @@ type PortainerClientAPI struct {
 func (c *PortainerClientAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
 	c.Auth.SetTransport(transport)
+	c.AutoUpdates.SetTransport(transport)
 	c.Backup.SetTransport(transport)
-	c.Chat.SetTransport(transport)
 	c.CloudCredentials.SetTransport(transport)
 	c.CustomTemplates.SetTransport(transport)
 	c.Docker.SetTransport(transport)
@@ -286,6 +290,7 @@ func (c *PortainerClientAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Ldap.SetTransport(transport)
 	c.License.SetTransport(transport)
 	c.Motd.SetTransport(transport)
+	c.Observability.SetTransport(transport)
 	c.Registries.SetTransport(transport)
 	c.ResourceControls.SetTransport(transport)
 	c.Roles.SetTransport(transport)

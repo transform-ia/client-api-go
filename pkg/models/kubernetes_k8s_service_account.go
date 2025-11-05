@@ -29,8 +29,7 @@ type KubernetesK8sServiceAccount struct {
 	// namespace
 	Namespace string `json:"namespace,omitempty"`
 
-	// UID of the referent.
-	// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
+	// uid
 	UID string `json:"uid,omitempty"`
 }
 

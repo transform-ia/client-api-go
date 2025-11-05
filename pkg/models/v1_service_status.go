@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -30,7 +31,9 @@ type V1ServiceStatus struct {
 	// LoadBalancer contains the current status of the load-balancer,
 	// if one is present.
 	// +optional
-	LoadBalancer *V1LoadBalancerStatus `json:"loadBalancer,omitempty"`
+	LoadBalancer struct {
+		V1LoadBalancerStatus
+	} `json:"loadBalancer,omitempty"`
 }
 
 // Validate validates this v1 service status
@@ -63,11 +66,15 @@ func (m *V1ServiceStatus) validateConditions(formats strfmt.Registry) error {
 
 		if m.Conditions[i] != nil {
 			if err := m.Conditions[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -80,17 +87,6 @@ func (m *V1ServiceStatus) validateConditions(formats strfmt.Registry) error {
 func (m *V1ServiceStatus) validateLoadBalancer(formats strfmt.Registry) error {
 	if swag.IsZero(m.LoadBalancer) { // not required
 		return nil
-	}
-
-	if m.LoadBalancer != nil {
-		if err := m.LoadBalancer.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("loadBalancer")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("loadBalancer")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -125,11 +121,15 @@ func (m *V1ServiceStatus) contextValidateConditions(ctx context.Context, formats
 			}
 
 			if err := m.Conditions[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -140,22 +140,6 @@ func (m *V1ServiceStatus) contextValidateConditions(ctx context.Context, formats
 }
 
 func (m *V1ServiceStatus) contextValidateLoadBalancer(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.LoadBalancer != nil {
-
-		if swag.IsZero(m.LoadBalancer) { // not required
-			return nil
-		}
-
-		if err := m.LoadBalancer.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("loadBalancer")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("loadBalancer")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

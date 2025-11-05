@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -35,7 +36,7 @@ type EdgeupdateschedulesDecoratedUpdateSchedule struct {
 	// edge group ids
 	EdgeGroupIds []int64 `json:"edgeGroupIds"`
 
-	// EdgeStack Identifier
+	// edge stack Id
 	// Example: 1
 	EdgeStackID int64 `json:"edgeStackId,omitempty"`
 
@@ -58,7 +59,7 @@ type EdgeupdateschedulesDecoratedUpdateSchedule struct {
 	ScheduledTime string `json:"scheduledTime,omitempty"`
 
 	// status
-	Status int64 `json:"status,omitempty"`
+	Status TypesUpdateScheduleStatusType `json:"status,omitempty"`
 
 	// status message
 	StatusMessage string `json:"statusMessage,omitempty"`
@@ -66,7 +67,13 @@ type EdgeupdateschedulesDecoratedUpdateSchedule struct {
 	// Type of the update (1 - update, 2 - rollback)
 	// Example: 1
 	// Enum: [1,2]
-	Type int64 `json:"type,omitempty"`
+	Type struct {
+		TypesUpdateScheduleType
+	} `json:"type,omitempty"`
+
+	// Updated timestamp
+	// Example: 1564897200
+	Updated int64 `json:"updated,omitempty"`
 
 	// Name of the updater image, does not include the registry but must include a tag
 	// Example: portainer/portainer-updater:latest
@@ -81,6 +88,10 @@ type EdgeupdateschedulesDecoratedUpdateSchedule struct {
 func (m *EdgeupdateschedulesDecoratedUpdateSchedule) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateStatus(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateType(formats); err != nil {
 		res = append(res, err)
 	}
@@ -91,10 +102,33 @@ func (m *EdgeupdateschedulesDecoratedUpdateSchedule) Validate(formats strfmt.Reg
 	return nil
 }
 
-var edgeupdateschedulesDecoratedUpdateScheduleTypeTypePropEnum []interface{}
+func (m *EdgeupdateschedulesDecoratedUpdateSchedule) validateStatus(formats strfmt.Registry) error {
+	if swag.IsZero(m.Status) { // not required
+		return nil
+	}
+
+	if err := m.Status.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("status")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("status")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+var edgeupdateschedulesDecoratedUpdateScheduleTypeTypePropEnum []any
 
 func init() {
-	var res []int64
+	var res []struct {
+		TypesUpdateScheduleType
+	}
 	if err := json.Unmarshal([]byte(`[1,2]`), &res); err != nil {
 		panic(err)
 	}
@@ -104,7 +138,9 @@ func init() {
 }
 
 // prop value enum
-func (m *EdgeupdateschedulesDecoratedUpdateSchedule) validateTypeEnum(path, location string, value int64) error {
+func (m *EdgeupdateschedulesDecoratedUpdateSchedule) validateTypeEnum(path, location string, value *struct {
+	TypesUpdateScheduleType
+}) error {
 	if err := validate.EnumCase(path, location, value, edgeupdateschedulesDecoratedUpdateScheduleTypeTypePropEnum, true); err != nil {
 		return err
 	}
@@ -116,16 +152,51 @@ func (m *EdgeupdateschedulesDecoratedUpdateSchedule) validateType(formats strfmt
 		return nil
 	}
 
-	// value enum
-	if err := m.validateTypeEnum("type", "body", m.Type); err != nil {
+	return nil
+}
+
+// ContextValidate validate this edgeupdateschedules decorated update schedule based on the context it is used
+func (m *EdgeupdateschedulesDecoratedUpdateSchedule) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateStatus(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *EdgeupdateschedulesDecoratedUpdateSchedule) contextValidateStatus(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Status) { // not required
+		return nil
+	}
+
+	if err := m.Status.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("status")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("status")
+		}
+
 		return err
 	}
 
 	return nil
 }
 
-// ContextValidate validates this edgeupdateschedules decorated update schedule based on context it is used
-func (m *EdgeupdateschedulesDecoratedUpdateSchedule) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *EdgeupdateschedulesDecoratedUpdateSchedule) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

@@ -14,7 +14,7 @@ import (
 
 // GithubComPortainerPortainerEeAPIHTTPHandlerKubernetesDescribeResourceResponse github com portainer portainer ee api http handler kubernetes describe resource response
 //
-// swagger:model github.com_portainer_portainer-ee_api_http_handler_kubernetes.describeResourceResponse
+// swagger:model github_com_portainer_portainer-ee_api_http_handler_kubernetes.describeResourceResponse
 type GithubComPortainerPortainerEeAPIHTTPHandlerKubernetesDescribeResourceResponse struct {
 
 	// describe

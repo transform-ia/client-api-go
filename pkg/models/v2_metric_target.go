@@ -28,14 +28,20 @@ type V2MetricTarget struct {
 	// averageValue is the target value of the average of the
 	// metric across all relevant pods (as a quantity)
 	// +optional
-	AverageValue *ResourceQuantity `json:"averageValue,omitempty"`
+	AverageValue struct {
+		ResourceQuantity
+	} `json:"averageValue,omitempty"`
 
 	// type represents whether the metric type is Utilization, Value, or AverageValue
-	Type string `json:"type,omitempty"`
+	Type struct {
+		V2MetricTargetType
+	} `json:"type,omitempty"`
 
 	// value is the target value of the metric (as a quantity).
 	// +optional
-	Value *ResourceQuantity `json:"value,omitempty"`
+	Value struct {
+		ResourceQuantity
+	} `json:"value,omitempty"`
 }
 
 // Validate validates this v2 metric target
@@ -43,6 +49,10 @@ func (m *V2MetricTarget) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAverageValue(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -61,15 +71,12 @@ func (m *V2MetricTarget) validateAverageValue(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.AverageValue != nil {
-		if err := m.AverageValue.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("averageValue")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("averageValue")
-			}
-			return err
-		}
+	return nil
+}
+
+func (m *V2MetricTarget) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
 	}
 
 	return nil
@@ -80,17 +87,6 @@ func (m *V2MetricTarget) validateValue(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.Value != nil {
-		if err := m.Value.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("value")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("value")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -99,6 +95,10 @@ func (m *V2MetricTarget) ContextValidate(ctx context.Context, formats strfmt.Reg
 	var res []error
 
 	if err := m.contextValidateAverageValue(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -114,42 +114,15 @@ func (m *V2MetricTarget) ContextValidate(ctx context.Context, formats strfmt.Reg
 
 func (m *V2MetricTarget) contextValidateAverageValue(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.AverageValue != nil {
+	return nil
+}
 
-		if swag.IsZero(m.AverageValue) { // not required
-			return nil
-		}
-
-		if err := m.AverageValue.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("averageValue")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("averageValue")
-			}
-			return err
-		}
-	}
+func (m *V2MetricTarget) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }
 
 func (m *V2MetricTarget) contextValidateValue(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Value != nil {
-
-		if swag.IsZero(m.Value) { // not required
-			return nil
-		}
-
-		if err := m.Value.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("value")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("value")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

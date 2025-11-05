@@ -20,7 +20,10 @@ type PortainereeEdgeGroup struct {
 	// dynamic
 	Dynamic bool `json:"Dynamic,omitempty"`
 
-	// endpoints
+	// endpoint ids
+	EndpointIds RoarRoarPortainerEndpointID `json:"EndpointIds,omitempty"`
+
+	// Deprecated: only used for API responses
 	Endpoints []int64 `json:"Endpoints"`
 
 	// EdgeGroup Identifier

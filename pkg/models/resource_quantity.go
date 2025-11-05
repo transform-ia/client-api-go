@@ -7,9 +7,12 @@ package models
 
 import (
 	"context"
+	"encoding/json"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // ResourceQuantity resource quantity
@@ -18,11 +21,66 @@ import (
 type ResourceQuantity struct {
 
 	// format
+	// Enum: ["DecimalExponent","BinarySI","DecimalSI"]
 	Format string `json:"Format,omitempty"`
 }
 
 // Validate validates this resource quantity
 func (m *ResourceQuantity) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateFormat(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+var resourceQuantityTypeFormatPropEnum []any
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["DecimalExponent","BinarySI","DecimalSI"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		resourceQuantityTypeFormatPropEnum = append(resourceQuantityTypeFormatPropEnum, v)
+	}
+}
+
+const (
+
+	// ResourceQuantityFormatDecimalExponent captures enum value "DecimalExponent"
+	ResourceQuantityFormatDecimalExponent string = "DecimalExponent"
+
+	// ResourceQuantityFormatBinarySI captures enum value "BinarySI"
+	ResourceQuantityFormatBinarySI string = "BinarySI"
+
+	// ResourceQuantityFormatDecimalSI captures enum value "DecimalSI"
+	ResourceQuantityFormatDecimalSI string = "DecimalSI"
+)
+
+// prop value enum
+func (m *ResourceQuantity) validateFormatEnum(path, location string, value string) error {
+	if err := validate.EnumCase(path, location, value, resourceQuantityTypeFormatPropEnum, true); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *ResourceQuantity) validateFormat(formats strfmt.Registry) error {
+	if swag.IsZero(m.Format) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateFormatEnum("Format", "body", m.Format); err != nil {
+		return err
+	}
+
 	return nil
 }
 

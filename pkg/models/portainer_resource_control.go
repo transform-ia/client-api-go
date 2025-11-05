@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -20,7 +21,7 @@ import (
 type PortainerResourceControl struct {
 
 	// access level
-	AccessLevel int64 `json:"AccessLevel,omitempty"`
+	AccessLevel PortainerResourceAccessLevel `json:"AccessLevel,omitempty"`
 
 	// Permit access to resource only to admins
 	// Example: true
@@ -56,7 +57,9 @@ type PortainerResourceControl struct {
 	// Type of Docker resource. Valid values are: 1- container, 2 -service
 	// 3 - volume, 4 - secret, 5 - stack, 6 - config or 7 - custom template
 	// Example: 1
-	Type int64 `json:"Type,omitempty"`
+	Type struct {
+		PortainerResourceControlType
+	} `json:"Type,omitempty"`
 
 	// user accesses
 	UserAccesses []*PortainerUserResourceAccess `json:"UserAccesses"`
@@ -66,7 +69,15 @@ type PortainerResourceControl struct {
 func (m *PortainerResourceControl) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateAccessLevel(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateTeamAccesses(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -77,6 +88,27 @@ func (m *PortainerResourceControl) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *PortainerResourceControl) validateAccessLevel(formats strfmt.Registry) error {
+	if swag.IsZero(m.AccessLevel) { // not required
+		return nil
+	}
+
+	if err := m.AccessLevel.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("AccessLevel")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("AccessLevel")
+		}
+
+		return err
+	}
+
 	return nil
 }
 
@@ -92,15 +124,27 @@ func (m *PortainerResourceControl) validateTeamAccesses(formats strfmt.Registry)
 
 		if m.TeamAccesses[i] != nil {
 			if err := m.TeamAccesses[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("TeamAccesses" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("TeamAccesses" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *PortainerResourceControl) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
 	}
 
 	return nil
@@ -118,11 +162,15 @@ func (m *PortainerResourceControl) validateUserAccesses(formats strfmt.Registry)
 
 		if m.UserAccesses[i] != nil {
 			if err := m.UserAccesses[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("UserAccesses" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("UserAccesses" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -136,7 +184,15 @@ func (m *PortainerResourceControl) validateUserAccesses(formats strfmt.Registry)
 func (m *PortainerResourceControl) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateAccessLevel(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateTeamAccesses(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -147,6 +203,28 @@ func (m *PortainerResourceControl) ContextValidate(ctx context.Context, formats 
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *PortainerResourceControl) contextValidateAccessLevel(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.AccessLevel) { // not required
+		return nil
+	}
+
+	if err := m.AccessLevel.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("AccessLevel")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("AccessLevel")
+		}
+
+		return err
+	}
+
 	return nil
 }
 
@@ -161,16 +239,25 @@ func (m *PortainerResourceControl) contextValidateTeamAccesses(ctx context.Conte
 			}
 
 			if err := m.TeamAccesses[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("TeamAccesses" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("TeamAccesses" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
 	}
+
+	return nil
+}
+
+func (m *PortainerResourceControl) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }
@@ -186,11 +273,15 @@ func (m *PortainerResourceControl) contextValidateUserAccesses(ctx context.Conte
 			}
 
 			if err := m.UserAccesses[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("UserAccesses" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("UserAccesses" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

@@ -19,10 +19,14 @@ import (
 type V2PodsMetricSource struct {
 
 	// metric identifies the target metric by name and selector
-	Metric *V2MetricIdentifier `json:"metric,omitempty"`
+	Metric struct {
+		V2MetricIdentifier
+	} `json:"metric,omitempty"`
 
 	// target specifies the target value for the given metric
-	Target *V2MetricTarget `json:"target,omitempty"`
+	Target struct {
+		V2MetricTarget
+	} `json:"target,omitempty"`
 }
 
 // Validate validates this v2 pods metric source
@@ -48,34 +52,12 @@ func (m *V2PodsMetricSource) validateMetric(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.Metric != nil {
-		if err := m.Metric.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("metric")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("metric")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V2PodsMetricSource) validateTarget(formats strfmt.Registry) error {
 	if swag.IsZero(m.Target) { // not required
 		return nil
-	}
-
-	if m.Target != nil {
-		if err := m.Target.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("target")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("target")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -101,42 +83,10 @@ func (m *V2PodsMetricSource) ContextValidate(ctx context.Context, formats strfmt
 
 func (m *V2PodsMetricSource) contextValidateMetric(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.Metric != nil {
-
-		if swag.IsZero(m.Metric) { // not required
-			return nil
-		}
-
-		if err := m.Metric.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("metric")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("metric")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V2PodsMetricSource) contextValidateTarget(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Target != nil {
-
-		if swag.IsZero(m.Target) { // not required
-			return nil
-		}
-
-		if err := m.Target.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("target")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("target")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

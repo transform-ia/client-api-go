@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -27,6 +28,9 @@ type PortainerKubernetesSnapshot struct {
 	// node count
 	NodeCount int64 `json:"NodeCount,omitempty"`
 
+	// performance metrics
+	PerformanceMetrics *PortainerPerformanceMetrics `json:"PerformanceMetrics,omitempty"`
+
 	// time
 	Time int64 `json:"Time,omitempty"`
 
@@ -45,6 +49,10 @@ func (m *PortainerKubernetesSnapshot) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validatePerformanceMetrics(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -58,11 +66,38 @@ func (m *PortainerKubernetesSnapshot) validateDiagnosticsData(formats strfmt.Reg
 
 	if m.DiagnosticsData != nil {
 		if err := m.DiagnosticsData.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("DiagnosticsData")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("DiagnosticsData")
 			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *PortainerKubernetesSnapshot) validatePerformanceMetrics(formats strfmt.Registry) error {
+	if swag.IsZero(m.PerformanceMetrics) { // not required
+		return nil
+	}
+
+	if m.PerformanceMetrics != nil {
+		if err := m.PerformanceMetrics.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("PerformanceMetrics")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("PerformanceMetrics")
+			}
+
 			return err
 		}
 	}
@@ -75,6 +110,10 @@ func (m *PortainerKubernetesSnapshot) ContextValidate(ctx context.Context, forma
 	var res []error
 
 	if err := m.contextValidateDiagnosticsData(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidatePerformanceMetrics(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -93,11 +132,40 @@ func (m *PortainerKubernetesSnapshot) contextValidateDiagnosticsData(ctx context
 		}
 
 		if err := m.DiagnosticsData.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("DiagnosticsData")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("DiagnosticsData")
 			}
+
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *PortainerKubernetesSnapshot) contextValidatePerformanceMetrics(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.PerformanceMetrics != nil {
+
+		if swag.IsZero(m.PerformanceMetrics) { // not required
+			return nil
+		}
+
+		if err := m.PerformanceMetrics.ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("PerformanceMetrics")
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("PerformanceMetrics")
+			}
+
 			return err
 		}
 	}

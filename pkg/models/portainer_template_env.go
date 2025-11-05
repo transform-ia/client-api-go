@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -69,11 +70,15 @@ func (m *PortainerTemplateEnv) validateSelect(formats strfmt.Registry) error {
 
 		if m.Select[i] != nil {
 			if err := m.Select[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("select" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("select" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -108,11 +113,15 @@ func (m *PortainerTemplateEnv) contextValidateSelect(ctx context.Context, format
 			}
 
 			if err := m.Select[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("select" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("select" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

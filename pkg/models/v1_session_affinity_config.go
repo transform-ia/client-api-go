@@ -20,7 +20,9 @@ type V1SessionAffinityConfig struct {
 
 	// clientIP contains the configurations of Client IP based session affinity.
 	// +optional
-	ClientIP *V1ClientIPConfig `json:"clientIP,omitempty"`
+	ClientIP struct {
+		V1ClientIPConfig
+	} `json:"clientIP,omitempty"`
 }
 
 // Validate validates this v1 session affinity config
@@ -42,17 +44,6 @@ func (m *V1SessionAffinityConfig) validateClientIP(formats strfmt.Registry) erro
 		return nil
 	}
 
-	if m.ClientIP != nil {
-		if err := m.ClientIP.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("clientIP")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("clientIP")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -71,22 +62,6 @@ func (m *V1SessionAffinityConfig) ContextValidate(ctx context.Context, formats s
 }
 
 func (m *V1SessionAffinityConfig) contextValidateClientIP(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.ClientIP != nil {
-
-		if swag.IsZero(m.ClientIP) { // not required
-			return nil
-		}
-
-		if err := m.ClientIP.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("clientIP")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("clientIP")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

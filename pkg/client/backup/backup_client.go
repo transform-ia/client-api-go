@@ -105,7 +105,7 @@ type ClientService interface {
 **Access policy**: admin
 */
 func (a *Client) Backup(params *BackupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*BackupOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewBackupParams()
 	}
@@ -125,17 +125,22 @@ func (a *Client) Backup(params *BackupParams, authInfo runtime.ClientAuthInfoWri
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*BackupOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for Backup: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -146,7 +151,7 @@ BackupSettingsFetch fetches s3 backup settings configurations
 **Access policy**: administrator
 */
 func (a *Client) BackupSettingsFetch(params *BackupSettingsFetchParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*BackupSettingsFetchOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewBackupSettingsFetchParams()
 	}
@@ -166,17 +171,22 @@ func (a *Client) BackupSettingsFetch(params *BackupSettingsFetchParams, authInfo
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*BackupSettingsFetchOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for BackupSettingsFetch: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -187,7 +197,7 @@ BackupStatusFetch fetches the status of the last scheduled backup run
 **Access policy**: public
 */
 func (a *Client) BackupStatusFetch(params *BackupStatusFetchParams, opts ...ClientOption) (*BackupStatusFetchOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewBackupStatusFetchParams()
 	}
@@ -206,17 +216,22 @@ func (a *Client) BackupStatusFetch(params *BackupStatusFetchParams, opts ...Clie
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*BackupStatusFetchOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for BackupStatusFetch: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -229,7 +244,7 @@ func (a *Client) BackupStatusFetch(params *BackupStatusFetchParams, opts ...Clie
 **Access policy**: administrator
 */
 func (a *Client) BackupToS3(params *BackupToS3Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*BackupToS3NoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewBackupToS3Params()
 	}
@@ -249,17 +264,22 @@ func (a *Client) BackupToS3(params *BackupToS3Params, authInfo runtime.ClientAut
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*BackupToS3NoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for BackupToS3: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -272,7 +292,7 @@ func (a *Client) BackupToS3(params *BackupToS3Params, authInfo runtime.ClientAut
 **Access policy**: public
 */
 func (a *Client) Restore(params *RestoreParams, opts ...ClientOption) (*RestoreOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewRestoreParams()
 	}
@@ -291,17 +311,22 @@ func (a *Client) Restore(params *RestoreParams, opts ...ClientOption) (*RestoreO
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*RestoreOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for Restore: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -314,7 +339,7 @@ func (a *Client) Restore(params *RestoreParams, opts ...ClientOption) (*RestoreO
 **Access policy**: public
 */
 func (a *Client) RestoreFromS3(params *RestoreFromS3Params, opts ...ClientOption) (*RestoreFromS3OK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewRestoreFromS3Params()
 	}
@@ -333,17 +358,22 @@ func (a *Client) RestoreFromS3(params *RestoreFromS3Params, opts ...ClientOption
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*RestoreFromS3OK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for RestoreFromS3: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -356,7 +386,7 @@ func (a *Client) RestoreFromS3(params *RestoreFromS3Params, opts ...ClientOption
 **Access policy**: administrator
 */
 func (a *Client) UpdateS3Settings(params *UpdateS3SettingsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateS3SettingsOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUpdateS3SettingsParams()
 	}
@@ -376,17 +406,22 @@ func (a *Client) UpdateS3Settings(params *UpdateS3SettingsParams, authInfo runti
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UpdateS3SettingsOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for UpdateS3Settings: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

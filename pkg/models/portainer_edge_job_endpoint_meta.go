@@ -7,7 +7,9 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -21,16 +23,77 @@ type PortainerEdgeJobEndpointMeta struct {
 	CollectLogs bool `json:"collectLogs,omitempty"`
 
 	// logs status
-	LogsStatus int64 `json:"logsStatus,omitempty"`
+	LogsStatus PortainerEdgeJobLogsStatus `json:"logsStatus,omitempty"`
 }
 
 // Validate validates this portainer edge job endpoint meta
 func (m *PortainerEdgeJobEndpointMeta) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateLogsStatus(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this portainer edge job endpoint meta based on context it is used
+func (m *PortainerEdgeJobEndpointMeta) validateLogsStatus(formats strfmt.Registry) error {
+	if swag.IsZero(m.LogsStatus) { // not required
+		return nil
+	}
+
+	if err := m.LogsStatus.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("logsStatus")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("logsStatus")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this portainer edge job endpoint meta based on the context it is used
 func (m *PortainerEdgeJobEndpointMeta) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateLogsStatus(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *PortainerEdgeJobEndpointMeta) contextValidateLogsStatus(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.LogsStatus) { // not required
+		return nil
+	}
+
+	if err := m.LogsStatus.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("logsStatus")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("logsStatus")
+		}
+
+		return err
+	}
+
 	return nil
 }
 

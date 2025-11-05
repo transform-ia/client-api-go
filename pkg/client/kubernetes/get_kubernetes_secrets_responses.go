@@ -7,6 +7,7 @@ package kubernetes
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type GetKubernetesSecretsReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *GetKubernetesSecretsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *GetKubernetesSecretsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewGetKubernetesSecretsOK()
@@ -76,7 +77,7 @@ GetKubernetesSecretsOK describes a response with status code 200, with default h
 Success
 */
 type GetKubernetesSecretsOK struct {
-	Payload []*models.KubernetesK8sSecret
+	Payload []*models.ModelsK8sSecret
 }
 
 // IsSuccess returns true when this get kubernetes secrets o k response has a 2xx status code
@@ -119,14 +120,14 @@ func (o *GetKubernetesSecretsOK) String() string {
 	return fmt.Sprintf("[GET /kubernetes/{id}/secrets][%d] getKubernetesSecretsOK %s", 200, payload)
 }
 
-func (o *GetKubernetesSecretsOK) GetPayload() []*models.KubernetesK8sSecret {
+func (o *GetKubernetesSecretsOK) GetPayload() []*models.ModelsK8sSecret {
 	return o.Payload
 }
 
 func (o *GetKubernetesSecretsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

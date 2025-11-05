@@ -7,7 +7,9 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -17,8 +19,11 @@ import (
 // swagger:model gittypes.GitAuthentication
 type GittypesGitAuthentication struct {
 
+	// authorization type
+	AuthorizationType GittypesGitCredentialAuthType `json:"authorizationType,omitempty"`
+
 	// Git credentials identifier when the value is not 0
-	// When the value is 0, Username and Password are set without using saved credential
+	// When the value is 0, Username, Password, and Authtype are set without using saved credential
 	// This is introduced since 2.15.0
 	// Example: 0
 	GitCredentialID int64 `json:"gitCredentialID,omitempty"`
@@ -32,11 +37,72 @@ type GittypesGitAuthentication struct {
 
 // Validate validates this gittypes git authentication
 func (m *GittypesGitAuthentication) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateAuthorizationType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this gittypes git authentication based on context it is used
+func (m *GittypesGitAuthentication) validateAuthorizationType(formats strfmt.Registry) error {
+	if swag.IsZero(m.AuthorizationType) { // not required
+		return nil
+	}
+
+	if err := m.AuthorizationType.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("authorizationType")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("authorizationType")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this gittypes git authentication based on the context it is used
 func (m *GittypesGitAuthentication) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateAuthorizationType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *GittypesGitAuthentication) contextValidateAuthorizationType(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.AuthorizationType) { // not required
+		return nil
+	}
+
+	if err := m.AuthorizationType.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("authorizationType")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("authorizationType")
+		}
+
+		return err
+	}
+
 	return nil
 }
 

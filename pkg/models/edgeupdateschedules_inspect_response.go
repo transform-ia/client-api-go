@@ -40,7 +40,7 @@ type EdgeupdateschedulesInspectResponse struct {
 	// Example: [1]
 	EdgeGroupIds []int64 `json:"edgeGroupIds"`
 
-	// EdgeStack Identifier
+	// edge stack Id
 	// Example: 1
 	EdgeStackID int64 `json:"edgeStackId,omitempty"`
 
@@ -71,7 +71,13 @@ type EdgeupdateschedulesInspectResponse struct {
 	// Type of the update (1 - update, 2 - rollback)
 	// Example: 1
 	// Enum: [1,2]
-	Type int64 `json:"type,omitempty"`
+	Type struct {
+		TypesUpdateScheduleType
+	} `json:"type,omitempty"`
+
+	// Updated timestamp
+	// Example: 1564897200
+	Updated int64 `json:"updated,omitempty"`
 
 	// Name of the updater image, does not include the registry but must include a tag
 	// Example: portainer/portainer-updater:latest
@@ -96,10 +102,12 @@ func (m *EdgeupdateschedulesInspectResponse) Validate(formats strfmt.Registry) e
 	return nil
 }
 
-var edgeupdateschedulesInspectResponseTypeTypePropEnum []interface{}
+var edgeupdateschedulesInspectResponseTypeTypePropEnum []any
 
 func init() {
-	var res []int64
+	var res []struct {
+		TypesUpdateScheduleType
+	}
 	if err := json.Unmarshal([]byte(`[1,2]`), &res); err != nil {
 		panic(err)
 	}
@@ -109,7 +117,9 @@ func init() {
 }
 
 // prop value enum
-func (m *EdgeupdateschedulesInspectResponse) validateTypeEnum(path, location string, value int64) error {
+func (m *EdgeupdateschedulesInspectResponse) validateTypeEnum(path, location string, value *struct {
+	TypesUpdateScheduleType
+}) error {
 	if err := validate.EnumCase(path, location, value, edgeupdateschedulesInspectResponseTypeTypePropEnum, true); err != nil {
 		return err
 	}
@@ -121,16 +131,25 @@ func (m *EdgeupdateschedulesInspectResponse) validateType(formats strfmt.Registr
 		return nil
 	}
 
-	// value enum
-	if err := m.validateTypeEnum("type", "body", m.Type); err != nil {
-		return err
-	}
-
 	return nil
 }
 
-// ContextValidate validates this edgeupdateschedules inspect response based on context it is used
+// ContextValidate validate this edgeupdateschedules inspect response based on the context it is used
 func (m *EdgeupdateschedulesInspectResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *EdgeupdateschedulesInspectResponse) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

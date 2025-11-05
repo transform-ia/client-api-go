@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -20,7 +21,12 @@ type SettingsPublicSettingsResponse struct {
 
 	// Active authentication method for the Portainer instance. Valid values are: 1 for internal, 2 for LDAP, or 3 for oauth
 	// Example: 1
-	AuthenticationMethod int64 `json:"AuthenticationMethod,omitempty"`
+	AuthenticationMethod struct {
+		PortainerAuthenticationMethod
+	} `json:"AuthenticationMethod,omitempty"`
+
+	// auto patch settings
+	AutoPatchSettings *SettingsAutoPatchResponse `json:"AutoPatchSettings,omitempty"`
 
 	// The content in plaintext used to display in the login page. Will hide when value is empty string
 	// Example: notice or agreement
@@ -42,11 +48,16 @@ type SettingsPublicSettingsResponse struct {
 	// Example: true
 	EnableTelemetry bool `json:"EnableTelemetry,omitempty"`
 
+	// Whether FIPS mode is enabled
+	FIPSMode bool `json:"FIPSMode,omitempty"`
+
 	// Supported feature flags
 	Features map[string]bool `json:"Features,omitempty"`
 
 	// Deployment options for encouraging deployment as code
-	GlobalDeploymentOptions *PortainereeGlobalDeploymentOptions `json:"GlobalDeploymentOptions,omitempty"`
+	GlobalDeploymentOptions struct {
+		PortainereeGlobalDeploymentOptions
+	} `json:"GlobalDeploymentOptions,omitempty"`
 
 	// URL to a logo that will be displayed on the login page as well as on top of the sidebar. Will use default Portainer logo when value is empty string
 	// Example: https://mycompany.mydomain.tld/logo.png
@@ -85,6 +96,9 @@ type SettingsPublicSettingsResponse struct {
 	// Whether AMT is enabled
 	IsAMTEnabled bool `json:"isAMTEnabled,omitempty"`
 
+	// Whether observability is enabled
+	IsObservabilityEnabled bool `json:"isObservabilityEnabled,omitempty"`
+
 	// The expiry of a Kubeconfig
 	// Example: 24h
 	KubeconfigExpiry *string `json:"kubeconfigExpiry,omitempty"`
@@ -93,6 +107,14 @@ type SettingsPublicSettingsResponse struct {
 // Validate validates this settings public settings response
 func (m *SettingsPublicSettingsResponse) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateAuthenticationMethod(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateAutoPatchSettings(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateGlobalDeploymentOptions(formats); err != nil {
 		res = append(res, err)
@@ -112,20 +134,40 @@ func (m *SettingsPublicSettingsResponse) Validate(formats strfmt.Registry) error
 	return nil
 }
 
-func (m *SettingsPublicSettingsResponse) validateGlobalDeploymentOptions(formats strfmt.Registry) error {
-	if swag.IsZero(m.GlobalDeploymentOptions) { // not required
+func (m *SettingsPublicSettingsResponse) validateAuthenticationMethod(formats strfmt.Registry) error {
+	if swag.IsZero(m.AuthenticationMethod) { // not required
 		return nil
 	}
 
-	if m.GlobalDeploymentOptions != nil {
-		if err := m.GlobalDeploymentOptions.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("GlobalDeploymentOptions")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("GlobalDeploymentOptions")
+	return nil
+}
+
+func (m *SettingsPublicSettingsResponse) validateAutoPatchSettings(formats strfmt.Registry) error {
+	if swag.IsZero(m.AutoPatchSettings) { // not required
+		return nil
+	}
+
+	if m.AutoPatchSettings != nil {
+		if err := m.AutoPatchSettings.Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("AutoPatchSettings")
 			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("AutoPatchSettings")
+			}
+
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *SettingsPublicSettingsResponse) validateGlobalDeploymentOptions(formats strfmt.Registry) error {
+	if swag.IsZero(m.GlobalDeploymentOptions) { // not required
+		return nil
 	}
 
 	return nil
@@ -138,11 +180,15 @@ func (m *SettingsPublicSettingsResponse) validateDefaultRegistry(formats strfmt.
 
 	if m.DefaultRegistry != nil {
 		if err := m.DefaultRegistry.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("defaultRegistry")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("defaultRegistry")
 			}
+
 			return err
 		}
 	}
@@ -157,11 +203,15 @@ func (m *SettingsPublicSettingsResponse) validateEdge(formats strfmt.Registry) e
 
 	if m.Edge != nil {
 		if err := m.Edge.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("edge")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("edge")
 			}
+
 			return err
 		}
 	}
@@ -172,6 +222,14 @@ func (m *SettingsPublicSettingsResponse) validateEdge(formats strfmt.Registry) e
 // ContextValidate validate this settings public settings response based on the context it is used
 func (m *SettingsPublicSettingsResponse) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.contextValidateAuthenticationMethod(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateAutoPatchSettings(ctx, formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.contextValidateGlobalDeploymentOptions(ctx, formats); err != nil {
 		res = append(res, err)
@@ -191,23 +249,37 @@ func (m *SettingsPublicSettingsResponse) ContextValidate(ctx context.Context, fo
 	return nil
 }
 
-func (m *SettingsPublicSettingsResponse) contextValidateGlobalDeploymentOptions(ctx context.Context, formats strfmt.Registry) error {
+func (m *SettingsPublicSettingsResponse) contextValidateAuthenticationMethod(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.GlobalDeploymentOptions != nil {
+	return nil
+}
 
-		if swag.IsZero(m.GlobalDeploymentOptions) { // not required
+func (m *SettingsPublicSettingsResponse) contextValidateAutoPatchSettings(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.AutoPatchSettings != nil {
+
+		if swag.IsZero(m.AutoPatchSettings) { // not required
 			return nil
 		}
 
-		if err := m.GlobalDeploymentOptions.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("GlobalDeploymentOptions")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("GlobalDeploymentOptions")
+		if err := m.AutoPatchSettings.ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("AutoPatchSettings")
 			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("AutoPatchSettings")
+			}
+
 			return err
 		}
 	}
+
+	return nil
+}
+
+func (m *SettingsPublicSettingsResponse) contextValidateGlobalDeploymentOptions(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }
@@ -221,11 +293,15 @@ func (m *SettingsPublicSettingsResponse) contextValidateDefaultRegistry(ctx cont
 		}
 
 		if err := m.DefaultRegistry.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("defaultRegistry")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("defaultRegistry")
 			}
+
 			return err
 		}
 	}
@@ -242,11 +318,15 @@ func (m *SettingsPublicSettingsResponse) contextValidateEdge(ctx context.Context
 		}
 
 		if err := m.Edge.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("edge")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("edge")
 			}
+
 			return err
 		}
 	}
@@ -356,11 +436,15 @@ func (m *SettingsPublicSettingsResponseEdge) validateMtls(formats strfmt.Registr
 
 	if m.Mtls != nil {
 		if err := m.Mtls.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("edge" + "." + "mtls")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("edge" + "." + "mtls")
 			}
+
 			return err
 		}
 	}
@@ -391,11 +475,15 @@ func (m *SettingsPublicSettingsResponseEdge) contextValidateMtls(ctx context.Con
 		}
 
 		if err := m.Mtls.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("edge" + "." + "mtls")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("edge" + "." + "mtls")
 			}
+
 			return err
 		}
 	}

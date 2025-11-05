@@ -19,6 +19,12 @@ import (
 // swagger:model gitops.repositoryFileSearchPayload
 type GitopsRepositoryFileSearchPayload struct {
 
+	// authorization type
+	// Example: 0
+	AuthorizationType struct {
+		GittypesGitCredentialAuthType
+	} `json:"authorizationType,omitempty"`
+
 	// created from custom template ID
 	CreatedFromCustomTemplateID int64 `json:"createdFromCustomTemplateID,omitempty"`
 
@@ -60,6 +66,10 @@ type GitopsRepositoryFileSearchPayload struct {
 func (m *GitopsRepositoryFileSearchPayload) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateAuthorizationType(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateRepository(formats); err != nil {
 		res = append(res, err)
 	}
@@ -67,6 +77,14 @@ func (m *GitopsRepositoryFileSearchPayload) Validate(formats strfmt.Registry) er
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *GitopsRepositoryFileSearchPayload) validateAuthorizationType(formats strfmt.Registry) error {
+	if swag.IsZero(m.AuthorizationType) { // not required
+		return nil
+	}
+
 	return nil
 }
 
@@ -79,8 +97,22 @@ func (m *GitopsRepositoryFileSearchPayload) validateRepository(formats strfmt.Re
 	return nil
 }
 
-// ContextValidate validates this gitops repository file search payload based on context it is used
+// ContextValidate validate this gitops repository file search payload based on the context it is used
 func (m *GitopsRepositoryFileSearchPayload) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateAuthorizationType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *GitopsRepositoryFileSearchPayload) contextValidateAuthorizationType(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

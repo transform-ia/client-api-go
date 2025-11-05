@@ -29,6 +29,9 @@ type HelmInstallChartPayload struct {
 	// namespace
 	Namespace string `json:"namespace,omitempty"`
 
+	// registry Id
+	RegistryID int64 `json:"registryId,omitempty"`
+
 	// repo
 	Repo string `json:"repo,omitempty"`
 

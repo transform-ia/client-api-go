@@ -27,11 +27,15 @@ type V2MetricValueStatus struct {
 	// averageValue is the current value of the average of the
 	// metric across all relevant pods (as a quantity)
 	// +optional
-	AverageValue *ResourceQuantity `json:"averageValue,omitempty"`
+	AverageValue struct {
+		ResourceQuantity
+	} `json:"averageValue,omitempty"`
 
 	// value is the current value of the metric (as a quantity).
 	// +optional
-	Value *ResourceQuantity `json:"value,omitempty"`
+	Value struct {
+		ResourceQuantity
+	} `json:"value,omitempty"`
 }
 
 // Validate validates this v2 metric value status
@@ -57,34 +61,12 @@ func (m *V2MetricValueStatus) validateAverageValue(formats strfmt.Registry) erro
 		return nil
 	}
 
-	if m.AverageValue != nil {
-		if err := m.AverageValue.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("averageValue")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("averageValue")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V2MetricValueStatus) validateValue(formats strfmt.Registry) error {
 	if swag.IsZero(m.Value) { // not required
 		return nil
-	}
-
-	if m.Value != nil {
-		if err := m.Value.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("value")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("value")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -110,42 +92,10 @@ func (m *V2MetricValueStatus) ContextValidate(ctx context.Context, formats strfm
 
 func (m *V2MetricValueStatus) contextValidateAverageValue(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.AverageValue != nil {
-
-		if swag.IsZero(m.AverageValue) { // not required
-			return nil
-		}
-
-		if err := m.AverageValue.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("averageValue")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("averageValue")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V2MetricValueStatus) contextValidateValue(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Value != nil {
-
-		if swag.IsZero(m.Value) { // not required
-			return nil
-		}
-
-		if err := m.Value.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("value")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("value")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

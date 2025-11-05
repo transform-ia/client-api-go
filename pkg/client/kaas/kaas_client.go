@@ -93,7 +93,7 @@ type ClientService interface {
 **Access policy**: authenticated
 */
 func (a *Client) AddNodes(params *AddNodesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*AddNodesOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewAddNodesParams()
 	}
@@ -113,17 +113,22 @@ func (a *Client) AddNodes(params *AddNodesParams, authInfo runtime.ClientAuthInf
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*AddNodesOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for addNodes: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -136,7 +141,7 @@ func (a *Client) AddNodes(params *AddNodesParams, authInfo runtime.ClientAuthInf
 **Access policy**: authenticated
 */
 func (a *Client) KaasVersion(params *KaasVersionParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*KaasVersionOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewKaasVersionParams()
 	}
@@ -156,17 +161,22 @@ func (a *Client) KaasVersion(params *KaasVersionParams, authInfo runtime.ClientA
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*KaasVersionOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for kaasVersion: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -179,7 +189,7 @@ func (a *Client) KaasVersion(params *KaasVersionParams, authInfo runtime.ClientA
 **Access policy**: authenticated
 */
 func (a *Client) Microk8sGetAddons(params *Microk8sGetAddonsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*Microk8sGetAddonsOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewMicrok8sGetAddonsParams()
 	}
@@ -199,17 +209,22 @@ func (a *Client) Microk8sGetAddons(params *Microk8sGetAddonsParams, authInfo run
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*Microk8sGetAddonsOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for microk8sGetAddons: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -222,7 +237,7 @@ func (a *Client) Microk8sGetAddons(params *Microk8sGetAddonsParams, authInfo run
 **Access policy**: authenticated
 */
 func (a *Client) Microk8sGetNodeStatus(params *Microk8sGetNodeStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*Microk8sGetNodeStatusOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewMicrok8sGetNodeStatusParams()
 	}
@@ -242,17 +257,22 @@ func (a *Client) Microk8sGetNodeStatus(params *Microk8sGetNodeStatusParams, auth
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*Microk8sGetNodeStatusOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for microk8sGetNodeStatus: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -265,7 +285,7 @@ func (a *Client) Microk8sGetNodeStatus(params *Microk8sGetNodeStatusParams, auth
 **Access policy**: authenticated
 */
 func (a *Client) Microk8sUpdateAddons(params *Microk8sUpdateAddonsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*Microk8sUpdateAddonsOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewMicrok8sUpdateAddonsParams()
 	}
@@ -285,17 +305,22 @@ func (a *Client) Microk8sUpdateAddons(params *Microk8sUpdateAddonsParams, authIn
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*Microk8sUpdateAddonsOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for microk8sUpdateAddons: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -308,7 +333,7 @@ func (a *Client) Microk8sUpdateAddons(params *Microk8sUpdateAddonsParams, authIn
 **Access policy**: administrator
 */
 func (a *Client) ProviderInfo(params *ProviderInfoParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProviderInfoOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewProviderInfoParams()
 	}
@@ -328,17 +353,22 @@ func (a *Client) ProviderInfo(params *ProviderInfoParams, authInfo runtime.Clien
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*ProviderInfoOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for providerInfo: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -358,7 +388,7 @@ For Azure, GKE and Amazon see:
 **Access policy**: administrator
 */
 func (a *Client) ProvisionCluster(params *ProvisionClusterParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProvisionClusterOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewProvisionClusterParams()
 	}
@@ -378,17 +408,22 @@ func (a *Client) ProvisionCluster(params *ProvisionClusterParams, authInfo runti
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*ProvisionClusterOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for provisionCluster: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -401,7 +436,7 @@ func (a *Client) ProvisionCluster(params *ProvisionClusterParams, authInfo runti
 **Access policy**: administrator
 */
 func (a *Client) ProvisionClusterAmazon(params *ProvisionClusterAmazonParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProvisionClusterAmazonOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewProvisionClusterAmazonParams()
 	}
@@ -421,17 +456,22 @@ func (a *Client) ProvisionClusterAmazon(params *ProvisionClusterAmazonParams, au
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*ProvisionClusterAmazonOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for provisionClusterAmazon: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -444,7 +484,7 @@ func (a *Client) ProvisionClusterAmazon(params *ProvisionClusterAmazonParams, au
 **Access policy**: administrator
 */
 func (a *Client) ProvisionClusterAzure(params *ProvisionClusterAzureParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProvisionClusterAzureOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewProvisionClusterAzureParams()
 	}
@@ -464,17 +504,22 @@ func (a *Client) ProvisionClusterAzure(params *ProvisionClusterAzureParams, auth
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*ProvisionClusterAzureOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for provisionClusterAzure: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -487,7 +532,7 @@ func (a *Client) ProvisionClusterAzure(params *ProvisionClusterAzureParams, auth
 **Access policy**: administrator
 */
 func (a *Client) ProvisionClusterGKE(params *ProvisionClusterGKEParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProvisionClusterGKEOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewProvisionClusterGKEParams()
 	}
@@ -507,17 +552,22 @@ func (a *Client) ProvisionClusterGKE(params *ProvisionClusterGKEParams, authInfo
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*ProvisionClusterGKEOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for provisionClusterGKE: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -530,7 +580,7 @@ func (a *Client) ProvisionClusterGKE(params *ProvisionClusterGKEParams, authInfo
 **Access policy**: authenticated
 */
 func (a *Client) RemoveNodes(params *RemoveNodesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RemoveNodesOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewRemoveNodesParams()
 	}
@@ -550,17 +600,22 @@ func (a *Client) RemoveNodes(params *RemoveNodesParams, authInfo runtime.ClientA
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*RemoveNodesOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for removeNodes: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -573,7 +628,7 @@ func (a *Client) RemoveNodes(params *RemoveNodesParams, authInfo runtime.ClientA
 **Access policy**: administrator
 */
 func (a *Client) TestSSH(params *TestSSHParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*TestSSHOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewTestSSHParams()
 	}
@@ -593,17 +648,22 @@ func (a *Client) TestSSH(params *TestSSHParams, authInfo runtime.ClientAuthInfoW
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*TestSSHOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for testSSH: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -616,7 +676,7 @@ func (a *Client) TestSSH(params *TestSSHParams, authInfo runtime.ClientAuthInfoW
 **Access policy**: authenticated
 */
 func (a *Client) Upgrade(params *UpgradeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpgradeOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewUpgradeParams()
 	}
@@ -636,17 +696,22 @@ func (a *Client) Upgrade(params *UpgradeParams, authInfo runtime.ClientAuthInfoW
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*UpgradeOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for upgrade: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

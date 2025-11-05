@@ -7,6 +7,7 @@ package kubernetes
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type GetKubernetesRoleBindingsReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *GetKubernetesRoleBindingsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *GetKubernetesRoleBindingsReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewGetKubernetesRoleBindingsOK()
@@ -76,7 +77,7 @@ GetKubernetesRoleBindingsOK describes a response with status code 200, with defa
 Success
 */
 type GetKubernetesRoleBindingsOK struct {
-	Payload []*models.KubernetesK8sRoleBinding
+	Payload []*models.ModelsK8sRoleBinding
 }
 
 // IsSuccess returns true when this get kubernetes role bindings o k response has a 2xx status code
@@ -119,14 +120,14 @@ func (o *GetKubernetesRoleBindingsOK) String() string {
 	return fmt.Sprintf("[GET /kubernetes/{id}/rolebindings][%d] getKubernetesRoleBindingsOK %s", 200, payload)
 }
 
-func (o *GetKubernetesRoleBindingsOK) GetPayload() []*models.KubernetesK8sRoleBinding {
+func (o *GetKubernetesRoleBindingsOK) GetPayload() []*models.ModelsK8sRoleBinding {
 	return o.Payload
 }
 
 func (o *GetKubernetesRoleBindingsOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	// response payload
-	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), &o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

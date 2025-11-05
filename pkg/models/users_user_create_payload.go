@@ -31,7 +31,9 @@ type UsersUserCreatePayload struct {
 	// Example: 1
 	// Required: true
 	// Enum: [1,2]
-	Role *int64 `json:"role"`
+	Role struct {
+		PortainerUserRole
+	} `json:"role"`
 
 	// username
 	// Example: bob
@@ -70,10 +72,12 @@ func (m *UsersUserCreatePayload) validatePassword(formats strfmt.Registry) error
 	return nil
 }
 
-var usersUserCreatePayloadTypeRolePropEnum []interface{}
+var usersUserCreatePayloadTypeRolePropEnum []any
 
 func init() {
-	var res []int64
+	var res []struct {
+		PortainerUserRole
+	}
 	if err := json.Unmarshal([]byte(`[1,2]`), &res); err != nil {
 		panic(err)
 	}
@@ -83,7 +87,9 @@ func init() {
 }
 
 // prop value enum
-func (m *UsersUserCreatePayload) validateRoleEnum(path, location string, value int64) error {
+func (m *UsersUserCreatePayload) validateRoleEnum(path, location string, value *struct {
+	PortainerUserRole
+}) error {
 	if err := validate.EnumCase(path, location, value, usersUserCreatePayloadTypeRolePropEnum, true); err != nil {
 		return err
 	}
@@ -91,15 +97,6 @@ func (m *UsersUserCreatePayload) validateRoleEnum(path, location string, value i
 }
 
 func (m *UsersUserCreatePayload) validateRole(formats strfmt.Registry) error {
-
-	if err := validate.Required("role", "body", m.Role); err != nil {
-		return err
-	}
-
-	// value enum
-	if err := m.validateRoleEnum("role", "body", *m.Role); err != nil {
-		return err
-	}
 
 	return nil
 }
@@ -113,8 +110,22 @@ func (m *UsersUserCreatePayload) validateUsername(formats strfmt.Registry) error
 	return nil
 }
 
-// ContextValidate validates this users user create payload based on context it is used
+// ContextValidate validate this users user create payload based on the context it is used
 func (m *UsersUserCreatePayload) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateRole(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *UsersUserCreatePayload) contextValidateRole(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -102,11 +103,15 @@ func (m *ReleaseMetadata) validateDependencies(formats strfmt.Registry) error {
 
 		if m.Dependencies[i] != nil {
 			if err := m.Dependencies[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("dependencies" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("dependencies" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -128,11 +133,15 @@ func (m *ReleaseMetadata) validateMaintainers(formats strfmt.Registry) error {
 
 		if m.Maintainers[i] != nil {
 			if err := m.Maintainers[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("maintainers" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("maintainers" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -171,11 +180,15 @@ func (m *ReleaseMetadata) contextValidateDependencies(ctx context.Context, forma
 			}
 
 			if err := m.Dependencies[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("dependencies" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("dependencies" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -196,11 +209,15 @@ func (m *ReleaseMetadata) contextValidateMaintainers(ctx context.Context, format
 			}
 
 			if err := m.Maintainers[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("maintainers" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("maintainers" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

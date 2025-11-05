@@ -68,7 +68,7 @@ type EdgeStackStatusUpdateParams struct {
 
 	   EdgeStack status payload
 	*/
-	Body *models.EdgestacksUpdateStatusPayload
+	Body *models.GithubComPortainerPortainerEeAPIHTTPHandlerEdgestacksUpdateStatusPayload
 
 	/* ID.
 
@@ -130,13 +130,13 @@ func (o *EdgeStackStatusUpdateParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the edge stack status update params
-func (o *EdgeStackStatusUpdateParams) WithBody(body *models.EdgestacksUpdateStatusPayload) *EdgeStackStatusUpdateParams {
+func (o *EdgeStackStatusUpdateParams) WithBody(body *models.GithubComPortainerPortainerEeAPIHTTPHandlerEdgestacksUpdateStatusPayload) *EdgeStackStatusUpdateParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the edge stack status update params
-func (o *EdgeStackStatusUpdateParams) SetBody(body *models.EdgestacksUpdateStatusPayload) {
+func (o *EdgeStackStatusUpdateParams) SetBody(body *models.GithubComPortainerPortainerEeAPIHTTPHandlerEdgestacksUpdateStatusPayload) {
 	o.Body = body
 }
 

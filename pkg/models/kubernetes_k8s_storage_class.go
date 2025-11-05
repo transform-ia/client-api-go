@@ -7,7 +7,9 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -27,16 +29,77 @@ type KubernetesK8sStorageClass struct {
 	Provisioner string `json:"provisioner,omitempty"`
 
 	// reclaim policy
-	ReclaimPolicy string `json:"reclaimPolicy,omitempty"`
+	ReclaimPolicy V1PersistentVolumeReclaimPolicy `json:"reclaimPolicy,omitempty"`
 }
 
 // Validate validates this kubernetes k8s storage class
 func (m *KubernetesK8sStorageClass) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateReclaimPolicy(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this kubernetes k8s storage class based on context it is used
+func (m *KubernetesK8sStorageClass) validateReclaimPolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.ReclaimPolicy) { // not required
+		return nil
+	}
+
+	if err := m.ReclaimPolicy.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("reclaimPolicy")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("reclaimPolicy")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this kubernetes k8s storage class based on the context it is used
 func (m *KubernetesK8sStorageClass) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateReclaimPolicy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *KubernetesK8sStorageClass) contextValidateReclaimPolicy(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.ReclaimPolicy) { // not required
+		return nil
+	}
+
+	if err := m.ReclaimPolicy.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("reclaimPolicy")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("reclaimPolicy")
+		}
+
+		return err
+	}
+
 	return nil
 }
 

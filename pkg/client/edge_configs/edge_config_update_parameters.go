@@ -237,8 +237,8 @@ func (o *EdgeConfigUpdateParams) bindParamEdgeGroupIDs(formats strfmt.Registry) 
 		edgeGroupIDsIC = append(edgeGroupIDsIC, edgeGroupIDsIIV)
 	}
 
-	// items.CollectionFormat: ""
-	edgeGroupIDsIS := swag.JoinByFormat(edgeGroupIDsIC, "")
+	// items.CollectionFormat: "csv"
+	edgeGroupIDsIS := swag.JoinByFormat(edgeGroupIDsIC, "csv")
 
 	return edgeGroupIDsIS
 }

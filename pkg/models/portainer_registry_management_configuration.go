@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -36,8 +37,8 @@ type PortainerRegistryManagementConfiguration struct {
 	// TLS config
 	TLSConfig *PortainerTLSConfiguration `json:"TLSConfig,omitempty"`
 
-	// Registry Type (1 - Quay, 2 - Azure, 3 - Custom, 4 - Gitlab, 5 - ProGet, 6 - DockerHub, 7 - ECR)
-	Type int64 `json:"Type,omitempty"`
+	// type
+	Type PortainerRegistryType `json:"Type,omitempty"`
 
 	// username
 	Username string `json:"Username,omitempty"`
@@ -55,6 +56,10 @@ func (m *PortainerRegistryManagementConfiguration) Validate(formats strfmt.Regis
 		res = append(res, err)
 	}
 
+	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -68,11 +73,15 @@ func (m *PortainerRegistryManagementConfiguration) validateEcr(formats strfmt.Re
 
 	if m.Ecr != nil {
 		if err := m.Ecr.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Ecr")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Ecr")
 			}
+
 			return err
 		}
 	}
@@ -87,13 +96,38 @@ func (m *PortainerRegistryManagementConfiguration) validateTLSConfig(formats str
 
 	if m.TLSConfig != nil {
 		if err := m.TLSConfig.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("TLSConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("TLSConfig")
 			}
+
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *PortainerRegistryManagementConfiguration) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	if err := m.Type.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("Type")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("Type")
+		}
+
+		return err
 	}
 
 	return nil
@@ -108,6 +142,10 @@ func (m *PortainerRegistryManagementConfiguration) ContextValidate(ctx context.C
 	}
 
 	if err := m.contextValidateTLSConfig(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -126,11 +164,15 @@ func (m *PortainerRegistryManagementConfiguration) contextValidateEcr(ctx contex
 		}
 
 		if err := m.Ecr.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Ecr")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Ecr")
 			}
+
 			return err
 		}
 	}
@@ -147,13 +189,39 @@ func (m *PortainerRegistryManagementConfiguration) contextValidateTLSConfig(ctx 
 		}
 
 		if err := m.TLSConfig.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("TLSConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("TLSConfig")
 			}
+
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *PortainerRegistryManagementConfiguration) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	if err := m.Type.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("Type")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("Type")
+		}
+
+		return err
 	}
 
 	return nil

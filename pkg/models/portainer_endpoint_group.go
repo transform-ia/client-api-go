@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -87,11 +88,15 @@ func (m *PortainerEndpointGroup) validateLabels(formats strfmt.Registry) error {
 
 		if m.Labels[i] != nil {
 			if err := m.Labels[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Labels" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Labels" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -108,11 +113,15 @@ func (m *PortainerEndpointGroup) validateTeamAccessPolicies(formats strfmt.Regis
 
 	if m.TeamAccessPolicies != nil {
 		if err := m.TeamAccessPolicies.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("TeamAccessPolicies")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("TeamAccessPolicies")
 			}
+
 			return err
 		}
 	}
@@ -127,11 +136,15 @@ func (m *PortainerEndpointGroup) validateUserAccessPolicies(formats strfmt.Regis
 
 	if m.UserAccessPolicies != nil {
 		if err := m.UserAccessPolicies.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("UserAccessPolicies")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("UserAccessPolicies")
 			}
+
 			return err
 		}
 	}
@@ -172,11 +185,15 @@ func (m *PortainerEndpointGroup) contextValidateLabels(ctx context.Context, form
 			}
 
 			if err := m.Labels[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Labels" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Labels" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -193,11 +210,15 @@ func (m *PortainerEndpointGroup) contextValidateTeamAccessPolicies(ctx context.C
 	}
 
 	if err := m.TeamAccessPolicies.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("TeamAccessPolicies")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("TeamAccessPolicies")
 		}
+
 		return err
 	}
 
@@ -211,11 +232,15 @@ func (m *PortainerEndpointGroup) contextValidateUserAccessPolicies(ctx context.C
 	}
 
 	if err := m.UserAccessPolicies.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("UserAccessPolicies")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("UserAccessPolicies")
 		}
+
 		return err
 	}
 

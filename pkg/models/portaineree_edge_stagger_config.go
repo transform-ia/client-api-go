@@ -7,7 +7,9 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -27,10 +29,10 @@ type PortainereeEdgeStaggerConfig struct {
 	DeviceNumberStartFrom int64 `json:"deviceNumberStartFrom,omitempty"`
 
 	// stagger option
-	StaggerOption int64 `json:"staggerOption,omitempty"`
+	StaggerOption PortainereeEdgeStaggerOption `json:"staggerOption,omitempty"`
 
 	// stagger parallel option
-	StaggerParallelOption int64 `json:"staggerParallelOption,omitempty"`
+	StaggerParallelOption PortainereeEdgeStaggerParallelOption `json:"staggerParallelOption,omitempty"`
 
 	// Timeout unit is minute
 	// Example: 5
@@ -41,16 +43,179 @@ type PortainereeEdgeStaggerConfig struct {
 	UpdateDelay string `json:"updateDelay,omitempty"`
 
 	// update failure action
-	UpdateFailureAction int64 `json:"updateFailureAction,omitempty"`
+	UpdateFailureAction PortainereeEdgeUpdateFailureAction `json:"updateFailureAction,omitempty"`
 }
 
 // Validate validates this portaineree edge stagger config
 func (m *PortainereeEdgeStaggerConfig) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateStaggerOption(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateStaggerParallelOption(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateUpdateFailureAction(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this portaineree edge stagger config based on context it is used
+func (m *PortainereeEdgeStaggerConfig) validateStaggerOption(formats strfmt.Registry) error {
+	if swag.IsZero(m.StaggerOption) { // not required
+		return nil
+	}
+
+	if err := m.StaggerOption.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("staggerOption")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("staggerOption")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+func (m *PortainereeEdgeStaggerConfig) validateStaggerParallelOption(formats strfmt.Registry) error {
+	if swag.IsZero(m.StaggerParallelOption) { // not required
+		return nil
+	}
+
+	if err := m.StaggerParallelOption.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("staggerParallelOption")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("staggerParallelOption")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+func (m *PortainereeEdgeStaggerConfig) validateUpdateFailureAction(formats strfmt.Registry) error {
+	if swag.IsZero(m.UpdateFailureAction) { // not required
+		return nil
+	}
+
+	if err := m.UpdateFailureAction.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("updateFailureAction")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("updateFailureAction")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validate this portaineree edge stagger config based on the context it is used
 func (m *PortainereeEdgeStaggerConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateStaggerOption(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateStaggerParallelOption(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateUpdateFailureAction(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *PortainereeEdgeStaggerConfig) contextValidateStaggerOption(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.StaggerOption) { // not required
+		return nil
+	}
+
+	if err := m.StaggerOption.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("staggerOption")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("staggerOption")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+func (m *PortainereeEdgeStaggerConfig) contextValidateStaggerParallelOption(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.StaggerParallelOption) { // not required
+		return nil
+	}
+
+	if err := m.StaggerParallelOption.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("staggerParallelOption")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("staggerParallelOption")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+func (m *PortainereeEdgeStaggerConfig) contextValidateUpdateFailureAction(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.UpdateFailureAction) { // not required
+		return nil
+	}
+
+	if err := m.UpdateFailureAction.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("updateFailureAction")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("updateFailureAction")
+		}
+
+		return err
+	}
+
 	return nil
 }
 

@@ -7,6 +7,7 @@ package endpoint_groups
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type EndpointGroupUpdateReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *EndpointGroupUpdateReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *EndpointGroupUpdateReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewEndpointGroupUpdateOK()
@@ -116,7 +117,7 @@ func (o *EndpointGroupUpdateOK) readResponse(response runtime.ClientResponse, co
 	o.Payload = new(models.PortainerEndpointGroup)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

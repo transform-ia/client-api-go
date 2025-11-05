@@ -67,7 +67,7 @@ type EdgeStackCreateRepositoryParams struct {
 
 	   stack config
 	*/
-	Body *models.EdgestacksEdgeStackFromGitRepositoryPayload
+	Body *models.GithubComPortainerPortainerEeAPIHTTPHandlerEdgestacksEdgeStackFromGitRepositoryPayload
 
 	/* Dryrun.
 
@@ -129,13 +129,13 @@ func (o *EdgeStackCreateRepositoryParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the edge stack create repository params
-func (o *EdgeStackCreateRepositoryParams) WithBody(body *models.EdgestacksEdgeStackFromGitRepositoryPayload) *EdgeStackCreateRepositoryParams {
+func (o *EdgeStackCreateRepositoryParams) WithBody(body *models.GithubComPortainerPortainerEeAPIHTTPHandlerEdgestacksEdgeStackFromGitRepositoryPayload) *EdgeStackCreateRepositoryParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the edge stack create repository params
-func (o *EdgeStackCreateRepositoryParams) SetBody(body *models.EdgestacksEdgeStackFromGitRepositoryPayload) {
+func (o *EdgeStackCreateRepositoryParams) SetBody(body *models.GithubComPortainerPortainerEeAPIHTTPHandlerEdgestacksEdgeStackFromGitRepositoryPayload) {
 	o.Body = body
 }
 

@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -44,6 +45,9 @@ type PortainerK8sNamespaceInfo struct {
 
 	// status
 	Status *V1NamespaceStatus `json:"Status,omitempty"`
+
+	// unhealthy event count
+	UnhealthyEventCount int64 `json:"UnhealthyEventCount,omitempty"`
 }
 
 // Validate validates this portainer k8s namespace info
@@ -71,11 +75,15 @@ func (m *PortainerK8sNamespaceInfo) validateResourceQuota(formats strfmt.Registr
 
 	if m.ResourceQuota != nil {
 		if err := m.ResourceQuota.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("ResourceQuota")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("ResourceQuota")
 			}
+
 			return err
 		}
 	}
@@ -90,11 +98,15 @@ func (m *PortainerK8sNamespaceInfo) validateStatus(formats strfmt.Registry) erro
 
 	if m.Status != nil {
 		if err := m.Status.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Status")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Status")
 			}
+
 			return err
 		}
 	}
@@ -129,11 +141,15 @@ func (m *PortainerK8sNamespaceInfo) contextValidateResourceQuota(ctx context.Con
 		}
 
 		if err := m.ResourceQuota.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("ResourceQuota")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("ResourceQuota")
 			}
+
 			return err
 		}
 	}
@@ -150,11 +166,15 @@ func (m *PortainerK8sNamespaceInfo) contextValidateStatus(ctx context.Context, f
 		}
 
 		if err := m.Status.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Status")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Status")
 			}
+
 			return err
 		}
 	}

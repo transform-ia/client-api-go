@@ -7,12 +7,11 @@ package models
 
 import (
 	"context"
-	"encoding/json"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // EdgeupdateschedulesUpdatePayload edgeupdateschedules update payload
@@ -29,17 +28,14 @@ type EdgeupdateschedulesUpdatePayload struct {
 	// name
 	Name string `json:"name,omitempty"`
 
-	// ID of registry
-	// Example: 1
+	// default to 0 = dockerhub
 	RegistryID int64 `json:"registryID,omitempty"`
 
 	// scheduled time
 	ScheduledTime string `json:"scheduledTime,omitempty"`
 
-	// Type of the update (1 - update, 2 - rollback)
-	// Example: 1
-	// Enum: [1,2]
-	Type int64 `json:"type,omitempty"`
+	// type
+	Type TypesUpdateScheduleType `json:"type,omitempty"`
 
 	// default to "" == portainer/portainer-updater:latest
 	UpdaterImage string `json:"updaterImage,omitempty"`
@@ -59,41 +55,60 @@ func (m *EdgeupdateschedulesUpdatePayload) Validate(formats strfmt.Registry) err
 	return nil
 }
 
-var edgeupdateschedulesUpdatePayloadTypeTypePropEnum []interface{}
-
-func init() {
-	var res []int64
-	if err := json.Unmarshal([]byte(`[1,2]`), &res); err != nil {
-		panic(err)
-	}
-	for _, v := range res {
-		edgeupdateschedulesUpdatePayloadTypeTypePropEnum = append(edgeupdateschedulesUpdatePayloadTypeTypePropEnum, v)
-	}
-}
-
-// prop value enum
-func (m *EdgeupdateschedulesUpdatePayload) validateTypeEnum(path, location string, value int64) error {
-	if err := validate.EnumCase(path, location, value, edgeupdateschedulesUpdatePayloadTypeTypePropEnum, true); err != nil {
-		return err
-	}
-	return nil
-}
-
 func (m *EdgeupdateschedulesUpdatePayload) validateType(formats strfmt.Registry) error {
 	if swag.IsZero(m.Type) { // not required
 		return nil
 	}
 
-	// value enum
-	if err := m.validateTypeEnum("type", "body", m.Type); err != nil {
+	if err := m.Type.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("type")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("type")
+		}
+
 		return err
 	}
 
 	return nil
 }
 
-// ContextValidate validates this edgeupdateschedules update payload based on context it is used
+// ContextValidate validate this edgeupdateschedules update payload based on the context it is used
 func (m *EdgeupdateschedulesUpdatePayload) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *EdgeupdateschedulesUpdatePayload) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	if err := m.Type.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("type")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("type")
+		}
+
+		return err
+	}
+
 	return nil
 }
 

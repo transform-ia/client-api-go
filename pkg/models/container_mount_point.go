@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -40,7 +41,9 @@ type ContainerMountPoint struct {
 	// https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt
 	//
 	// This field is not used on Windows.
-	Propagation string `json:"propagation,omitempty"`
+	Propagation struct {
+		MountPropagation
+	} `json:"propagation,omitempty"`
 
 	// RW indicates whether the mount is mounted writable (read-write).
 	Rw bool `json:"rw,omitempty"`
@@ -55,16 +58,70 @@ type ContainerMountPoint struct {
 
 	// Type is the type of mount, see `Type<foo>` definitions in
 	// github.com/docker/docker/api/types/mount.Type
-	Type string `json:"type,omitempty"`
+	Type struct {
+		MountType
+	} `json:"type,omitempty"`
 }
 
 // Validate validates this container mount point
 func (m *ContainerMountPoint) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validatePropagation(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this container mount point based on context it is used
+func (m *ContainerMountPoint) validatePropagation(formats strfmt.Registry) error {
+	if swag.IsZero(m.Propagation) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+func (m *ContainerMountPoint) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+// ContextValidate validate this container mount point based on the context it is used
 func (m *ContainerMountPoint) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidatePropagation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *ContainerMountPoint) contextValidatePropagation(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
+func (m *ContainerMountPoint) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

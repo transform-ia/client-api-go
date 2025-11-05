@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -58,19 +59,27 @@ type CustomtemplatesCustomTemplateUpdatePayload struct {
 	// Required for Docker stacks
 	// Example: 1
 	// Enum: [1,2]
-	Platform int64 `json:"platform,omitempty"`
+	Platform struct {
+		PortainerCustomTemplatePlatform
+	} `json:"platform,omitempty"`
 
-	// Use basic authentication to clone the Git repository
+	// Use authentication to clone the Git repository
 	// Example: true
 	RepositoryAuthentication bool `json:"repositoryAuthentication,omitempty"`
+
+	// RepositoryAuthorizationType is the authorization type to use
+	// Example: 0
+	RepositoryAuthorizationType struct {
+		GittypesGitCredentialAuthType
+	} `json:"repositoryAuthorizationType,omitempty"`
 
 	// GitCredentialID used to identify the bound git credential. Required when RepositoryAuthentication
 	// is true and RepositoryUsername/RepositoryPassword are not provided
 	// Example: 0
 	RepositoryGitCredentialID int64 `json:"repositoryGitCredentialID,omitempty"`
 
-	// Password used in basic authentication. Required when RepositoryAuthentication is true
-	// and RepositoryGitCredentialID is 0
+	// Password used in basic authentication or token used in token authentication.
+	// Required when RepositoryAuthentication is true and RepositoryGitCredentialID is 0
 	// Example: myGitPassword
 	RepositoryPassword string `json:"repositoryPassword,omitempty"`
 
@@ -84,7 +93,7 @@ type CustomtemplatesCustomTemplateUpdatePayload struct {
 	RepositoryURL *string `json:"repositoryURL"`
 
 	// Username used in basic authentication. Required when RepositoryAuthentication is true
-	// and RepositoryGitCredentialID is 0
+	// and RepositoryGitCredentialID is 0. Ignored if RepositoryAuthType is token
 	// Example: myGitUsername
 	RepositoryUsername string `json:"repositoryUsername,omitempty"`
 
@@ -101,7 +110,9 @@ type CustomtemplatesCustomTemplateUpdatePayload struct {
 	// Example: 1
 	// Required: true
 	// Enum: [1,2,3]
-	Type *int64 `json:"type"`
+	Type struct {
+		PortainerStackType
+	} `json:"type"`
 
 	// Definitions of variables in the stack file
 	Variables []*PortainerCustomTemplateVariableDefinition `json:"variables"`
@@ -124,6 +135,10 @@ func (m *CustomtemplatesCustomTemplateUpdatePayload) Validate(formats strfmt.Reg
 	}
 
 	if err := m.validatePlatform(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRepositoryAuthorizationType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -165,11 +180,15 @@ func (m *CustomtemplatesCustomTemplateUpdatePayload) validateEdgeSettings(format
 
 	if m.EdgeSettings != nil {
 		if err := m.EdgeSettings.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("edgeSettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("edgeSettings")
 			}
+
 			return err
 		}
 	}
@@ -186,10 +205,12 @@ func (m *CustomtemplatesCustomTemplateUpdatePayload) validateFileContent(formats
 	return nil
 }
 
-var customtemplatesCustomTemplateUpdatePayloadTypePlatformPropEnum []interface{}
+var customtemplatesCustomTemplateUpdatePayloadTypePlatformPropEnum []any
 
 func init() {
-	var res []int64
+	var res []struct {
+		PortainerCustomTemplatePlatform
+	}
 	if err := json.Unmarshal([]byte(`[1,2]`), &res); err != nil {
 		panic(err)
 	}
@@ -199,7 +220,9 @@ func init() {
 }
 
 // prop value enum
-func (m *CustomtemplatesCustomTemplateUpdatePayload) validatePlatformEnum(path, location string, value int64) error {
+func (m *CustomtemplatesCustomTemplateUpdatePayload) validatePlatformEnum(path, location string, value *struct {
+	PortainerCustomTemplatePlatform
+}) error {
 	if err := validate.EnumCase(path, location, value, customtemplatesCustomTemplateUpdatePayloadTypePlatformPropEnum, true); err != nil {
 		return err
 	}
@@ -211,9 +234,12 @@ func (m *CustomtemplatesCustomTemplateUpdatePayload) validatePlatform(formats st
 		return nil
 	}
 
-	// value enum
-	if err := m.validatePlatformEnum("platform", "body", m.Platform); err != nil {
-		return err
+	return nil
+}
+
+func (m *CustomtemplatesCustomTemplateUpdatePayload) validateRepositoryAuthorizationType(formats strfmt.Registry) error {
+	if swag.IsZero(m.RepositoryAuthorizationType) { // not required
+		return nil
 	}
 
 	return nil
@@ -237,10 +263,12 @@ func (m *CustomtemplatesCustomTemplateUpdatePayload) validateTitle(formats strfm
 	return nil
 }
 
-var customtemplatesCustomTemplateUpdatePayloadTypeTypePropEnum []interface{}
+var customtemplatesCustomTemplateUpdatePayloadTypeTypePropEnum []any
 
 func init() {
-	var res []int64
+	var res []struct {
+		PortainerStackType
+	}
 	if err := json.Unmarshal([]byte(`[1,2,3]`), &res); err != nil {
 		panic(err)
 	}
@@ -250,7 +278,9 @@ func init() {
 }
 
 // prop value enum
-func (m *CustomtemplatesCustomTemplateUpdatePayload) validateTypeEnum(path, location string, value int64) error {
+func (m *CustomtemplatesCustomTemplateUpdatePayload) validateTypeEnum(path, location string, value *struct {
+	PortainerStackType
+}) error {
 	if err := validate.EnumCase(path, location, value, customtemplatesCustomTemplateUpdatePayloadTypeTypePropEnum, true); err != nil {
 		return err
 	}
@@ -258,15 +288,6 @@ func (m *CustomtemplatesCustomTemplateUpdatePayload) validateTypeEnum(path, loca
 }
 
 func (m *CustomtemplatesCustomTemplateUpdatePayload) validateType(formats strfmt.Registry) error {
-
-	if err := validate.Required("type", "body", m.Type); err != nil {
-		return err
-	}
-
-	// value enum
-	if err := m.validateTypeEnum("type", "body", *m.Type); err != nil {
-		return err
-	}
 
 	return nil
 }
@@ -283,11 +304,15 @@ func (m *CustomtemplatesCustomTemplateUpdatePayload) validateVariables(formats s
 
 		if m.Variables[i] != nil {
 			if err := m.Variables[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("variables" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("variables" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -302,6 +327,18 @@ func (m *CustomtemplatesCustomTemplateUpdatePayload) ContextValidate(ctx context
 	var res []error
 
 	if err := m.contextValidateEdgeSettings(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidatePlatform(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateRepositoryAuthorizationType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -324,14 +361,33 @@ func (m *CustomtemplatesCustomTemplateUpdatePayload) contextValidateEdgeSettings
 		}
 
 		if err := m.EdgeSettings.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("edgeSettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("edgeSettings")
 			}
+
 			return err
 		}
 	}
+
+	return nil
+}
+
+func (m *CustomtemplatesCustomTemplateUpdatePayload) contextValidatePlatform(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
+func (m *CustomtemplatesCustomTemplateUpdatePayload) contextValidateRepositoryAuthorizationType(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
+func (m *CustomtemplatesCustomTemplateUpdatePayload) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }
@@ -347,11 +403,15 @@ func (m *CustomtemplatesCustomTemplateUpdatePayload) contextValidateVariables(ct
 			}
 
 			if err := m.Variables[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("variables" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("variables" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}

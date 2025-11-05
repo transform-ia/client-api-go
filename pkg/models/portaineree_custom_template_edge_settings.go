@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -35,7 +36,9 @@ type PortainereeCustomTemplateEdgeSettings struct {
 	RetryPeriod int64 `json:"retryPeriod,omitempty"`
 
 	// StaggerConfig is the configuration for staggered update
-	StaggerConfig *PortainereeEdgeStaggerConfig `json:"staggerConfig,omitempty"`
+	StaggerConfig struct {
+		PortainereeEdgeStaggerConfig
+	} `json:"staggerConfig,omitempty"`
 }
 
 // Validate validates this portaineree custom template edge settings
@@ -63,11 +66,15 @@ func (m *PortainereeCustomTemplateEdgeSettings) validateRelativePathSettings(for
 
 	if m.RelativePathSettings != nil {
 		if err := m.RelativePathSettings.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("relativePathSettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("relativePathSettings")
 			}
+
 			return err
 		}
 	}
@@ -78,17 +85,6 @@ func (m *PortainereeCustomTemplateEdgeSettings) validateRelativePathSettings(for
 func (m *PortainereeCustomTemplateEdgeSettings) validateStaggerConfig(formats strfmt.Registry) error {
 	if swag.IsZero(m.StaggerConfig) { // not required
 		return nil
-	}
-
-	if m.StaggerConfig != nil {
-		if err := m.StaggerConfig.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("staggerConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("staggerConfig")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -121,11 +117,15 @@ func (m *PortainereeCustomTemplateEdgeSettings) contextValidateRelativePathSetti
 		}
 
 		if err := m.RelativePathSettings.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("relativePathSettings")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("relativePathSettings")
 			}
+
 			return err
 		}
 	}
@@ -134,22 +134,6 @@ func (m *PortainereeCustomTemplateEdgeSettings) contextValidateRelativePathSetti
 }
 
 func (m *PortainereeCustomTemplateEdgeSettings) contextValidateStaggerConfig(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.StaggerConfig != nil {
-
-		if swag.IsZero(m.StaggerConfig) { // not required
-			return nil
-		}
-
-		if err := m.StaggerConfig.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("staggerConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("staggerConfig")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

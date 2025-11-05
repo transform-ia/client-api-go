@@ -64,8 +64,6 @@ type ClientService interface {
 
 	SystemUpdate(params *SystemUpdateParams, opts ...ClientOption) (*SystemUpdateNoContent, error)
 
-	SystemUpgrade(params *SystemUpgradeParams, opts ...ClientOption) (*SystemUpgradeNoContent, error)
-
 	SystemVersion(params *SystemVersionParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SystemVersionOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
@@ -77,7 +75,7 @@ SystemInfo retrieves system info
 **Access policy**: authenticated
 */
 func (a *Client) SystemInfo(params *SystemInfoParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SystemInfoOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSystemInfoParams()
 	}
@@ -97,17 +95,22 @@ func (a *Client) SystemInfo(params *SystemInfoParams, authInfo runtime.ClientAut
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SystemInfoOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for systemInfo: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -118,7 +121,7 @@ SystemNodesCount retrieves the count of nodes
 **Access policy**: authenticated
 */
 func (a *Client) SystemNodesCount(params *SystemNodesCountParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SystemNodesCountOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSystemNodesCountParams()
 	}
@@ -138,17 +141,22 @@ func (a *Client) SystemNodesCount(params *SystemNodesCountParams, authInfo runti
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SystemNodesCountOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for systemNodesCount: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -161,7 +169,7 @@ func (a *Client) SystemNodesCount(params *SystemNodesCountParams, authInfo runti
 **Access policy**: public
 */
 func (a *Client) SystemStatus(params *SystemStatusParams, opts ...ClientOption) (*SystemStatusOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSystemStatusParams()
 	}
@@ -180,17 +188,22 @@ func (a *Client) SystemStatus(params *SystemStatusParams, opts ...ClientOption) 
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SystemStatusOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for systemStatus: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -203,7 +216,7 @@ func (a *Client) SystemStatus(params *SystemStatusParams, opts ...ClientOption) 
 **Access policy**: administrator
 */
 func (a *Client) SystemUpdate(params *SystemUpdateParams, opts ...ClientOption) (*SystemUpdateNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSystemUpdateParams()
 	}
@@ -222,60 +235,23 @@ func (a *Client) SystemUpdate(params *SystemUpdateParams, opts ...ClientOption) 
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SystemUpdateNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for systemUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
-}
-
-/*
-	SystemUpgrade upgrades portainer to b e
-
-	Upgrade Portainer to BE
-
-**Access policy**: administrator
-*/
-func (a *Client) SystemUpgrade(params *SystemUpgradeParams, opts ...ClientOption) (*SystemUpgradeNoContent, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewSystemUpgradeParams()
-	}
-	op := &runtime.ClientOperation{
-		ID:                 "systemUpgrade",
-		Method:             "POST",
-		PathPattern:        "/system/upgrade",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http", "https"},
-		Params:             params,
-		Reader:             &SystemUpgradeReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*SystemUpgradeNoContent)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for systemUpgrade: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -287,7 +263,7 @@ func (a *Client) SystemUpgrade(params *SystemUpgradeParams, opts ...ClientOption
 **Access policy**: authenticated
 */
 func (a *Client) SystemVersion(params *SystemVersionParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*SystemVersionOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewSystemVersionParams()
 	}
@@ -307,17 +283,22 @@ func (a *Client) SystemVersion(params *SystemVersionParams, authInfo runtime.Cli
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*SystemVersionOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for systemVersion: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -30,7 +31,9 @@ type V1NamespaceStatus struct {
 	// Phase is the current lifecycle phase of the namespace.
 	// More info: https://kubernetes.io/docs/tasks/administer-cluster/namespaces/
 	// +optional
-	Phase string `json:"phase,omitempty"`
+	Phase struct {
+		V1NamespacePhase
+	} `json:"phase,omitempty"`
 }
 
 // Validate validates this v1 namespace status
@@ -38,6 +41,10 @@ func (m *V1NamespaceStatus) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateConditions(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePhase(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -59,15 +66,27 @@ func (m *V1NamespaceStatus) validateConditions(formats strfmt.Registry) error {
 
 		if m.Conditions[i] != nil {
 			if err := m.Conditions[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *V1NamespaceStatus) validatePhase(formats strfmt.Registry) error {
+	if swag.IsZero(m.Phase) { // not required
+		return nil
 	}
 
 	return nil
@@ -78,6 +97,10 @@ func (m *V1NamespaceStatus) ContextValidate(ctx context.Context, formats strfmt.
 	var res []error
 
 	if err := m.contextValidateConditions(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidatePhase(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -98,16 +121,25 @@ func (m *V1NamespaceStatus) contextValidateConditions(ctx context.Context, forma
 			}
 
 			if err := m.Conditions[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("conditions" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("conditions" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
 	}
+
+	return nil
+}
+
+func (m *V1NamespaceStatus) contextValidatePhase(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }

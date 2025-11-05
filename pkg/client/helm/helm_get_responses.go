@@ -7,6 +7,7 @@ package helm
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type HelmGetReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *HelmGetReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *HelmGetReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewHelmGetOK()
@@ -76,7 +77,7 @@ HelmGetOK describes a response with status code 200, with default header values.
 Success
 */
 type HelmGetOK struct {
-	Payload *models.ReleaseRelease
+	Payload *models.GithubComPortainerPortainerPkgLibhelmReleaseRelease
 }
 
 // IsSuccess returns true when this helm get o k response has a 2xx status code
@@ -119,16 +120,16 @@ func (o *HelmGetOK) String() string {
 	return fmt.Sprintf("[GET /endpoints/{id}/kubernetes/helm/{name}][%d] helmGetOK %s", 200, payload)
 }
 
-func (o *HelmGetOK) GetPayload() *models.ReleaseRelease {
+func (o *HelmGetOK) GetPayload() *models.GithubComPortainerPortainerPkgLibhelmReleaseRelease {
 	return o.Payload
 }
 
 func (o *HelmGetOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.ReleaseRelease)
+	o.Payload = new(models.GithubComPortainerPortainerPkgLibhelmReleaseRelease)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

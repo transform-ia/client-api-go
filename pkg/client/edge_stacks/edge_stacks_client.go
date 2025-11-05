@@ -121,7 +121,7 @@ EdgeStackCreateFile creates an edge stack from file
 **Access policy**: administrator
 */
 func (a *Client) EdgeStackCreateFile(params *EdgeStackCreateFileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeStackCreateFileOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeStackCreateFileParams()
 	}
@@ -141,17 +141,22 @@ func (a *Client) EdgeStackCreateFile(params *EdgeStackCreateFileParams, authInfo
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeStackCreateFileOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeStackCreateFile: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -162,7 +167,7 @@ EdgeStackCreateRepository creates an edge stack from a git repository
 **Access policy**: administrator
 */
 func (a *Client) EdgeStackCreateRepository(params *EdgeStackCreateRepositoryParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeStackCreateRepositoryOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeStackCreateRepositoryParams()
 	}
@@ -182,17 +187,22 @@ func (a *Client) EdgeStackCreateRepository(params *EdgeStackCreateRepositoryPara
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeStackCreateRepositoryOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeStackCreateRepository: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -203,7 +213,7 @@ EdgeStackCreateString creates an edge stack from a text
 **Access policy**: administrator
 */
 func (a *Client) EdgeStackCreateString(params *EdgeStackCreateStringParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeStackCreateStringOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeStackCreateStringParams()
 	}
@@ -223,17 +233,22 @@ func (a *Client) EdgeStackCreateString(params *EdgeStackCreateStringParams, auth
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeStackCreateStringOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeStackCreateString: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -244,7 +259,7 @@ EdgeStackDelete deletes an edge stack
 **Access policy**: administrator
 */
 func (a *Client) EdgeStackDelete(params *EdgeStackDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeStackDeleteNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeStackDeleteParams()
 	}
@@ -264,17 +279,22 @@ func (a *Client) EdgeStackDelete(params *EdgeStackDeleteParams, authInfo runtime
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeStackDeleteNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeStackDelete: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -285,7 +305,7 @@ EdgeStackFile fetches the stack file for an edge stack
 **Access policy**: administrator
 */
 func (a *Client) EdgeStackFile(params *EdgeStackFileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeStackFileOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeStackFileParams()
 	}
@@ -305,17 +325,22 @@ func (a *Client) EdgeStackFile(params *EdgeStackFileParams, authInfo runtime.Cli
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeStackFileOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeStackFile: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -326,7 +351,7 @@ EdgeStackInspect inspects an edge stack
 **Access policy**: administrator
 */
 func (a *Client) EdgeStackInspect(params *EdgeStackInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeStackInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeStackInspectParams()
 	}
@@ -346,17 +371,22 @@ func (a *Client) EdgeStackInspect(params *EdgeStackInspectParams, authInfo runti
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeStackInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeStackInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -367,7 +397,7 @@ EdgeStackList fetches the list of edge stacks
 **Access policy**: administrator
 */
 func (a *Client) EdgeStackList(params *EdgeStackListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeStackListOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeStackListParams()
 	}
@@ -387,17 +417,22 @@ func (a *Client) EdgeStackList(params *EdgeStackListParams, authInfo runtime.Cli
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeStackListOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeStackList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -408,7 +443,7 @@ EdgeStackLogsCollect schedules the collection of logs for a given endpoint and e
 **Access policy**: administrator
 */
 func (a *Client) EdgeStackLogsCollect(params *EdgeStackLogsCollectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeStackLogsCollectNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeStackLogsCollectParams()
 	}
@@ -428,17 +463,22 @@ func (a *Client) EdgeStackLogsCollect(params *EdgeStackLogsCollectParams, authIn
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeStackLogsCollectNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeStackLogsCollect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -449,7 +489,7 @@ EdgeStackLogsDelete deletes the available logs for a given edge stack and endpoi
 **Access policy**: administrator
 */
 func (a *Client) EdgeStackLogsDelete(params *EdgeStackLogsDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeStackLogsDeleteNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeStackLogsDeleteParams()
 	}
@@ -469,17 +509,22 @@ func (a *Client) EdgeStackLogsDelete(params *EdgeStackLogsDeleteParams, authInfo
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeStackLogsDeleteNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeStackLogsDelete: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -490,7 +535,7 @@ EdgeStackLogsDownload downloads the available logs for a given edge stack and en
 **Access policy**: administrator
 */
 func (a *Client) EdgeStackLogsDownload(params *EdgeStackLogsDownloadParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeStackLogsDownloadOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeStackLogsDownloadParams()
 	}
@@ -510,17 +555,22 @@ func (a *Client) EdgeStackLogsDownload(params *EdgeStackLogsDownloadParams, auth
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeStackLogsDownloadOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeStackLogsDownload: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -531,7 +581,7 @@ EdgeStackLogsStatusGet gets the status of the log collection for a given edgesta
 **Access policy**: administrator
 */
 func (a *Client) EdgeStackLogsStatusGet(params *EdgeStackLogsStatusGetParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeStackLogsStatusGetOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeStackLogsStatusGetParams()
 	}
@@ -551,17 +601,22 @@ func (a *Client) EdgeStackLogsStatusGet(params *EdgeStackLogsStatusGetParams, au
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeStackLogsStatusGetOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeStackLogsStatusGet: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -572,7 +627,7 @@ EdgeStackParseRegistries parses registries from a stack file
 **Access policy**: authenticated
 */
 func (a *Client) EdgeStackParseRegistries(params *EdgeStackParseRegistriesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeStackParseRegistriesOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeStackParseRegistriesParams()
 	}
@@ -592,17 +647,22 @@ func (a *Client) EdgeStackParseRegistries(params *EdgeStackParseRegistriesParams
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeStackParseRegistriesOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeStackParseRegistries: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -613,7 +673,7 @@ EdgeStackStaggerStatusInspect inspects an edge stack s parallel update status
 **Access policy**: administrator
 */
 func (a *Client) EdgeStackStaggerStatusInspect(params *EdgeStackStaggerStatusInspectParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeStackStaggerStatusInspectOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeStackStaggerStatusInspectParams()
 	}
@@ -633,17 +693,22 @@ func (a *Client) EdgeStackStaggerStatusInspect(params *EdgeStackStaggerStatusIns
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeStackStaggerStatusInspectOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeStackStaggerStatusInspect: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -654,7 +719,7 @@ EdgeStackStatusUpdate updates an edge stack status
 Authorized only if the request is done by an Edge Environment(Endpoint)
 */
 func (a *Client) EdgeStackStatusUpdate(params *EdgeStackStatusUpdateParams, opts ...ClientOption) (*EdgeStackStatusUpdateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeStackStatusUpdateParams()
 	}
@@ -673,17 +738,22 @@ func (a *Client) EdgeStackStatusUpdate(params *EdgeStackStatusUpdateParams, opts
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeStackStatusUpdateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeStackStatusUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -694,7 +764,7 @@ EdgeStackUpdate updates an edge stack
 **Access policy**: administrator
 */
 func (a *Client) EdgeStackUpdate(params *EdgeStackUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeStackUpdateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeStackUpdateParams()
 	}
@@ -714,17 +784,22 @@ func (a *Client) EdgeStackUpdate(params *EdgeStackUpdateParams, authInfo runtime
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeStackUpdateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for EdgeStackUpdate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -735,7 +810,7 @@ EdgeStackUpdateFromGit updates git configuration and pulls the repository
 **Access policy**: authenticated
 */
 func (a *Client) EdgeStackUpdateFromGit(params *EdgeStackUpdateFromGitParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeStackUpdateFromGitNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewEdgeStackUpdateFromGitParams()
 	}
@@ -755,17 +830,22 @@ func (a *Client) EdgeStackUpdateFromGit(params *EdgeStackUpdateFromGitParams, au
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*EdgeStackUpdateFromGitNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for edgeStackUpdateFromGit: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

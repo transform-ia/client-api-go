@@ -19,10 +19,14 @@ import (
 type V2PodsMetricStatus struct {
 
 	// current contains the current value for the given metric
-	Current *V2MetricValueStatus `json:"current,omitempty"`
+	Current struct {
+		V2MetricValueStatus
+	} `json:"current,omitempty"`
 
 	// metric identifies the target metric by name and selector
-	Metric *V2MetricIdentifier `json:"metric,omitempty"`
+	Metric struct {
+		V2MetricIdentifier
+	} `json:"metric,omitempty"`
 }
 
 // Validate validates this v2 pods metric status
@@ -48,34 +52,12 @@ func (m *V2PodsMetricStatus) validateCurrent(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.Current != nil {
-		if err := m.Current.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("current")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("current")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V2PodsMetricStatus) validateMetric(formats strfmt.Registry) error {
 	if swag.IsZero(m.Metric) { // not required
 		return nil
-	}
-
-	if m.Metric != nil {
-		if err := m.Metric.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("metric")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("metric")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -101,42 +83,10 @@ func (m *V2PodsMetricStatus) ContextValidate(ctx context.Context, formats strfmt
 
 func (m *V2PodsMetricStatus) contextValidateCurrent(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.Current != nil {
-
-		if swag.IsZero(m.Current) { // not required
-			return nil
-		}
-
-		if err := m.Current.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("current")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("current")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
 func (m *V2PodsMetricStatus) contextValidateMetric(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Metric != nil {
-
-		if swag.IsZero(m.Metric) { // not required
-			return nil
-		}
-
-		if err := m.Metric.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("metric")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("metric")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

@@ -79,7 +79,7 @@ type ClientService interface {
 **Access policy**: administrator
 */
 func (a *Client) DeviceAction(params *DeviceActionParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeviceActionNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewDeviceActionParams()
 	}
@@ -99,17 +99,22 @@ func (a *Client) DeviceAction(params *DeviceActionParams, authInfo runtime.Clien
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*DeviceActionNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for DeviceAction: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -122,7 +127,7 @@ func (a *Client) DeviceAction(params *DeviceActionParams, authInfo runtime.Clien
 **Access policy**: administrator
 */
 func (a *Client) DeviceFeatures(params *DeviceFeaturesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeviceFeaturesNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewDeviceFeaturesParams()
 	}
@@ -142,17 +147,22 @@ func (a *Client) DeviceFeatures(params *DeviceFeaturesParams, authInfo runtime.C
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*DeviceFeaturesNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for DeviceFeatures: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -165,7 +175,7 @@ func (a *Client) DeviceFeatures(params *DeviceFeaturesParams, authInfo runtime.C
 **Access policy**: administrator
 */
 func (a *Client) OpenAMTConfigure(params *OpenAMTConfigureParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*OpenAMTConfigureNoContent, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewOpenAMTConfigureParams()
 	}
@@ -185,17 +195,22 @@ func (a *Client) OpenAMTConfigure(params *OpenAMTConfigureParams, authInfo runti
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*OpenAMTConfigureNoContent)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for OpenAMTConfigure: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -208,7 +223,7 @@ func (a *Client) OpenAMTConfigure(params *OpenAMTConfigureParams, authInfo runti
 **Access policy**: administrator
 */
 func (a *Client) OpenAMTDevices(params *OpenAMTDevicesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*OpenAMTDevicesOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewOpenAMTDevicesParams()
 	}
@@ -228,17 +243,22 @@ func (a *Client) OpenAMTDevices(params *OpenAMTDevicesParams, authInfo runtime.C
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*OpenAMTDevicesOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for OpenAMTDevices: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -251,7 +271,7 @@ func (a *Client) OpenAMTDevices(params *OpenAMTDevicesParams, authInfo runtime.C
 **Access policy**: administrator
 */
 func (a *Client) OpenAMTHostInfo(params *OpenAMTHostInfoParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*OpenAMTHostInfoOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewOpenAMTHostInfoParams()
 	}
@@ -271,17 +291,22 @@ func (a *Client) OpenAMTHostInfo(params *OpenAMTHostInfoParams, authInfo runtime
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*OpenAMTHostInfoOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for OpenAMTHostInfo: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -294,7 +319,7 @@ func (a *Client) OpenAMTHostInfo(params *OpenAMTHostInfoParams, authInfo runtime
 **Access policy**: administrator
 */
 func (a *Client) OpenAMTActivate(params *OpenAMTActivateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*OpenAMTActivateOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewOpenAMTActivateParams()
 	}
@@ -314,17 +339,22 @@ func (a *Client) OpenAMTActivate(params *OpenAMTActivateParams, authInfo runtime
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*OpenAMTActivateOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for openAMTActivate: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

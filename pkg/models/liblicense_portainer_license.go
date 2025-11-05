@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -62,7 +63,9 @@ type LiblicensePortainerLicense struct {
 	// license keys, but in practice most people thought it was the
 	// "version" due to us having the original extension licenses which can
 	// be thought of as the true version 1 licenses.
-	ProductEdition int64 `json:"productEdition,omitempty"`
+	ProductEdition struct {
+		LiblicenseProductEdition
+	} `json:"productEdition,omitempty"`
 
 	// redis ref
 	RedisRef string `json:"redisRef,omitempty"`
@@ -78,7 +81,9 @@ type LiblicensePortainerLicense struct {
 
 	// Type is used to distinguish different kinds of licenses, trial
 	// licenses, enterprise subscriptions
-	Type int64 `json:"type,omitempty"`
+	Type struct {
+		LiblicensePortainerLicenseType
+	} `json:"type,omitempty"`
 
 	// unique Id
 	UniqueID string `json:"uniqueId,omitempty"`
@@ -90,11 +95,63 @@ type LiblicensePortainerLicense struct {
 
 // Validate validates this liblicense portainer license
 func (m *LiblicensePortainerLicense) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateProductEdition(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this liblicense portainer license based on context it is used
+func (m *LiblicensePortainerLicense) validateProductEdition(formats strfmt.Registry) error {
+	if swag.IsZero(m.ProductEdition) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+func (m *LiblicensePortainerLicense) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+// ContextValidate validate this liblicense portainer license based on the context it is used
 func (m *LiblicensePortainerLicense) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateProductEdition(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *LiblicensePortainerLicense) contextValidateProductEdition(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
+func (m *LiblicensePortainerLicense) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

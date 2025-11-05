@@ -68,7 +68,7 @@ type UpdateKubernetesIngressControllersParams struct {
 
 	   Ingress controllers
 	*/
-	Body []*models.KubernetesK8sIngressController
+	Body []*models.ModelsK8sIngressController
 
 	/* ID.
 
@@ -130,13 +130,13 @@ func (o *UpdateKubernetesIngressControllersParams) SetHTTPClient(client *http.Cl
 }
 
 // WithBody adds the body to the update kubernetes ingress controllers params
-func (o *UpdateKubernetesIngressControllersParams) WithBody(body []*models.KubernetesK8sIngressController) *UpdateKubernetesIngressControllersParams {
+func (o *UpdateKubernetesIngressControllersParams) WithBody(body []*models.ModelsK8sIngressController) *UpdateKubernetesIngressControllersParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the update kubernetes ingress controllers params
-func (o *UpdateKubernetesIngressControllersParams) SetBody(body []*models.KubernetesK8sIngressController) {
+func (o *UpdateKubernetesIngressControllersParams) SetBody(body []*models.ModelsK8sIngressController) {
 	o.Body = body
 }
 

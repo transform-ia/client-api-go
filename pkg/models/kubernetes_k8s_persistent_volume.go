@@ -7,6 +7,8 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -19,7 +21,7 @@ import (
 type KubernetesK8sPersistentVolume struct {
 
 	// access modes
-	AccessModes []string `json:"accessModes"`
+	AccessModes []V1PersistentVolumeAccessMode `json:"accessModes"`
 
 	// annotations
 	Annotations map[string]string `json:"annotations,omitempty"`
@@ -37,18 +39,22 @@ type KubernetesK8sPersistentVolume struct {
 	Name string `json:"name,omitempty"`
 
 	// persistent volume reclaim policy
-	PersistentVolumeReclaimPolicy string `json:"persistentVolumeReclaimPolicy,omitempty"`
+	PersistentVolumeReclaimPolicy V1PersistentVolumeReclaimPolicy `json:"persistentVolumeReclaimPolicy,omitempty"`
 
 	// storage class name
 	StorageClassName string `json:"storageClassName,omitempty"`
 
 	// volume mode
-	VolumeMode string `json:"volumeMode,omitempty"`
+	VolumeMode V1PersistentVolumeMode `json:"volumeMode,omitempty"`
 }
 
 // Validate validates this kubernetes k8s persistent volume
 func (m *KubernetesK8sPersistentVolume) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateAccessModes(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateCapacity(formats); err != nil {
 		res = append(res, err)
@@ -62,9 +68,42 @@ func (m *KubernetesK8sPersistentVolume) Validate(formats strfmt.Registry) error 
 		res = append(res, err)
 	}
 
+	if err := m.validatePersistentVolumeReclaimPolicy(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateVolumeMode(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *KubernetesK8sPersistentVolume) validateAccessModes(formats strfmt.Registry) error {
+	if swag.IsZero(m.AccessModes) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.AccessModes); i++ {
+
+		if err := m.AccessModes[i].Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("accessModes" + "." + strconv.Itoa(i))
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("accessModes" + "." + strconv.Itoa(i))
+			}
+
+			return err
+		}
+
+	}
+
 	return nil
 }
 
@@ -75,11 +114,15 @@ func (m *KubernetesK8sPersistentVolume) validateCapacity(formats strfmt.Registry
 
 	if m.Capacity != nil {
 		if err := m.Capacity.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("capacity")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("capacity")
 			}
+
 			return err
 		}
 	}
@@ -94,11 +137,15 @@ func (m *KubernetesK8sPersistentVolume) validateClaimRef(formats strfmt.Registry
 
 	if m.ClaimRef != nil {
 		if err := m.ClaimRef.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("claimRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("claimRef")
 			}
+
 			return err
 		}
 	}
@@ -113,13 +160,59 @@ func (m *KubernetesK8sPersistentVolume) validateCsi(formats strfmt.Registry) err
 
 	if m.Csi != nil {
 		if err := m.Csi.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("csi")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("csi")
 			}
+
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *KubernetesK8sPersistentVolume) validatePersistentVolumeReclaimPolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.PersistentVolumeReclaimPolicy) { // not required
+		return nil
+	}
+
+	if err := m.PersistentVolumeReclaimPolicy.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("persistentVolumeReclaimPolicy")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("persistentVolumeReclaimPolicy")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+func (m *KubernetesK8sPersistentVolume) validateVolumeMode(formats strfmt.Registry) error {
+	if swag.IsZero(m.VolumeMode) { // not required
+		return nil
+	}
+
+	if err := m.VolumeMode.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("volumeMode")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("volumeMode")
+		}
+
+		return err
 	}
 
 	return nil
@@ -128,6 +221,10 @@ func (m *KubernetesK8sPersistentVolume) validateCsi(formats strfmt.Registry) err
 // ContextValidate validate this kubernetes k8s persistent volume based on the context it is used
 func (m *KubernetesK8sPersistentVolume) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.contextValidateAccessModes(ctx, formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.contextValidateCapacity(ctx, formats); err != nil {
 		res = append(res, err)
@@ -141,9 +238,43 @@ func (m *KubernetesK8sPersistentVolume) ContextValidate(ctx context.Context, for
 		res = append(res, err)
 	}
 
+	if err := m.contextValidatePersistentVolumeReclaimPolicy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateVolumeMode(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *KubernetesK8sPersistentVolume) contextValidateAccessModes(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.AccessModes); i++ {
+
+		if swag.IsZero(m.AccessModes[i]) { // not required
+			return nil
+		}
+
+		if err := m.AccessModes[i].ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("accessModes" + "." + strconv.Itoa(i))
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("accessModes" + "." + strconv.Itoa(i))
+			}
+
+			return err
+		}
+
+	}
+
 	return nil
 }
 
@@ -154,11 +285,15 @@ func (m *KubernetesK8sPersistentVolume) contextValidateCapacity(ctx context.Cont
 	}
 
 	if err := m.Capacity.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("capacity")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("capacity")
 		}
+
 		return err
 	}
 
@@ -174,11 +309,15 @@ func (m *KubernetesK8sPersistentVolume) contextValidateClaimRef(ctx context.Cont
 		}
 
 		if err := m.ClaimRef.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("claimRef")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("claimRef")
 			}
+
 			return err
 		}
 	}
@@ -195,13 +334,61 @@ func (m *KubernetesK8sPersistentVolume) contextValidateCsi(ctx context.Context, 
 		}
 
 		if err := m.Csi.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("csi")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("csi")
 			}
+
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *KubernetesK8sPersistentVolume) contextValidatePersistentVolumeReclaimPolicy(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.PersistentVolumeReclaimPolicy) { // not required
+		return nil
+	}
+
+	if err := m.PersistentVolumeReclaimPolicy.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("persistentVolumeReclaimPolicy")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("persistentVolumeReclaimPolicy")
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+func (m *KubernetesK8sPersistentVolume) contextValidateVolumeMode(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.VolumeMode) { // not required
+		return nil
+	}
+
+	if err := m.VolumeMode.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("volumeMode")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("volumeMode")
+		}
+
+		return err
 	}
 
 	return nil

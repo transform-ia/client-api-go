@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -22,13 +23,15 @@ import (
 type PortainereeEdgeStack struct {
 
 	// The GitOps update settings of a git stack
-	AutoUpdate *PortainerAutoUpdateSettings `json:"AutoUpdate,omitempty"`
+	AutoUpdate struct {
+		PortainerAutoUpdateSettings
+	} `json:"AutoUpdate,omitempty"`
 
 	// StatusArray    map[EndpointID][]EdgeStackStatus `json:"StatusArray"`
 	CreationDate int64 `json:"CreationDate,omitempty"`
 
 	// deployment type
-	DeploymentType int64 `json:"DeploymentType,omitempty"`
+	DeploymentType PortainerEdgeStackDeploymentType `json:"DeploymentType,omitempty"`
 
 	// edge groups
 	EdgeGroups []int64 `json:"EdgeGroups"`
@@ -53,7 +56,9 @@ type PortainereeEdgeStack struct {
 	PrePullImage bool `json:"PrePullImage,omitempty"`
 
 	// PreviousDeploymentInfo represents the previous deployment info of the stack
-	PreviousDeploymentInfo *PortainerStackDeploymentInfo `json:"PreviousDeploymentInfo,omitempty"`
+	PreviousDeploymentInfo struct {
+		PortainerStackDeploymentInfo
+	} `json:"PreviousDeploymentInfo,omitempty"`
 
 	// project path
 	ProjectPath string `json:"ProjectPath,omitempty"`
@@ -74,8 +79,14 @@ type PortainereeEdgeStack struct {
 	// version
 	Version int64 `json:"Version,omitempty"`
 
+	// Whether the edge stack always clones the git repository for relative path
+	// Example: false
+	AlwaysCloneGitRepoForRelativePath bool `json:"alwaysCloneGitRepoForRelativePath,omitempty"`
+
 	// Options to control the Deployer behaviour
-	DeployerOptions *PortainereeEdgeStackDeployerOptions `json:"deployerOptions,omitempty"`
+	DeployerOptions struct {
+		PortainereeEdgeStackDeployerOptions
+	} `json:"deployerOptions,omitempty"`
 
 	// EdgeUpdateID represents the parent update ID, will be zero if this stack is not part of an update
 	EdgeUpdateID int64 `json:"edgeUpdateID,omitempty"`
@@ -88,17 +99,23 @@ type PortainereeEdgeStack struct {
 	FilesystemPath string `json:"filesystemPath,omitempty"`
 
 	// The git configuration of a git stack
-	GitConfig *GittypesRepoConfig `json:"gitConfig,omitempty"`
+	GitConfig struct {
+		GittypesRepoConfig
+	} `json:"gitConfig,omitempty"`
 
 	// Per device configs group match type
 	// Example: file
 	// Enum: ["file"," dir"]
-	PerDeviceConfigsGroupMatchType string `json:"perDeviceConfigsGroupMatchType,omitempty"`
+	PerDeviceConfigsGroupMatchType struct {
+		PortainerPerDevConfigsFilterType
+	} `json:"perDeviceConfigsGroupMatchType,omitempty"`
 
 	// Per device configs match type
 	// Example: file
 	// Enum: ["file"," dir"]
-	PerDeviceConfigsMatchType string `json:"perDeviceConfigsMatchType,omitempty"`
+	PerDeviceConfigsMatchType struct {
+		PortainerPerDevConfigsFilterType
+	} `json:"perDeviceConfigsMatchType,omitempty"`
 
 	// Per device configs path
 	// Example: configs
@@ -116,7 +133,9 @@ type PortainereeEdgeStack struct {
 	ScheduledTime string `json:"scheduledTime,omitempty"`
 
 	// StaggerConfig is the configuration for staggered update
-	StaggerConfig *PortainereeEdgeStaggerConfig `json:"staggerConfig,omitempty"`
+	StaggerConfig struct {
+		PortainereeEdgeStaggerConfig
+	} `json:"staggerConfig,omitempty"`
 
 	// Whether the edge stack supports per device configs
 	// Example: false
@@ -139,6 +158,10 @@ func (m *PortainereeEdgeStack) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAutoUpdate(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateDeploymentType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -185,15 +208,25 @@ func (m *PortainereeEdgeStack) validateAutoUpdate(formats strfmt.Registry) error
 		return nil
 	}
 
-	if m.AutoUpdate != nil {
-		if err := m.AutoUpdate.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("AutoUpdate")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("AutoUpdate")
-			}
-			return err
+	return nil
+}
+
+func (m *PortainereeEdgeStack) validateDeploymentType(formats strfmt.Registry) error {
+	if swag.IsZero(m.DeploymentType) { // not required
+		return nil
+	}
+
+	if err := m.DeploymentType.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("DeploymentType")
 		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("DeploymentType")
+		}
+
+		return err
 	}
 
 	return nil
@@ -202,17 +235,6 @@ func (m *PortainereeEdgeStack) validateAutoUpdate(formats strfmt.Registry) error
 func (m *PortainereeEdgeStack) validatePreviousDeploymentInfo(formats strfmt.Registry) error {
 	if swag.IsZero(m.PreviousDeploymentInfo) { // not required
 		return nil
-	}
-
-	if m.PreviousDeploymentInfo != nil {
-		if err := m.PreviousDeploymentInfo.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("PreviousDeploymentInfo")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("PreviousDeploymentInfo")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -230,11 +252,15 @@ func (m *PortainereeEdgeStack) validateStatus(formats strfmt.Registry) error {
 		}
 		if val, ok := m.Status[k]; ok {
 			if err := val.Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("Status" + "." + k)
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("Status" + "." + k)
 				}
+
 				return err
 			}
 		}
@@ -247,17 +273,6 @@ func (m *PortainereeEdgeStack) validateStatus(formats strfmt.Registry) error {
 func (m *PortainereeEdgeStack) validateDeployerOptions(formats strfmt.Registry) error {
 	if swag.IsZero(m.DeployerOptions) { // not required
 		return nil
-	}
-
-	if m.DeployerOptions != nil {
-		if err := m.DeployerOptions.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("deployerOptions")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("deployerOptions")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -275,11 +290,15 @@ func (m *PortainereeEdgeStack) validateEnvVars(formats strfmt.Registry) error {
 
 		if m.EnvVars[i] != nil {
 			if err := m.EnvVars[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("envVars" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("envVars" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -294,24 +313,15 @@ func (m *PortainereeEdgeStack) validateGitConfig(formats strfmt.Registry) error 
 		return nil
 	}
 
-	if m.GitConfig != nil {
-		if err := m.GitConfig.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("gitConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("gitConfig")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
-var portainereeEdgeStackTypePerDeviceConfigsGroupMatchTypePropEnum []interface{}
+var portainereeEdgeStackTypePerDeviceConfigsGroupMatchTypePropEnum []any
 
 func init() {
-	var res []string
+	var res []struct {
+		PortainerPerDevConfigsFilterType
+	}
 	if err := json.Unmarshal([]byte(`["file"," dir"]`), &res); err != nil {
 		panic(err)
 	}
@@ -320,17 +330,10 @@ func init() {
 	}
 }
 
-const (
-
-	// PortainereeEdgeStackPerDeviceConfigsGroupMatchTypeFile captures enum value "file"
-	PortainereeEdgeStackPerDeviceConfigsGroupMatchTypeFile string = "file"
-
-	// PortainereeEdgeStackPerDeviceConfigsGroupMatchTypeDir captures enum value " dir"
-	PortainereeEdgeStackPerDeviceConfigsGroupMatchTypeDir string = " dir"
-)
-
 // prop value enum
-func (m *PortainereeEdgeStack) validatePerDeviceConfigsGroupMatchTypeEnum(path, location string, value string) error {
+func (m *PortainereeEdgeStack) validatePerDeviceConfigsGroupMatchTypeEnum(path, location string, value *struct {
+	PortainerPerDevConfigsFilterType
+}) error {
 	if err := validate.EnumCase(path, location, value, portainereeEdgeStackTypePerDeviceConfigsGroupMatchTypePropEnum, true); err != nil {
 		return err
 	}
@@ -342,18 +345,15 @@ func (m *PortainereeEdgeStack) validatePerDeviceConfigsGroupMatchType(formats st
 		return nil
 	}
 
-	// value enum
-	if err := m.validatePerDeviceConfigsGroupMatchTypeEnum("perDeviceConfigsGroupMatchType", "body", m.PerDeviceConfigsGroupMatchType); err != nil {
-		return err
-	}
-
 	return nil
 }
 
-var portainereeEdgeStackTypePerDeviceConfigsMatchTypePropEnum []interface{}
+var portainereeEdgeStackTypePerDeviceConfigsMatchTypePropEnum []any
 
 func init() {
-	var res []string
+	var res []struct {
+		PortainerPerDevConfigsFilterType
+	}
 	if err := json.Unmarshal([]byte(`["file"," dir"]`), &res); err != nil {
 		panic(err)
 	}
@@ -362,17 +362,10 @@ func init() {
 	}
 }
 
-const (
-
-	// PortainereeEdgeStackPerDeviceConfigsMatchTypeFile captures enum value "file"
-	PortainereeEdgeStackPerDeviceConfigsMatchTypeFile string = "file"
-
-	// PortainereeEdgeStackPerDeviceConfigsMatchTypeDir captures enum value " dir"
-	PortainereeEdgeStackPerDeviceConfigsMatchTypeDir string = " dir"
-)
-
 // prop value enum
-func (m *PortainereeEdgeStack) validatePerDeviceConfigsMatchTypeEnum(path, location string, value string) error {
+func (m *PortainereeEdgeStack) validatePerDeviceConfigsMatchTypeEnum(path, location string, value *struct {
+	PortainerPerDevConfigsFilterType
+}) error {
 	if err := validate.EnumCase(path, location, value, portainereeEdgeStackTypePerDeviceConfigsMatchTypePropEnum, true); err != nil {
 		return err
 	}
@@ -384,28 +377,12 @@ func (m *PortainereeEdgeStack) validatePerDeviceConfigsMatchType(formats strfmt.
 		return nil
 	}
 
-	// value enum
-	if err := m.validatePerDeviceConfigsMatchTypeEnum("perDeviceConfigsMatchType", "body", m.PerDeviceConfigsMatchType); err != nil {
-		return err
-	}
-
 	return nil
 }
 
 func (m *PortainereeEdgeStack) validateStaggerConfig(formats strfmt.Registry) error {
 	if swag.IsZero(m.StaggerConfig) { // not required
 		return nil
-	}
-
-	if m.StaggerConfig != nil {
-		if err := m.StaggerConfig.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("staggerConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("staggerConfig")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -416,6 +393,10 @@ func (m *PortainereeEdgeStack) ContextValidate(ctx context.Context, formats strf
 	var res []error
 
 	if err := m.contextValidateAutoUpdate(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateDeploymentType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -439,6 +420,14 @@ func (m *PortainereeEdgeStack) ContextValidate(ctx context.Context, formats strf
 		res = append(res, err)
 	}
 
+	if err := m.contextValidatePerDeviceConfigsGroupMatchType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidatePerDeviceConfigsMatchType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateStaggerConfig(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -451,42 +440,32 @@ func (m *PortainereeEdgeStack) ContextValidate(ctx context.Context, formats strf
 
 func (m *PortainereeEdgeStack) contextValidateAutoUpdate(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.AutoUpdate != nil {
+	return nil
+}
 
-		if swag.IsZero(m.AutoUpdate) { // not required
-			return nil
+func (m *PortainereeEdgeStack) contextValidateDeploymentType(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.DeploymentType) { // not required
+		return nil
+	}
+
+	if err := m.DeploymentType.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("DeploymentType")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("DeploymentType")
 		}
 
-		if err := m.AutoUpdate.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("AutoUpdate")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("AutoUpdate")
-			}
-			return err
-		}
+		return err
 	}
 
 	return nil
 }
 
 func (m *PortainereeEdgeStack) contextValidatePreviousDeploymentInfo(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.PreviousDeploymentInfo != nil {
-
-		if swag.IsZero(m.PreviousDeploymentInfo) { // not required
-			return nil
-		}
-
-		if err := m.PreviousDeploymentInfo.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("PreviousDeploymentInfo")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("PreviousDeploymentInfo")
-			}
-			return err
-		}
-	}
 
 	return nil
 }
@@ -508,22 +487,6 @@ func (m *PortainereeEdgeStack) contextValidateStatus(ctx context.Context, format
 
 func (m *PortainereeEdgeStack) contextValidateDeployerOptions(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.DeployerOptions != nil {
-
-		if swag.IsZero(m.DeployerOptions) { // not required
-			return nil
-		}
-
-		if err := m.DeployerOptions.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("deployerOptions")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("deployerOptions")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -538,11 +501,15 @@ func (m *PortainereeEdgeStack) contextValidateEnvVars(ctx context.Context, forma
 			}
 
 			if err := m.EnvVars[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("envVars" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("envVars" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -554,42 +521,20 @@ func (m *PortainereeEdgeStack) contextValidateEnvVars(ctx context.Context, forma
 
 func (m *PortainereeEdgeStack) contextValidateGitConfig(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.GitConfig != nil {
+	return nil
+}
 
-		if swag.IsZero(m.GitConfig) { // not required
-			return nil
-		}
+func (m *PortainereeEdgeStack) contextValidatePerDeviceConfigsGroupMatchType(ctx context.Context, formats strfmt.Registry) error {
 
-		if err := m.GitConfig.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("gitConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("gitConfig")
-			}
-			return err
-		}
-	}
+	return nil
+}
+
+func (m *PortainereeEdgeStack) contextValidatePerDeviceConfigsMatchType(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }
 
 func (m *PortainereeEdgeStack) contextValidateStaggerConfig(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.StaggerConfig != nil {
-
-		if swag.IsZero(m.StaggerConfig) { // not required
-			return nil
-		}
-
-		if err := m.StaggerConfig.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("staggerConfig")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("staggerConfig")
-			}
-			return err
-		}
-	}
 
 	return nil
 }

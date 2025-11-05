@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -20,7 +21,7 @@ import (
 type KubernetesK8sPersistentVolumeClaim struct {
 
 	// access modes
-	AccessModes []string `json:"accessModes"`
+	AccessModes []V1PersistentVolumeAccessMode `json:"accessModes"`
 
 	// creation date
 	CreationDate string `json:"creationDate,omitempty"`
@@ -41,7 +42,7 @@ type KubernetesK8sPersistentVolumeClaim struct {
 	OwningApplications []*KubernetesK8sApplication `json:"owningApplications"`
 
 	// phase
-	Phase string `json:"phase,omitempty"`
+	Phase V1PersistentVolumeClaimPhase `json:"phase,omitempty"`
 
 	// resources requests
 	ResourcesRequests V1ResourceList `json:"resourcesRequests,omitempty"`
@@ -53,7 +54,7 @@ type KubernetesK8sPersistentVolumeClaim struct {
 	StorageClass string `json:"storageClass,omitempty"`
 
 	// volume mode
-	VolumeMode string `json:"volumeMode,omitempty"`
+	VolumeMode V1PersistentVolumeMode `json:"volumeMode,omitempty"`
 
 	// volume name
 	VolumeName string `json:"volumeName,omitempty"`
@@ -63,7 +64,15 @@ type KubernetesK8sPersistentVolumeClaim struct {
 func (m *KubernetesK8sPersistentVolumeClaim) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateAccessModes(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateOwningApplications(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePhase(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -71,9 +80,38 @@ func (m *KubernetesK8sPersistentVolumeClaim) Validate(formats strfmt.Registry) e
 		res = append(res, err)
 	}
 
+	if err := m.validateVolumeMode(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *KubernetesK8sPersistentVolumeClaim) validateAccessModes(formats strfmt.Registry) error {
+	if swag.IsZero(m.AccessModes) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.AccessModes); i++ {
+
+		if err := m.AccessModes[i].Validate(formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("accessModes" + "." + strconv.Itoa(i))
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("accessModes" + "." + strconv.Itoa(i))
+			}
+
+			return err
+		}
+
+	}
+
 	return nil
 }
 
@@ -89,15 +127,40 @@ func (m *KubernetesK8sPersistentVolumeClaim) validateOwningApplications(formats 
 
 		if m.OwningApplications[i] != nil {
 			if err := m.OwningApplications[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("owningApplications" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("owningApplications" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *KubernetesK8sPersistentVolumeClaim) validatePhase(formats strfmt.Registry) error {
+	if swag.IsZero(m.Phase) { // not required
+		return nil
+	}
+
+	if err := m.Phase.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("phase")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("phase")
+		}
+
+		return err
 	}
 
 	return nil
@@ -110,13 +173,38 @@ func (m *KubernetesK8sPersistentVolumeClaim) validateResourcesRequests(formats s
 
 	if m.ResourcesRequests != nil {
 		if err := m.ResourcesRequests.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("resourcesRequests")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("resourcesRequests")
 			}
+
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *KubernetesK8sPersistentVolumeClaim) validateVolumeMode(formats strfmt.Registry) error {
+	if swag.IsZero(m.VolumeMode) { // not required
+		return nil
+	}
+
+	if err := m.VolumeMode.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("volumeMode")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("volumeMode")
+		}
+
+		return err
 	}
 
 	return nil
@@ -126,7 +214,15 @@ func (m *KubernetesK8sPersistentVolumeClaim) validateResourcesRequests(formats s
 func (m *KubernetesK8sPersistentVolumeClaim) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateAccessModes(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateOwningApplications(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidatePhase(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -134,9 +230,39 @@ func (m *KubernetesK8sPersistentVolumeClaim) ContextValidate(ctx context.Context
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateVolumeMode(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *KubernetesK8sPersistentVolumeClaim) contextValidateAccessModes(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.AccessModes); i++ {
+
+		if swag.IsZero(m.AccessModes[i]) { // not required
+			return nil
+		}
+
+		if err := m.AccessModes[i].ContextValidate(ctx, formats); err != nil {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
+				return ve.ValidateName("accessModes" + "." + strconv.Itoa(i))
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
+				return ce.ValidateName("accessModes" + "." + strconv.Itoa(i))
+			}
+
+			return err
+		}
+
+	}
+
 	return nil
 }
 
@@ -151,15 +277,41 @@ func (m *KubernetesK8sPersistentVolumeClaim) contextValidateOwningApplications(c
 			}
 
 			if err := m.OwningApplications[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("owningApplications" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("owningApplications" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *KubernetesK8sPersistentVolumeClaim) contextValidatePhase(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Phase) { // not required
+		return nil
+	}
+
+	if err := m.Phase.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("phase")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("phase")
+		}
+
+		return err
 	}
 
 	return nil
@@ -172,11 +324,37 @@ func (m *KubernetesK8sPersistentVolumeClaim) contextValidateResourcesRequests(ct
 	}
 
 	if err := m.ResourcesRequests.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("resourcesRequests")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("resourcesRequests")
 		}
+
+		return err
+	}
+
+	return nil
+}
+
+func (m *KubernetesK8sPersistentVolumeClaim) contextValidateVolumeMode(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.VolumeMode) { // not required
+		return nil
+	}
+
+	if err := m.VolumeMode.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("volumeMode")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("volumeMode")
+		}
+
 		return err
 	}
 

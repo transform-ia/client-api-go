@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -29,14 +30,18 @@ type V1ManagedFieldsEntry struct {
 
 	// FieldsV1 holds the first JSON version format as described in the "FieldsV1" type.
 	// +optional
-	FieldsV1 V1FieldsV1 `json:"fieldsV1,omitempty"`
+	FieldsV1 struct {
+		V1FieldsV1
+	} `json:"fieldsV1,omitempty"`
 
 	// Manager is an identifier of the workflow managing these fields.
 	Manager string `json:"manager,omitempty"`
 
 	// Operation is the type of operation which lead to this ManagedFieldsEntry being created.
 	// The only valid values for this field are 'Apply' and 'Update'.
-	Operation string `json:"operation,omitempty"`
+	Operation struct {
+		V1ManagedFieldsOperationType
+	} `json:"operation,omitempty"`
 
 	// Subresource is the name of the subresource used to update that object, or
 	// empty string if the object was updated through the main resource. The
@@ -58,11 +63,54 @@ type V1ManagedFieldsEntry struct {
 
 // Validate validates this v1 managed fields entry
 func (m *V1ManagedFieldsEntry) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateFieldsV1(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateOperation(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this v1 managed fields entry based on context it is used
+func (m *V1ManagedFieldsEntry) validateFieldsV1(formats strfmt.Registry) error {
+	if swag.IsZero(m.FieldsV1) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+func (m *V1ManagedFieldsEntry) validateOperation(formats strfmt.Registry) error {
+	if swag.IsZero(m.Operation) { // not required
+		return nil
+	}
+
+	return nil
+}
+
+// ContextValidate validate this v1 managed fields entry based on the context it is used
 func (m *V1ManagedFieldsEntry) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateOperation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *V1ManagedFieldsEntry) contextValidateOperation(ctx context.Context, formats strfmt.Registry) error {
+
 	return nil
 }
 

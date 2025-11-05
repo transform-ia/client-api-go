@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -48,11 +49,15 @@ func (m *EndpointsEndpointUpdateRelationsPayload) validateRelations(formats strf
 		}
 		if val, ok := m.Relations[k]; ok {
 			if err := val.Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("relations" + "." + k)
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("relations" + "." + k)
 				}
+
 				return err
 			}
 		}
@@ -117,8 +122,7 @@ type EndpointsEndpointUpdateRelationsPayloadRelationsAnon struct {
 	// edge groups
 	EdgeGroups []int64 `json:"edgeGroups"`
 
-	// Environment(Endpoint) group identifier
-	// Example: 1
+	// group
 	Group int64 `json:"group,omitempty"`
 
 	// tags

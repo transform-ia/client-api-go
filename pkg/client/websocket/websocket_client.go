@@ -79,7 +79,7 @@ an AttachStart operation HTTP request will be created and hijacked.
 **Access policy**: authenticated
 */
 func (a *Client) GetWebsocketAttach(params *GetWebsocketAttachParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWebsocketAttachOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetWebsocketAttachParams()
 	}
@@ -99,17 +99,22 @@ func (a *Client) GetWebsocketAttach(params *GetWebsocketAttachParams, authInfo r
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetWebsocketAttachOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for GetWebsocketAttach: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -123,7 +128,7 @@ If the nodeName query parameter is not specified, the request will be upgraded t
 an ExecStart operation HTTP request will be created and hijacked.
 */
 func (a *Client) GetWebsocketExec(params *GetWebsocketExecParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWebsocketExecOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetWebsocketExecParams()
 	}
@@ -143,17 +148,22 @@ func (a *Client) GetWebsocketExec(params *GetWebsocketExecParams, authInfo runti
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetWebsocketExecOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for GetWebsocketExec: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -166,7 +176,7 @@ func (a *Client) GetWebsocketExec(params *GetWebsocketExecParams, authInfo runti
 **Access policy**: authenticated
 */
 func (a *Client) GetWebsocketKubernetesShell(params *GetWebsocketKubernetesShellParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWebsocketKubernetesShellOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetWebsocketKubernetesShellParams()
 	}
@@ -186,17 +196,22 @@ func (a *Client) GetWebsocketKubernetesShell(params *GetWebsocketKubernetesShell
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetWebsocketKubernetesShellOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for GetWebsocketKubernetesShell: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -210,7 +225,7 @@ an ssh session will be created and hijacked.
 **Access policy**: authenticated
 */
 func (a *Client) GetWebsocketMicrok8sShell(params *GetWebsocketMicrok8sShellParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWebsocketMicrok8sShellOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetWebsocketMicrok8sShellParams()
 	}
@@ -230,17 +245,22 @@ func (a *Client) GetWebsocketMicrok8sShell(params *GetWebsocketMicrok8sShellPara
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetWebsocketMicrok8sShellOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for GetWebsocketMicrok8sShell: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -253,7 +273,7 @@ func (a *Client) GetWebsocketMicrok8sShell(params *GetWebsocketMicrok8sShellPara
 **Access policy**: authenticated
 */
 func (a *Client) GetWebsocketPod(params *GetWebsocketPodParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetWebsocketPodOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetWebsocketPodParams()
 	}
@@ -273,17 +293,22 @@ func (a *Client) GetWebsocketPod(params *GetWebsocketPodParams, authInfo runtime
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetWebsocketPodOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for GetWebsocketPod: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

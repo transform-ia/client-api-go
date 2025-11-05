@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 	"encoding/json"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -43,8 +44,11 @@ type PortainereeRegistry struct {
 	// ecr
 	Ecr *PortainerEcrData `json:"Ecr,omitempty"`
 
-	// github
-	Github *PortainereeGithubRegistryData `json:"Github,omitempty"`
+	// TODO: remove this in 2.34.0 https://linear.app/portainer/issue/R8S-399/
+	// this data is migrated in migrateGithubRegistry_2_32_0
+	Github struct {
+		PortainereeGithubRegistryData
+	} `json:"Github,omitempty"`
 
 	// gitlab
 	Gitlab *PortainerGitlabRegistryData `json:"Gitlab,omitempty"`
@@ -71,11 +75,15 @@ type PortainereeRegistry struct {
 	RegistryAccesses PortainerRegistryAccesses `json:"RegistryAccesses,omitempty"`
 
 	// Deprecated in DBVersion == 31
-	TeamAccessPolicies PortainerTeamAccessPolicies `json:"TeamAccessPolicies,omitempty"`
+	TeamAccessPolicies struct {
+		PortainerTeamAccessPolicies
+	} `json:"TeamAccessPolicies,omitempty"`
 
 	// Registry Type (1 - Quay, 2 - Azure, 3 - Custom, 4 - Gitlab, 5 - ProGet, 6 - DockerHub, 7 - ECR)
 	// Enum: [1,2,3,4,5,6,7]
-	Type int64 `json:"Type,omitempty"`
+	Type struct {
+		PortainerRegistryType
+	} `json:"Type,omitempty"`
 
 	// URL or IP address of the Docker registry
 	// Example: registry.mydomain.tld:2375
@@ -83,7 +91,9 @@ type PortainereeRegistry struct {
 
 	// Deprecated fields
 	// Deprecated in DBVersion == 31
-	UserAccessPolicies PortainerUserAccessPolicies `json:"UserAccessPolicies,omitempty"`
+	UserAccessPolicies struct {
+		PortainerUserAccessPolicies
+	} `json:"UserAccessPolicies,omitempty"`
 
 	// Username or AccessKeyID used to authenticate against this registry
 	// Example: registry user
@@ -143,11 +153,15 @@ func (m *PortainereeRegistry) validateEcr(formats strfmt.Registry) error {
 
 	if m.Ecr != nil {
 		if err := m.Ecr.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Ecr")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Ecr")
 			}
+
 			return err
 		}
 	}
@@ -160,17 +174,6 @@ func (m *PortainereeRegistry) validateGithub(formats strfmt.Registry) error {
 		return nil
 	}
 
-	if m.Github != nil {
-		if err := m.Github.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("Github")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("Github")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
@@ -181,11 +184,15 @@ func (m *PortainereeRegistry) validateGitlab(formats strfmt.Registry) error {
 
 	if m.Gitlab != nil {
 		if err := m.Gitlab.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Gitlab")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Gitlab")
 			}
+
 			return err
 		}
 	}
@@ -200,11 +207,15 @@ func (m *PortainereeRegistry) validateManagementConfiguration(formats strfmt.Reg
 
 	if m.ManagementConfiguration != nil {
 		if err := m.ManagementConfiguration.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("ManagementConfiguration")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("ManagementConfiguration")
 			}
+
 			return err
 		}
 	}
@@ -219,11 +230,15 @@ func (m *PortainereeRegistry) validateQuay(formats strfmt.Registry) error {
 
 	if m.Quay != nil {
 		if err := m.Quay.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Quay")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Quay")
 			}
+
 			return err
 		}
 	}
@@ -238,11 +253,15 @@ func (m *PortainereeRegistry) validateRegistryAccesses(formats strfmt.Registry) 
 
 	if m.RegistryAccesses != nil {
 		if err := m.RegistryAccesses.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("RegistryAccesses")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("RegistryAccesses")
 			}
+
 			return err
 		}
 	}
@@ -255,24 +274,15 @@ func (m *PortainereeRegistry) validateTeamAccessPolicies(formats strfmt.Registry
 		return nil
 	}
 
-	if m.TeamAccessPolicies != nil {
-		if err := m.TeamAccessPolicies.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("TeamAccessPolicies")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("TeamAccessPolicies")
-			}
-			return err
-		}
-	}
-
 	return nil
 }
 
-var portainereeRegistryTypeTypePropEnum []interface{}
+var portainereeRegistryTypeTypePropEnum []any
 
 func init() {
-	var res []int64
+	var res []struct {
+		PortainerRegistryType
+	}
 	if err := json.Unmarshal([]byte(`[1,2,3,4,5,6,7]`), &res); err != nil {
 		panic(err)
 	}
@@ -282,7 +292,9 @@ func init() {
 }
 
 // prop value enum
-func (m *PortainereeRegistry) validateTypeEnum(path, location string, value int64) error {
+func (m *PortainereeRegistry) validateTypeEnum(path, location string, value *struct {
+	PortainerRegistryType
+}) error {
 	if err := validate.EnumCase(path, location, value, portainereeRegistryTypeTypePropEnum, true); err != nil {
 		return err
 	}
@@ -294,28 +306,12 @@ func (m *PortainereeRegistry) validateType(formats strfmt.Registry) error {
 		return nil
 	}
 
-	// value enum
-	if err := m.validateTypeEnum("Type", "body", m.Type); err != nil {
-		return err
-	}
-
 	return nil
 }
 
 func (m *PortainereeRegistry) validateUserAccessPolicies(formats strfmt.Registry) error {
 	if swag.IsZero(m.UserAccessPolicies) { // not required
 		return nil
-	}
-
-	if m.UserAccessPolicies != nil {
-		if err := m.UserAccessPolicies.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("UserAccessPolicies")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("UserAccessPolicies")
-			}
-			return err
-		}
 	}
 
 	return nil
@@ -353,6 +349,10 @@ func (m *PortainereeRegistry) ContextValidate(ctx context.Context, formats strfm
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateUserAccessPolicies(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -372,11 +372,15 @@ func (m *PortainereeRegistry) contextValidateEcr(ctx context.Context, formats st
 		}
 
 		if err := m.Ecr.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Ecr")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Ecr")
 			}
+
 			return err
 		}
 	}
@@ -385,22 +389,6 @@ func (m *PortainereeRegistry) contextValidateEcr(ctx context.Context, formats st
 }
 
 func (m *PortainereeRegistry) contextValidateGithub(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Github != nil {
-
-		if swag.IsZero(m.Github) { // not required
-			return nil
-		}
-
-		if err := m.Github.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("Github")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("Github")
-			}
-			return err
-		}
-	}
 
 	return nil
 }
@@ -414,11 +402,15 @@ func (m *PortainereeRegistry) contextValidateGitlab(ctx context.Context, formats
 		}
 
 		if err := m.Gitlab.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Gitlab")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Gitlab")
 			}
+
 			return err
 		}
 	}
@@ -435,11 +427,15 @@ func (m *PortainereeRegistry) contextValidateManagementConfiguration(ctx context
 		}
 
 		if err := m.ManagementConfiguration.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("ManagementConfiguration")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("ManagementConfiguration")
 			}
+
 			return err
 		}
 	}
@@ -456,11 +452,15 @@ func (m *PortainereeRegistry) contextValidateQuay(ctx context.Context, formats s
 		}
 
 		if err := m.Quay.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("Quay")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("Quay")
 			}
+
 			return err
 		}
 	}
@@ -475,11 +475,15 @@ func (m *PortainereeRegistry) contextValidateRegistryAccesses(ctx context.Contex
 	}
 
 	if err := m.RegistryAccesses.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
 			return ve.ValidateName("RegistryAccesses")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
 			return ce.ValidateName("RegistryAccesses")
 		}
+
 		return err
 	}
 
@@ -488,36 +492,15 @@ func (m *PortainereeRegistry) contextValidateRegistryAccesses(ctx context.Contex
 
 func (m *PortainereeRegistry) contextValidateTeamAccessPolicies(ctx context.Context, formats strfmt.Registry) error {
 
-	if swag.IsZero(m.TeamAccessPolicies) { // not required
-		return nil
-	}
+	return nil
+}
 
-	if err := m.TeamAccessPolicies.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("TeamAccessPolicies")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce.ValidateName("TeamAccessPolicies")
-		}
-		return err
-	}
+func (m *PortainereeRegistry) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
 
 	return nil
 }
 
 func (m *PortainereeRegistry) contextValidateUserAccessPolicies(ctx context.Context, formats strfmt.Registry) error {
-
-	if swag.IsZero(m.UserAccessPolicies) { // not required
-		return nil
-	}
-
-	if err := m.UserAccessPolicies.ContextValidate(ctx, formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("UserAccessPolicies")
-		} else if ce, ok := err.(*errors.CompositeError); ok {
-			return ce.ValidateName("UserAccessPolicies")
-		}
-		return err
-	}
 
 	return nil
 }

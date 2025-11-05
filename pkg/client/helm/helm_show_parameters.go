@@ -73,11 +73,23 @@ type HelmShowParams struct {
 	*/
 	Command string
 
+	/* EnvironmentID.
+
+	   Environment ID (required if registryId is provided and user is not an admin)
+	*/
+	EnvironmentID *string
+
+	/* RegistryID.
+
+	   Helm registry ID (required if repo not provided)
+	*/
+	RegistryID *string
+
 	/* Repo.
 
-	   Helm repository URL
+	   Helm repository URL (required if registryId not provided)
 	*/
-	Repo string
+	Repo *string
 
 	/* Version.
 
@@ -160,14 +172,36 @@ func (o *HelmShowParams) SetCommand(command string) {
 	o.Command = command
 }
 
+// WithEnvironmentID adds the environmentID to the helm show params
+func (o *HelmShowParams) WithEnvironmentID(environmentID *string) *HelmShowParams {
+	o.SetEnvironmentID(environmentID)
+	return o
+}
+
+// SetEnvironmentID adds the environmentId to the helm show params
+func (o *HelmShowParams) SetEnvironmentID(environmentID *string) {
+	o.EnvironmentID = environmentID
+}
+
+// WithRegistryID adds the registryID to the helm show params
+func (o *HelmShowParams) WithRegistryID(registryID *string) *HelmShowParams {
+	o.SetRegistryID(registryID)
+	return o
+}
+
+// SetRegistryID adds the registryId to the helm show params
+func (o *HelmShowParams) SetRegistryID(registryID *string) {
+	o.RegistryID = registryID
+}
+
 // WithRepo adds the repo to the helm show params
-func (o *HelmShowParams) WithRepo(repo string) *HelmShowParams {
+func (o *HelmShowParams) WithRepo(repo *string) *HelmShowParams {
 	o.SetRepo(repo)
 	return o
 }
 
 // SetRepo adds the repo to the helm show params
-func (o *HelmShowParams) SetRepo(repo string) {
+func (o *HelmShowParams) SetRepo(repo *string) {
 	o.Repo = repo
 }
 
@@ -205,13 +239,54 @@ func (o *HelmShowParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regi
 		return err
 	}
 
-	// query param repo
-	qrRepo := o.Repo
-	qRepo := qrRepo
-	if qRepo != "" {
+	if o.EnvironmentID != nil {
 
-		if err := r.SetQueryParam("repo", qRepo); err != nil {
-			return err
+		// query param environmentId
+		var qrEnvironmentID string
+
+		if o.EnvironmentID != nil {
+			qrEnvironmentID = *o.EnvironmentID
+		}
+		qEnvironmentID := qrEnvironmentID
+		if qEnvironmentID != "" {
+
+			if err := r.SetQueryParam("environmentId", qEnvironmentID); err != nil {
+				return err
+			}
+		}
+	}
+
+	if o.RegistryID != nil {
+
+		// query param registryId
+		var qrRegistryID string
+
+		if o.RegistryID != nil {
+			qrRegistryID = *o.RegistryID
+		}
+		qRegistryID := qrRegistryID
+		if qRegistryID != "" {
+
+			if err := r.SetQueryParam("registryId", qRegistryID); err != nil {
+				return err
+			}
+		}
+	}
+
+	if o.Repo != nil {
+
+		// query param repo
+		var qrRepo string
+
+		if o.Repo != nil {
+			qrRepo = *o.Repo
+		}
+		qRepo := qrRepo
+		if qRepo != "" {
+
+			if err := r.SetQueryParam("repo", qRepo); err != nil {
+				return err
+			}
 		}
 	}
 

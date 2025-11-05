@@ -7,6 +7,7 @@ package endpoints
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type EndpointCreateReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *EndpointCreateReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *EndpointCreateReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 200:
 		result := NewEndpointCreateOK()
@@ -116,7 +117,7 @@ func (o *EndpointCreateOK) readResponse(response runtime.ClientResponse, consume
 	o.Payload = new(models.PortainereeEndpoint)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
 

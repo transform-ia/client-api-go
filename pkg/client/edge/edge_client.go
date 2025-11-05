@@ -71,7 +71,7 @@ GetEndpointsIDEdgeStacksStackID inspects an edge stack for an environment endpoi
 **Access policy**: public
 */
 func (a *Client) GetEndpointsIDEdgeStacksStackID(params *GetEndpointsIDEdgeStacksStackIDParams, opts ...ClientOption) (*GetEndpointsIDEdgeStacksStackIDOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewGetEndpointsIDEdgeStacksStackIDParams()
 	}
@@ -90,17 +90,22 @@ func (a *Client) GetEndpointsIDEdgeStacksStackID(params *GetEndpointsIDEdgeStack
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*GetEndpointsIDEdgeStacksStackIDOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for GetEndpointsIDEdgeStacksStackID: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -113,7 +118,7 @@ func (a *Client) GetEndpointsIDEdgeStacksStackID(params *GetEndpointsIDEdgeStack
 **Access policy**: admin
 */
 func (a *Client) PostEndpointsEdgeGenerateKey(params *PostEndpointsEdgeGenerateKeyParams, opts ...ClientOption) (*PostEndpointsEdgeGenerateKeyOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewPostEndpointsEdgeGenerateKeyParams()
 	}
@@ -132,17 +137,22 @@ func (a *Client) PostEndpointsEdgeGenerateKey(params *PostEndpointsEdgeGenerateK
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*PostEndpointsEdgeGenerateKeyOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for PostEndpointsEdgeGenerateKey: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
@@ -153,7 +163,7 @@ PostEndpointsIDEdgeJobsJobIDLogs inspects an edge job log
 **Access policy**: public
 */
 func (a *Client) PostEndpointsIDEdgeJobsJobIDLogs(params *PostEndpointsIDEdgeJobsJobIDLogsParams, opts ...ClientOption) (*PostEndpointsIDEdgeJobsJobIDLogsOK, error) {
-	// TODO: Validate the params before sending
+	// NOTE: parameters are not validated before sending
 	if params == nil {
 		params = NewPostEndpointsIDEdgeJobsJobIDLogsParams()
 	}
@@ -172,17 +182,22 @@ func (a *Client) PostEndpointsIDEdgeJobsJobIDLogs(params *PostEndpointsIDEdgeJob
 	for _, opt := range opts {
 		opt(op)
 	}
-
 	result, err := a.transport.Submit(op)
 	if err != nil {
 		return nil, err
 	}
+
+	// only one success response has to be checked
 	success, ok := result.(*PostEndpointsIDEdgeJobsJobIDLogsOK)
 	if ok {
 		return success, nil
 	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+
+	// unexpected success response.
+
+	// no default response is defined.
+	//
+	// safeguard: normally, in the absence of a default response, unknown success responses return an error above: so this is a codegen issue
 	msg := fmt.Sprintf("unexpected success response for PostEndpointsIDEdgeJobsJobIDLogs: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }

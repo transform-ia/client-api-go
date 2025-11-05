@@ -749,8 +749,8 @@ func (o *EndpointCreateParams) bindParamTagIds(formats strfmt.Registry) []string
 		tagIdsIC = append(tagIdsIC, tagIdsIIV)
 	}
 
-	// items.CollectionFormat: ""
-	tagIdsIS := swag.JoinByFormat(tagIdsIC, "")
+	// items.CollectionFormat: "csv"
+	tagIdsIS := swag.JoinByFormat(tagIdsIC, "csv")
 
 	return tagIdsIS
 }

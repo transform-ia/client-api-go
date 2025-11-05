@@ -7,6 +7,7 @@ package system
 
 import (
 	"encoding/json"
+	stderrors "errors"
 	"fmt"
 	"io"
 
@@ -22,7 +23,7 @@ type SystemUpdateReader struct {
 }
 
 // ReadResponse reads a server response into the received o.
-func (o *SystemUpdateReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (interface{}, error) {
+func (o *SystemUpdateReader) ReadResponse(response runtime.ClientResponse, consumer runtime.Consumer) (any, error) {
 	switch response.Code() {
 	case 204:
 		result := NewSystemUpdateNoContent()
@@ -30,6 +31,18 @@ func (o *SystemUpdateReader) ReadResponse(response runtime.ClientResponse, consu
 			return nil, err
 		}
 		return result, nil
+	case 409:
+		result := NewSystemUpdateConflict()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 500:
+		result := NewSystemUpdateInternalServerError()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	default:
 		return nil, runtime.NewAPIError("[POST /system/update] systemUpdate", response, response.Code())
 	}
@@ -98,9 +111,121 @@ func (o *SystemUpdateNoContent) readResponse(response runtime.ClientResponse, co
 	o.Payload = new(models.GithubComPortainerPortainerEeAPIHTTPHandlerSystemStatus)
 
 	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && !stderrors.Is(err, io.EOF) {
 		return err
 	}
+
+	return nil
+}
+
+// NewSystemUpdateConflict creates a SystemUpdateConflict with default headers values
+func NewSystemUpdateConflict() *SystemUpdateConflict {
+	return &SystemUpdateConflict{}
+}
+
+/*
+SystemUpdateConflict describes a response with status code 409, with default header values.
+
+Conflict, an automatic patch operation is already in progress
+*/
+type SystemUpdateConflict struct {
+}
+
+// IsSuccess returns true when this system update conflict response has a 2xx status code
+func (o *SystemUpdateConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this system update conflict response has a 3xx status code
+func (o *SystemUpdateConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this system update conflict response has a 4xx status code
+func (o *SystemUpdateConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this system update conflict response has a 5xx status code
+func (o *SystemUpdateConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this system update conflict response a status code equal to that given
+func (o *SystemUpdateConflict) IsCode(code int) bool {
+	return code == 409
+}
+
+// Code gets the status code for the system update conflict response
+func (o *SystemUpdateConflict) Code() int {
+	return 409
+}
+
+func (o *SystemUpdateConflict) Error() string {
+	return fmt.Sprintf("[POST /system/update][%d] systemUpdateConflict", 409)
+}
+
+func (o *SystemUpdateConflict) String() string {
+	return fmt.Sprintf("[POST /system/update][%d] systemUpdateConflict", 409)
+}
+
+func (o *SystemUpdateConflict) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	return nil
+}
+
+// NewSystemUpdateInternalServerError creates a SystemUpdateInternalServerError with default headers values
+func NewSystemUpdateInternalServerError() *SystemUpdateInternalServerError {
+	return &SystemUpdateInternalServerError{}
+}
+
+/*
+SystemUpdateInternalServerError describes a response with status code 500, with default header values.
+
+Server error
+*/
+type SystemUpdateInternalServerError struct {
+}
+
+// IsSuccess returns true when this system update internal server error response has a 2xx status code
+func (o *SystemUpdateInternalServerError) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this system update internal server error response has a 3xx status code
+func (o *SystemUpdateInternalServerError) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this system update internal server error response has a 4xx status code
+func (o *SystemUpdateInternalServerError) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this system update internal server error response has a 5xx status code
+func (o *SystemUpdateInternalServerError) IsServerError() bool {
+	return true
+}
+
+// IsCode returns true when this system update internal server error response a status code equal to that given
+func (o *SystemUpdateInternalServerError) IsCode(code int) bool {
+	return code == 500
+}
+
+// Code gets the status code for the system update internal server error response
+func (o *SystemUpdateInternalServerError) Code() int {
+	return 500
+}
+
+func (o *SystemUpdateInternalServerError) Error() string {
+	return fmt.Sprintf("[POST /system/update][%d] systemUpdateInternalServerError", 500)
+}
+
+func (o *SystemUpdateInternalServerError) String() string {
+	return fmt.Sprintf("[POST /system/update][%d] systemUpdateInternalServerError", 500)
+}
+
+func (o *SystemUpdateInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	return nil
 }

@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -23,7 +24,7 @@ type PodsecurityPodSecurityRunAsGroup struct {
 	Idrange []*PodsecurityPodSecurityIdrange `json:"idrange"`
 
 	// type
-	Type string `json:"type,omitempty"`
+	Type PodsecurityRunAsGroupStrategy `json:"type,omitempty"`
 }
 
 // Validate validates this podsecurity pod security run as group
@@ -31,6 +32,10 @@ func (m *PodsecurityPodSecurityRunAsGroup) Validate(formats strfmt.Registry) err
 	var res []error
 
 	if err := m.validateIdrange(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -52,15 +57,40 @@ func (m *PodsecurityPodSecurityRunAsGroup) validateIdrange(formats strfmt.Regist
 
 		if m.Idrange[i] != nil {
 			if err := m.Idrange[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("idrange" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("idrange" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *PodsecurityPodSecurityRunAsGroup) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	if err := m.Type.Validate(formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("type")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("type")
+		}
+
+		return err
 	}
 
 	return nil
@@ -71,6 +101,10 @@ func (m *PodsecurityPodSecurityRunAsGroup) ContextValidate(ctx context.Context, 
 	var res []error
 
 	if err := m.contextValidateIdrange(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -91,15 +125,41 @@ func (m *PodsecurityPodSecurityRunAsGroup) contextValidateIdrange(ctx context.Co
 			}
 
 			if err := m.Idrange[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("idrange" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("idrange" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *PodsecurityPodSecurityRunAsGroup) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	if err := m.Type.ContextValidate(ctx, formats); err != nil {
+		ve := new(errors.Validation)
+		if stderrors.As(err, &ve) {
+			return ve.ValidateName("type")
+		}
+		ce := new(errors.CompositeError)
+		if stderrors.As(err, &ce) {
+			return ce.ValidateName("type")
+		}
+
+		return err
 	}
 
 	return nil

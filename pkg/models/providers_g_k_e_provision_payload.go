@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -23,7 +24,7 @@ type ProvidersGKEProvisionPayload struct {
 	// Example: 2
 	CPU int64 `json:"cpu,omitempty"`
 
-	// CredentialID holds an ID of the credential used to create the cluster
+	// credential ID
 	// Example: 1
 	// Required: true
 	CredentialID *int64 `json:"credentialID"`
@@ -132,11 +133,15 @@ func (m *ProvidersGKEProvisionPayload) validateMeta(formats strfmt.Registry) err
 
 	if m.Meta != nil {
 		if err := m.Meta.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("meta")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("meta")
 			}
+
 			return err
 		}
 	}
@@ -203,11 +208,15 @@ func (m *ProvidersGKEProvisionPayload) contextValidateMeta(ctx context.Context, 
 		}
 
 		if err := m.Meta.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("meta")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("meta")
 			}
+
 			return err
 		}
 	}

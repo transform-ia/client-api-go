@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -19,7 +20,7 @@ import (
 type UsersGitCredentialResponse struct {
 
 	// git credential
-	GitCredential *PortainereeGitCredential `json:"gitCredential,omitempty"`
+	GitCredential *UsersShadowedGitCredential `json:"gitCredential,omitempty"`
 }
 
 // Validate validates this users git credential response
@@ -43,11 +44,15 @@ func (m *UsersGitCredentialResponse) validateGitCredential(formats strfmt.Regist
 
 	if m.GitCredential != nil {
 		if err := m.GitCredential.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("gitCredential")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("gitCredential")
 			}
+
 			return err
 		}
 	}
@@ -78,11 +83,15 @@ func (m *UsersGitCredentialResponse) contextValidateGitCredential(ctx context.Co
 		}
 
 		if err := m.GitCredential.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("gitCredential")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("gitCredential")
 			}
+
 			return err
 		}
 	}
