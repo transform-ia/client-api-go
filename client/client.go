@@ -25,6 +25,10 @@ type ProxyClient struct {
 	host string
 	// Token is the API token used to authenticate to the Portainer server
 	token string
+	// BasePath is the base path for the Portainer API (e.g., "/api" or "/portainer/api")
+	basePath string
+	// Scheme is the URL scheme (http or https)
+	scheme string
 }
 
 // ClientOption defines a functional option for configuring the Portainer client
@@ -102,8 +106,10 @@ func NewPortainerClient(host, apiKey string, opts ...ClientOption) *PortainerCli
 					},
 				},
 			},
-			host:  options.host,
-			token: options.apiKey,
+			host:     options.host,
+			token:    options.apiKey,
+			basePath: options.basePath,
+			scheme:   options.scheme,
 		},
 	}
 }

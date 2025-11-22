@@ -31,7 +31,7 @@ type ProxyRequestOptions struct {
 //   - *http.Response: The response from the Docker API
 //   - error: Any error that occurred during the request
 func (c *PortainerClient) ProxyDockerRequest(environmentId int, opts ProxyRequestOptions) (*http.Response, error) {
-	baseURL := fmt.Sprintf("https://%s/api/endpoints/%d/docker%s", c.proxyCli.host, environmentId, opts.APIPath)
+	baseURL := fmt.Sprintf("%s://%s%s/endpoints/%d/docker%s", c.proxyCli.scheme, c.proxyCli.host, c.proxyCli.basePath, environmentId, opts.APIPath)
 	return c.proxyRequest(baseURL, opts)
 }
 
@@ -46,7 +46,7 @@ func (c *PortainerClient) ProxyDockerRequest(environmentId int, opts ProxyReques
 //   - *http.Response: The response from the Kubernetes API
 //   - error: Any error that occurred during the request
 func (c *PortainerClient) ProxyKubernetesRequest(environmentId int, opts ProxyRequestOptions) (*http.Response, error) {
-	baseURL := fmt.Sprintf("https://%s/api/endpoints/%d/kubernetes%s", c.proxyCli.host, environmentId, opts.APIPath)
+	baseURL := fmt.Sprintf("%s://%s%s/endpoints/%d/kubernetes%s", c.proxyCli.scheme, c.proxyCli.host, c.proxyCli.basePath, environmentId, opts.APIPath)
 	return c.proxyRequest(baseURL, opts)
 }
 
