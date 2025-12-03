@@ -8,6 +8,7 @@ name: CI
 
 permissions:
   contents: read
+  packages: read
 
 jobs:
   lint-files:
@@ -16,7 +17,8 @@ jobs:
       image: ghcr.io/transform-ia/claude-image:0.1.2
       options: --user 0
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v6
 
       - name: Lint YAML
         run: yamllint .
@@ -29,8 +31,12 @@ jobs:
     container:
       image: ghcr.io/transform-ia/golang-image:0.0.12
       options: --user 0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v6
 
       - name: Lint Go
         run: golangci-lint run --fix ./...
