@@ -28,18 +28,19 @@ jobs:
 
   lint-go:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/transform-ia/golang-image:0.0.12
-      options: --user 0
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
       - name: Lint Go
-        run: golangci-lint run --fix ./...
+        uses: golangci/golangci-lint-action@v7
+        with:
+          version: latest
 
       - name: Test
         run: go test -v -race ./...

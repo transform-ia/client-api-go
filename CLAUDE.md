@@ -2,7 +2,8 @@
 
 ## Repository Purpose
 
-Go client library for Transform IA API services. Provides type-safe Go bindings for API endpoints with authentication and error handling.
+Go client library for Transform IA API services. Provides type-safe Go
+bindings for API endpoints with authentication and error handling.
 
 ## Plugin Usage
 
